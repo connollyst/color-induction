@@ -21,13 +21,13 @@ function [light, dark, red, yellow, green, blue] = pLGN( I, varargin )
     pSo =  Sc - LMs;
     mSo = -Sc + LMs;
     if do_show()
-        figure(1); imshow(pLo);
-        figure(2); imshow(mLo);
-        figure(3); imshow(pMo);
-        figure(4); imshow(mMo);
-        figure(5); imshow(pSo);
-        figure(6); imshow(mSo);
-        figure(7); imshow(LMs);
+        show_figure(1, 'pLo', pLo);
+        show_figure(2, 'mLo', mLo);
+        show_figure(3, 'pMo', pMo);
+        show_figure(4, 'mMo', mMo);
+        show_figure(5, 'pSo', pSo);
+        show_figure(6, 'mSo', mSo);
+        show_figure(7, 'LMs', LMs);
     end
     
     %% Higher level integration of color channels by V1 (p1011)
@@ -38,12 +38,12 @@ function [light, dark, red, yellow, green, blue] = pLGN( I, varargin )
     green  = pMo + mLo + mSo;
     blue   = pMo + mLo + pSo;
     if do_show()
-        figure(11); imshow(light);
-        figure(12); imshow(dark);
-        figure(13); imshow(red);
-        figure(14); imshow(yellow);
-        figure(15); imshow(green);
-        figure(16); imshow(blue);
+        show_figure(11, 'light',  light);
+        show_figure(12, 'dark',   dark);
+        show_figure(13, 'red',    red);
+        show_figure(14, 'yellow', yellow);
+        show_figure(15, 'green',  green);
+        show_figure(16, 'blue',   blue);
     end
     
     %% Utility function to find 
@@ -63,4 +63,11 @@ end
 function filtered = gaussian( img, hsize, sigma)
     filter   = fspecial('gaussian', [hsize hsize], sigma);
     filtered = imfilter(img, filter, 'same');
+end
+
+function show_figure(index, name, I)
+    f = figure(index);
+    set(f, 'name', name);
+    set(f, 'Color', [1 1 1]);
+    imagesc(I);
 end
