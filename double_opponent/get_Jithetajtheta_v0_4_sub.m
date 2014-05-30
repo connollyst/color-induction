@@ -22,7 +22,7 @@ d=Distance_XOP(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
 
 
 
-theta=angle_orient(orient,multires);
+theta=utils.angle_orient(orient,multires);
 
 
 for o=1:K
@@ -36,7 +36,7 @@ for o=1:K
         W_inh(:,:,o)=0;
     else
         
-        thetap=angle_orient(o,multires);
+        thetap=utils.angle_orient(o,multires);
         
         Dtheta=send_in_the_right_interval_pi_2(theta-thetap);
         
