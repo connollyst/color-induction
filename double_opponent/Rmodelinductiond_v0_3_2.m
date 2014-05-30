@@ -91,7 +91,7 @@ diam=2*Delta+1; % maximum diameter of the area of influence
 %%%%%%%%%%%%%%%%%%%% Normalization mask %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[M_norm_conv,inv_den]=Fer_M_norm_conv(n_scales,dist_type,zli.scale2size_type,zli.scale2size_epsilon);
+[M_norm_conv,inv_den]=model.Fer_M_norm_conv(n_scales,dist_type,zli.scale2size_type,zli.scale2size_epsilon);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% prepare orientation/scale interaction for x_ei   %%%%
