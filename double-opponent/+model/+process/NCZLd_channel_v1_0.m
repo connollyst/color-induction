@@ -34,25 +34,6 @@ function [img_out] = NCZLd_channel_v1_0(img, struct)
         Mostrar_curv_video_POOL(curv,n_scales,1, struct.display_plot.y_video, struct.display_plot.x_video);
     end
 
-    % mean value of residual planes
-    if fin_scale==n_scales
-        for ff=1:n_membr
-            mean_orig{ff}=mean(curv{ff}{n_scales}{1}(:));
-        end
-    end
-
-    % wavelet decomposition output
-    curv_final = curv;			% in order to define it with the same structure
-    iFactor    = curv;          % in order to define it with the same structure
-    for ff=1:n_membr
-        for scale=1:n_scales
-            n_orient=size(iFactor{ff}{scale},2);
-            for o=1:n_orient
-                iFactor{ff}{scale}{o}(:)=1.;
-            end
-        end
-    end
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% here is the CORE of the process -> NCZLd_channel_ON_OFF_v1_1 %%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
