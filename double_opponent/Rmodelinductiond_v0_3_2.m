@@ -116,7 +116,7 @@ else
 end
 
 weight_scales=[e f e];
-border_weight=get_border_weights(e,f);
+border_weight=model.get_border_weights(e,f);
 Delta_ext=zeros(1,n_scales+radius_sc*2);
 Delta_ext(radius_sc+1:n_scales+radius_sc)=Delta;
 Delta_ext(1:radius_sc)=Delta(1);
@@ -249,8 +249,8 @@ for t_membr=1:n_membr  % membrane time
         restr_newgy_toroidal_y=zeros(M,N,n_scales+2*radius_sc,K);
         
         for s=1:n_scales+2*radius_sc
-            newgx_toroidal_x{s}=newgx(toroidal_x{s});
-            newgy_toroidal_y{s}=newgy(toroidal_y{s});
+            newgx_toroidal_x{s}=model.newgx(toroidal_x{s});
+            newgy_toroidal_y{s}=model.newgy(toroidal_y{s});
             
         end
         
@@ -354,14 +354,14 @@ for t_membr=1:n_membr  % membrane time
         %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
         % (1) inhibitory neurons
         y=y+prec*(-alphay*y...     % decay
-            +newgx(x)...
+            +model.newgx(x)...
             +y_ie...
             +1.0...     % spontaneous firing rate
             +var_noise*(rand(M,N,n_scales,K))-0.5);  % neural noise (comment for speed)
         % (2) excitatory neurons
         x=x+prec*(-alphax*x...				% decay
             -x_ei...						% ei term
-            +J0*newgx(x)... % input
+            +J0*model.newgx(x)... % input
             +x_ee...
             +Iitheta{t_membr}... % Iitheta
             +I_norm...				% normalization
@@ -375,8 +375,8 @@ for t_membr=1:n_membr  % membrane time
         end
     end % end t_iter=1:n_iter
     toc
-    gx_final{t_membr}=newgx(x);
-    gy_final{t_membr}=newgy(y);
+    gx_final{t_membr}=model.newgx(x);
+    gy_final{t_membr}=model.newgy(y);
 end  % end t_membr=1:t_membr
 
 for i=1:n_membr
