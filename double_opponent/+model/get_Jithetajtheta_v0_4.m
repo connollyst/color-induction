@@ -6,13 +6,13 @@ multires=wave.multires;
 
     K=4;
         
-    [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,wave, zli);
+    [J_exc,W_inh]=model.get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,wave, zli);
     
     
     pes_diag=0.5;
     
     if orient==2
-        [J_diag,W_diag]=get_Jithetajtheta_v0_4_sub(scale,K,4,Delta,wave, zli);
+        [J_diag,W_diag]=model.get_Jithetajtheta_v0_4_sub(scale,K,4,Delta,wave, zli);
         J_exc(:,:,[1 3])=(J_exc(:,:,[1 3])+J_diag(:,:,[1 3]))*pes_diag;
         W_inh(:,:,[1 3])=(W_inh(:,:,[1 3])+W_diag(:,:,[1 3]))*pes_diag;
         J_exc(:,:,2)=(J_exc(:,:,2)+J_diag(:,:,4))*pes_diag;

@@ -146,7 +146,7 @@ for s=1:n_scales
     all_J{s}=zeros(diam(s),diam(s),K,K);
     all_W{s}=zeros(diam(s),diam(s),K,K);
     for o=1:K
-        [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
+        [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=model.get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
     end
 end
 % scales (cf. above )
