@@ -52,7 +52,7 @@ for i=1:n_membr
 	Iitheta{i}(:,:,:,3)=Iitheta_2;
 end
 
-[Iitheta,normal_max,normal_min]=curv_normalization(Iitheta,struct);
+[Iitheta,normal_max,normal_min]=model.curv_normalization(Iitheta,struct);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%% parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
