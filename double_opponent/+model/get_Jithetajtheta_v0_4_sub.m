@@ -38,14 +38,14 @@ for o=1:K
         
         thetap=utils.angle_orient(o,multires);
         
-        Dtheta=send_in_the_right_interval_pi_2(theta-thetap);
+        Dtheta=utils.send_in_the_right_interval_pi_2(theta-thetap);
         
         
         
         c=complex(xx,yy);
-        angline=send_in_the_right_interval_pi_2(angle(c));
-        theta1=send_in_the_right_interval_pi_2(theta-angline);
-        theta2=send_in_the_right_interval_pi_2(thetap-angline);
+        angline=utils.send_in_the_right_interval_pi_2(angle(c));
+        theta1=utils.send_in_the_right_interval_pi_2(theta-angline);
+        theta2=utils.send_in_the_right_interval_pi_2(thetap-angline);
         
         angle1=theta1;
         angle2=theta2;
