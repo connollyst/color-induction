@@ -291,7 +291,7 @@ for t_membr=1:n_membr  % membrane time
             % excitatory-inhibitory term (no existia):   x_ei
             % influence of the neighboring scales first
             
-            sum_scale_newgy_toroidal_y=convolucio_optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
+            sum_scale_newgy_toroidal_y=convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
             restr_sum_scale_newgy_toroidal_y=sum_scale_newgy_toroidal_y(:,:,radius_sc+1:radius_sc+n_scales,:); % restriction over scales
             w=zeros(1,1,1,K);w(1,1,1,:)=PsiDtheta(oc,:);
             x_ei(:,:,:,oc)=sum(restr_sum_scale_newgy_toroidal_y.*repmat(w,[M,N,n_scales,1]),4);
@@ -307,18 +307,18 @@ for t_membr=1:n_membr  % membrane time
                 % FFT
                 if (use_fft)
                     for s=1:n_scales
-                        kk=convolucio_optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                        kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
                         x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
-                        kk=convolucio_optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                        kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
                         y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
                     end
                 else
                     disp('Part no adaptada 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     J_ov=all_J(:,:,:,ov,oc);
                     W_ov=all_W(:,:,:,ov,oc);
-                    J_conv_tmp(:,:,:,ov)=convolucio_optima(newgx_toroidal_x(:,:,:,ov),J_ov,0,0);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                    J_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),J_ov,0,0);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
                     restr_J_conv_tmp=J_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
-                    W_conv_tmp(:,:,:,ov)=convolucio_optima(newgx_toroidal_x(:,:,:,ov),W_ov,0,0);
+                    W_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),W_ov,0,0);
                     restr_W_conv_tmp=W_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
                 end
             end
@@ -329,8 +329,8 @@ for t_membr=1:n_membr  % membrane time
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % influence of the neighboring spatial frequencies
-        x_ee=convolucio_optima(x_ee,scale_filter,0,0);
-        y_ie=convolucio_optima(y_ie,scale_filter,0,0);
+        x_ee=convolutions.optima(x_ee,scale_filter,0,0);
+        y_ie=convolutions.optima(y_ie,scale_filter,0,0);
         
         %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % we generalize Z.Li's formula for the normalization by suming
@@ -343,7 +343,7 @@ for t_membr=1:n_membr  % membrane time
             % sum over all the orientations
             sum_newgx_toroidal_x_sc=sum(newgx_toroidal_x{s},4);
             despl=[radi];
-            kk=convolucio_optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
+            kk=convolutions.optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
             I_norm(:,:,s-radius_sc,:)=repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
         end
         for s=1:n_scales  % times  roughly 50 if the flag is 1
