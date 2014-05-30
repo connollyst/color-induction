@@ -18,7 +18,7 @@ for i=1:n_scales
 	xx=repmat([(-radi:1:radi)],2*radi+1,1);
 	yy=repmat([(-radi:1:radi)]',1,2*radi+1);
 	
-	d=Distance_XOP(xx/factor_scale,yy/factor_scale,dist_type);
+	d=utils.distance_xop(xx/factor_scale,yy/factor_scale,dist_type);
 	
 	M_norm_conv{i}(d<=2)=1;
 	inv_den{i}=1/sum(M_norm_conv{i}(:));

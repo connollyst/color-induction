@@ -17,7 +17,7 @@ yy=repmat([(-Delta:1:Delta)]',1,2*Delta+1);
 
 factor_scale=scale2size(scale,zli.scale2size_type,zli.scale2size_epsilon);
 
-d=Distance_XOP(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
+d=utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
 
 
 

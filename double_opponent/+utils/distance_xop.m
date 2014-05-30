@@ -1,4 +1,4 @@
-function [d]=Distance_XOP(xx,yy,type)
+function [d]=distance_xop(xx,yy,type)
 
 
 switch type
