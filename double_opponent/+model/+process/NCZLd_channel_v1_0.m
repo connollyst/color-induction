@@ -56,7 +56,7 @@ function [img_out] = NCZLd_channel_v1_0(img, struct)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% here is the CORE of the process -> NCZLd_channel_ON_OFF_v1_1 %%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    curv_final = NCZLd_channel_ON_OFF_v1_1(curv,struct);
+    curv_final = model.process.NCZLd_channel_ON_OFF_v1_1(curv,struct);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%   end of the core   %%%%%%%%%%%%%%%%%%%%%%%%%%%

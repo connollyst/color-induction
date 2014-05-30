@@ -67,14 +67,14 @@ switch(ON_OFF)
             % positius +++++++++++++++++++++++++++++++++++++++++++++++++++
             %%% MAIN PROCESS %%%
 			disp('Starting ON processing');
-            iFactor_ON=Rmodelinductiond_v0_3_2(curv_ON, struct);
+            iFactor_ON=model.process.Rmodelinductiond_v0_3_2(curv_ON, struct);
             %%% END MAIN PROCESS %%%
             
             
             % negatius ----------------------------------------------------
             %%% MAIN PROCESS %%%
 			disp('Starting OFF processing');
-            iFactor_OFF=Rmodelinductiond_v0_3_2(curv_OFF, struct);
+            iFactor_OFF=model.process.Rmodelinductiond_v0_3_2(curv_OFF, struct);
             %%% END MAIN PROCESS %%%
             
             iFactor=iFactor_ON;

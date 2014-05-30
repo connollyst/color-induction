@@ -100,7 +100,7 @@ diam=2*Delta+1; % maximum diameter of the area of influence
 		a=pi/4;
 		b=pi/2;
 		Dtheta=[0 a b; a 0 a ; b a 0];
-		PsiDtheta=model.Psi(Dtheta);
+		PsiDtheta=model.terms.Psi(Dtheta);
 % scales (define the interraction between the scales)
 
 radius_sc=1;
@@ -249,8 +249,8 @@ for t_membr=1:n_membr  % membrane time
         restr_newgy_toroidal_y=zeros(M,N,n_scales+2*radius_sc,K);
         
         for s=1:n_scales+2*radius_sc
-            newgx_toroidal_x{s}=model.newgx(toroidal_x{s});
-            newgy_toroidal_y{s}=model.newgy(toroidal_y{s});
+            newgx_toroidal_x{s}=model.terms.newgx(toroidal_x{s});
+            newgy_toroidal_y{s}=model.terms.newgy(toroidal_y{s});
             
         end
         
@@ -354,14 +354,14 @@ for t_membr=1:n_membr  % membrane time
         %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
         % (1) inhibitory neurons
         y=y+prec*(-alphay*y...     % decay
-            +model.newgx(x)...
+            +model.terms.newgx(x)...
             +y_ie...
             +1.0...     % spontaneous firing rate
             +var_noise*(rand(M,N,n_scales,K))-0.5);  % neural noise (comment for speed)
         % (2) excitatory neurons
         x=x+prec*(-alphax*x...				% decay
             -x_ei...						% ei term
-            +J0*model.newgx(x)... % input
+            +J0*model.terms.newgx(x)... % input
             +x_ee...
             +Iitheta{t_membr}... % Iitheta
             +I_norm...				% normalization
@@ -375,8 +375,8 @@ for t_membr=1:n_membr  % membrane time
         end
     end % end t_iter=1:n_iter
     toc
-    gx_final{t_membr}=model.newgx(x);
-    gy_final{t_membr}=model.newgy(y);
+    gx_final{t_membr}=model.terms.newgx(x);
+    gy_final{t_membr}=model.terms.newgy(y);
 end  % end t_membr=1:t_membr
 
 for i=1:n_membr

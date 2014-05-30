@@ -37,7 +37,7 @@ function [img_out] = NCZLd(img, struct)
     %%%%% NCZLd for every channel %%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    img_out_tmp = NCZLd_channel_v1_0(double(img), struct);
+    img_out_tmp = model.process.NCZLd_channel_v1_0(double(img), struct);
 
     % do/don't store img and img_out (warning: img_out is 4D in the dynamical case!)
     if struct.display_plot.store_img_img_out==1

@@ -34,7 +34,7 @@ clear struct wave zli display_plot compute
 %%%%%%%% Default parameters %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-strct=get_default_parameters_NCZLd();
+strct=params.get_default_parameters_NCZLd();
 
 % Prepare structures 
 zli=strct.zli;
@@ -165,7 +165,7 @@ strct=struct('zli',zli,'wave',wave,'image',image,'display_plot',display_plot,'co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   core of the process -> NCZLd   %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-img_out=NCZLd(image_data,strct);
+img_out=model.process.NCZLd(image_data,strct);
 	
 end
    
