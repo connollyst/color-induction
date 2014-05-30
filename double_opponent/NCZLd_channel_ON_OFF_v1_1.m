@@ -6,56 +6,51 @@ function [curv_final_out, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF
 % start the recovering at the level of the wavelet/Gabor responses
 
 % preallocate
-curv_final_out=curv_in;
+curv_final_out = curv_in;
 
 %-------------------------------------------------------
 % make the structure explicit/get the parameters
-zli=struct.zli;
-display_plot=struct.display_plot;
-compute=struct.compute;
-image=struct.image;
+zli           = struct.zli;
+display_plot  = struct.display_plot;
+image         = struct.image;
 % struct.zli  
 % normalization
-normal_output=zli.normal_output;
-% n_iter=zli.niter;
-n_membr=zli.n_membr;
-ON_OFF=zli.ON_OFF;
-% struct.
-plot_wavelet_planes=display_plot.plot_wavelet_planes;
+n_membr       = zli.n_membr;
+ON_OFF        = zli.ON_OFF;
+plot_wavelet_planes = display_plot.plot_wavelet_planes;
 % struct.compute
 % dynamic/constant
 % dynamic=compute.dynamic;
 % n_orient=size(curv{1}{scale},2);
-n_scales=struct.wave.n_scales;
-fin_scale=struct.wave.fin_scale;
+fin_scale     = struct.wave.fin_scale;
 %-------------------------------------------------------
 
 curv=cell(n_membr,1);
 % initialize
 for ff=1:n_membr
-	n_orient=size(curv_in{ff}{1},2);
-	curv{ff}=zeros([size(curv_in{ff}{1}{1}) fin_scale n_orient]);
+	n_orient = size(curv_in{ff}{1},2);
+	curv{ff} = zeros([size(curv_in{ff}{1}{1}) fin_scale n_orient]);
 	for s=1:fin_scale
 		for o=1:n_orient
-			curv{ff}(:,:,s,o)=curv_in{ff}{s}{o};
+			curv{ff}(:,:,s,o) = curv_in{ff}{s}{o};
 		end
 	end
 end
 % number of scales
 struct.wave.n_scales=fin_scale;
 % initialize
-curv_final=curv;	 
-index_ON=cell(n_membr,1);
-index_OFF=cell(n_membr,1);
-curv_ON=curv;
-curv_OFF=curv;
-curv_ON_final=curv;
-curv_OFF_final=curv;
+curv_final     = curv;	 
+index_ON       = cell(n_membr,1);
+index_OFF      = cell(n_membr,1);
+curv_ON        = curv;
+curv_OFF       = curv;
+curv_ON_final  = curv;
+curv_OFF_final = curv;
 	 
 % handle ON and OFF separately/together
 for t_membr=1:n_membr
     index_OFF{t_membr} = find(curv{t_membr}<=0);  % was curv{orient}
-    index_ON{t_membr} = find(curv{t_membr}>=0);
+    index_ON{t_membr}  = find(curv{t_membr}>=0);
 end
 
 % choose the algorithm (separated, abs, quadratic) 

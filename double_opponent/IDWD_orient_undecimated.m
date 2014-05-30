@@ -1,4 +1,4 @@
-function rec = Ia_trous(w, c)
+function rec = IDWD_orient_undecimated(w, c)
 
 wlev    = length(c);
 rec   = c{wlev,1};

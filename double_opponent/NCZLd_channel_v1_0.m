@@ -50,7 +50,7 @@ function [img_out] = NCZLd_channel_v1_0(img_in, struct)
     
     % different wavelet decompositions		
     for ff=1:niter_wav
-      [w, c] = a_trous(img(:,:,ff), n_scales-1);
+        [w, c] = DWD_orient_undecimated(img(:,:,ff), n_scales-1);
         for s=1:n_scales-1
             for o=1:3
                 curv{ff}{s}{o}=w{s}(:,:,o);
@@ -127,7 +127,7 @@ function [img_out] = NCZLd_channel_v1_0(img_in, struct)
             end
        end
        c{n_scales-1}=curv_final{ff}{n_scales}{1};
-       img_out(:,:,ff) = Ia_trous(w,c);
+       img_out(:,:,ff) = IDWD_orient_undecimated(w,c);
     end
 
     % 0/1 display it all
