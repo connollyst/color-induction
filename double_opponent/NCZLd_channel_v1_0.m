@@ -1,75 +1,32 @@
-function [img_out] = NCZLd_channel_v1_0(img_in, struct)
+function [img_out] = NCZLd_channel_v1_0(img, struct)
 % from NCZLd_channel_v1_0.m to NCZLd_channel_ON_OFF_v1_1.m
 % perform the wavelet decomposition and its inverse transform
-% img_in: monochromatic input image (i.e. one channel)
+% img: input image
 
     %-------------------------------------------------------
     % make the structure explicit
     zli      = struct.zli;
-    wave     = struct.wave;
-    compute  = struct.compute;
-    % struct.zli
-    n_membr  = zli.n_membr;
-    % struct.wave
-    n_scales = wave.n_scales;
-    % struct.compute
-    dynamic  = compute.dynamic;
+    n_membr  = struct.zli.n_membr;
+    n_scales = struct.wave.n_scales;
+    dynamic  = struct.compute.dynamic;
     %-------------------------------------------------------
 
     % scales we consider
     ini_scale = zli.ini_scale 
     fin_scale = n_scales - zli.fin_scale_offset
     struct.wave.fin_scale = fin_scale;
-    % preallocation
-    if dynamic ~= 1
-        img_out = zeros([size(img_in) n_membr]);
-    else
-        img_out = zeros(size(img_in));
-    end
-    % trivial case (if the image is uniform we do not process it!)
-    if max(img_in(:)) == min(img_in(:))
-        img_out = img_out + min(img_in(:)); % give the initial value to all the pixels
-        % 	iFactor = img_in*0;
+    
+    [img_out, done] = preallocate_img_out(img, n_membr, dynamic);
+    if done == 1
         return;
     end
-
-    % image
-    img = double(img_in); % obsolete?
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% wavelet decomposition %%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    curv=cell([zli.n_membr,n_scales,1]);
-
-    % number of wavelet decompositions to perform
-    if dynamic==1
-        niter_wav=n_membr;
-    else
-        niter_wav=1;
-    end
     
-    % different wavelet decompositions		
-    for ff=1:niter_wav
-        [w, c] = DWD_orient_undecimated(img(:,:,ff), n_scales-1);
-        for s=1:n_scales-1
-            for o=1:3
-                curv{ff}{s}{o}=w{s}(:,:,o);
-            end
-        end
-        curv{ff}{n_scales}{1}=c{n_scales-1};
-    end
-    iFactor = curv;
-    
-    % replicate wavelet planes if static stimulus
-    if dynamic ~= 1
-        for s=1:n_scales
-            for o=1:size(curv{1}{s},2)
-                for ff=2:n_membr
-                    curv{ff}{s}{o}=curv{1}{s}{o};
-                end
-            end
-        end
-    end
+    % TODO why are w & c needed for inverse transformation?
+    [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic);
 
     % display img and curv if needed
     if(struct.display_plot.plot_io==1)
@@ -136,6 +93,52 @@ function [img_out] = NCZLd_channel_v1_0(img_in, struct)
     end
 end
 
+function [img_out, done] = preallocate_img_out(img, n_membr, dynamic)
+    if dynamic ~= 1
+        img_out = zeros([size(img) n_membr]);
+    else
+        img_out = zeros(size(img));
+    end
+    % trivial case (if the image is uniform we do not process it!)
+    if max(img(:)) == min(img(:))
+        img_out = img_out + min(img(:)); % give the initial value to all the pixels
+        done = 1;
+    else
+        done = 0;
+    end
+end
 
+function [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic)
+    curv = cell([n_membr, n_scales, 1]);
+
+    % number of wavelet decompositions to perform
+    if dynamic == 1
+        niter_wav = n_membr;
+    else
+        niter_wav = 1;
+    end
+    
+    % different wavelet decompositions		
+    for ff=1:niter_wav
+        [w, c] = DWD_orient_undecimated(img(:,:,ff), n_scales-1);
+        for s=1:n_scales-1
+            for o=1:3
+                curv{ff}{s}{o}=w{s}(:,:,o);
+            end
+        end
+        curv{ff}{n_scales}{1}=c{n_scales-1};
+    end
+    
+    % replicate wavelet planes if static stimulus
+    if dynamic ~= 1
+        for s=1:n_scales
+            for o=1:size(curv{1}{s},2)
+                for ff=2:n_membr
+                    curv{ff}{s}{o}=curv{1}{s}{o};
+                end
+            end
+        end
+    end
+end
  
 
