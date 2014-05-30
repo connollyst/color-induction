@@ -28,18 +28,18 @@ for s = 1:wlev
     inv_sum = 1/sum(h);
    
     % decimate image along horizontal direction
-    prod = symmetric_filtering(image, h)*inv_sum;          % blur
+    prod = utils.symmetric_filtering(image, h)*inv_sum;          % blur
     HF = prod;
 
 	 GF = image - prod;                              % horizontal frequency info                            
     
     % decimate image along vertical direction   
-    prod = symmetric_filtering(image, h')*inv_sum;            % blur
+    prod = utils.symmetric_filtering(image, h')*inv_sum;            % blur
 %     HHF = prod;
     GHF = image - prod;                                % vertical wavelet plane
    
     % decimate GF along vertical direction
-     prod = symmetric_filtering(HF, h')*inv_sum;            % blur 
+     prod = utils.symmetric_filtering(HF, h')*inv_sum;            % blur 
 %    tmp_prod = zeros(size(prod));
 %    tmp_prod(1:2:img_dim,:) = prod(1:2:img_dim,:);         % downsample
     
