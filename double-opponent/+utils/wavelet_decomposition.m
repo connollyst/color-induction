@@ -1,6 +1,6 @@
 function [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic)
-%WAVELET_DECOMPOSITION Summary of this function goes here
-%   Detailed explanation goes here
+%WAVELET_DECOMPOSITION Decompose the given img with a wavelet transform
+
     curv = cell([n_membr, n_scales, 1]);
 
     % number of wavelet decompositions to perform
@@ -12,6 +12,7 @@ function [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic)
     
     % different wavelet decompositions		
     for ff=1:niter_wav
+        % TODO why are w & c needed for inverse transformation?
         [w, c] = wavelets.a_trous(img(:,:,ff), n_scales-1);
         for s=1:n_scales-1
             for o=1:3
