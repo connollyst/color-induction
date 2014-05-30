@@ -100,7 +100,7 @@ diam=2*Delta+1; % maximum diameter of the area of influence
 		a=pi/4;
 		b=pi/2;
 		Dtheta=[0 a b; a 0 a ; b a 0];
-		PsiDtheta=Psi(Dtheta);
+		PsiDtheta=model.Psi(Dtheta);
 % scales (define the interraction between the scales)
 
 radius_sc=1;
