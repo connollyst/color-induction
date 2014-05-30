@@ -15,7 +15,7 @@ W_inh=zeros(diam,diam,K);
 xx=repmat([(-Delta:1:Delta)],2*Delta+1,1);
 yy=repmat([(-Delta:1:Delta)]',1,2*Delta+1);
 
-factor_scale=scale2size(scale,zli.scale2size_type,zli.scale2size_epsilon);
+factor_scale=utils.scale2size(scale,zli.scale2size_type,zli.scale2size_epsilon);
 
 d=utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
 

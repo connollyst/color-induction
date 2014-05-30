@@ -9,8 +9,8 @@ inv_den=cell(n_scales,1);
 for i=1:n_scales
 % 	radi=2^i;
 % 	factor_scale=(2^(i-1));
-	radi=scale2size(i+1,scale_type,epsilon);
-	factor_scale=scale2size(i,scale_type,epsilon);
+	radi=utils.scale2size(i+1,scale_type,epsilon);
+	factor_scale=utils.scale2size(i,scale_type,epsilon);
 	
 	
 	M_norm_conv{i}=zeros(2*radi+1,2*radi+1);

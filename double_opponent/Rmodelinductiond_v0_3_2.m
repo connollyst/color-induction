@@ -26,7 +26,7 @@ Delta=zeros(n_scales);
 if compute.scale_interaction_debug==1
     Delta=zli.Delta.*ones(1,n_scales);
 else
-    Delta=zli.Delta*scale2size(1:n_scales,zli.scale2size_type,zli.scale2size_epsilon);
+    Delta=zli.Delta*utils.scale2size(1:n_scales,zli.scale2size_type,zli.scale2size_epsilon);
 end
 % normalization (I_norm)
 r=zli.normalization_power;
