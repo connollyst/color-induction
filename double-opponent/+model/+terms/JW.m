@@ -1,4 +1,4 @@
-function [all_J, all_W, all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = JW(n_scales, diameter, radius_sc, K, Delta, M, N, M_norm_conv, config)
+function [all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = JW(n_scales, diameter, radius_sc, K, Delta, M, N, M_norm_conv, config)
 %JW Summary of this function goes here
 %   Detailed explanation goes here
     wave      = config.wave;
