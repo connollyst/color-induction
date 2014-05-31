@@ -50,7 +50,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
         Iitheta{i}(:,:,:,3) = Iitheta_2;
     end
 
-    [Iitheta,normal_max,normal_min]=model.curv_normalization(Iitheta,struct);
+    [Iitheta,~,~] = model.curv_normalization(Iitheta, struct);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%% parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
