@@ -1,4 +1,4 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, interactions, config)
+function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, interactions, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -59,10 +59,10 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, al
         restr_newgy_toroidal_y(:,:,s,:)=newgy_toroidal_y{s}(Delta_ext(s)+1:Delta_ext(s)+M,Delta_ext(s)+1:Delta_ext(s)+N,:);
     end
 
-    x_ee=zeros(M,N,n_scales,K);
-    x_ei=zeros(M,N,n_scales,K);
-    y_ie=zeros(M,N,n_scales,K);
-    I_norm=zeros(M,N,n_scales,K);
+    x_ee   = zeros(M, N, n_scales, K);
+    x_ei   = zeros(M, N, n_scales, K);
+    y_ie   = zeros(M, N, n_scales, K);
+    I_norm = zeros(M, N, n_scales, K);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
     if use_fft
@@ -95,9 +95,9 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, al
             % FFT
             if use_fft
                 for s=1:n_scales
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
+                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},JW.J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
+                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},JW.W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
                 end
             else

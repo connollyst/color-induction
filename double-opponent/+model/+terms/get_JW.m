@@ -1,4 +1,4 @@
-function [all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = JW(M, N, K, diameter, Delta, M_norm_conv, radius_sc, config)
+function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, diameter, Delta, M_norm_conv, radius_sc, config)
 %JW Summary of this function goes here
 %   Detailed explanation goes here
     wave      = config.wave;
@@ -64,7 +64,11 @@ function [all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = JW(M, N, K,
                 M_norm_conv_fft{s}=fftn(M_norm_conv{s},[M+2*radi(1),N+2*radi(2)]);
             end
         end
-
-
     end
+    
+    JW = struct;
+    JW.J = all_J;
+    JW.W = all_W;
+    JW.J_fft = all_J_fft;
+    JW.W_fft = all_W_fft;
 end
