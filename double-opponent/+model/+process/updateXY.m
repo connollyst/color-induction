@@ -123,7 +123,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
     %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
     % (1) inhibitory neurons
     y = y + prec * (...
-            - config.zli.alphay * y...                    % decay
+            - config.zli.alphay * y...                  % decay
             + model.terms.newgx(x)...
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
@@ -135,7 +135,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
             - x_ei...					                % ei term
             + config.zli.J0 * model.terms.newgx(x)...              % input
             + x_ee...
-            + Iitheta{t_membr}...                       % Iitheta
+            + Iitheta{t_membr}...                       % Iitheta (isn't this x?)
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
             + var_noise*(rand(M,N,n_scales,K))-0.5...	% neural noise (comment for speed)
