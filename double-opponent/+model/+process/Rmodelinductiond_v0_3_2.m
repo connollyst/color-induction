@@ -64,13 +64,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     end
 
     % membrane potentials
-    gx_final=cell(n_membr,1);
-    gy_final=cell(n_membr,1);
+    gx_final = cell(n_membr,1);
+    gy_final = cell(n_membr,1);
 
     % preallocate
     for i=1:n_membr
-        gx_final{i}=zeros(M,N,n_scales,K); 
-        gy_final{i}=zeros(M,N,n_scales,K);
+        gx_final{i} = zeros(M, N, n_scales, K); 
+        gy_final{i} = zeros(M, N, n_scales, K);
     end
 
     %%
@@ -78,7 +78,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     %%%%%%%%%%%%%%%%%%%% prepare the excitatory and inhibitory masks %%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    diam=2*Delta+1; % maximum diameter of the area of influence
+    % maximum diameter of the area of influence
+    diameter = 2*Delta+1;
 
     %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,8 +140,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     M_norm_conv_fft=cell(n_scales,1);
     half_size_filter=cell(n_scales,1);
     for s=1:n_scales
-        all_J{s}=zeros(diam(s),diam(s),K,K);
-        all_W{s}=zeros(diam(s),diam(s),K,K);
+        all_J{s}=zeros(diameter(s),diameter(s),K,K);
+        all_W{s}=zeros(diameter(s),diameter(s),K,K);
         for o=1:K
             [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=model.get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
         end
@@ -148,8 +149,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     for s=1:n_scales
         if radius_sc >0
-            J=zeros(diam(s),diam(s),1,K,K);
-            W=zeros(diam(s),diam(s),1,K,K);
+            J=zeros(diameter(s),diameter(s),1,K,K);
+            W=zeros(diameter(s),diameter(s),1,K,K);
             half_size_filter{s}=[Delta(s) Delta(s) 0];
                 J(:,:,1,:,:)=1*all_J{s}(:,:,:,:);
                 W(:,:,1,:,:)=1*all_W{s}(:,:,:,:);
@@ -167,8 +168,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                 for oc=1:K
                     if compute.avoid_circshift_fft==1
                         % fft that do not requires circshift (by far better)
-                        J_circ=padarray(all_J{s}(:,:,1,ov,oc),[M+2*Delta(s)-diam(s),N+2*Delta(s)-diam(s)],0,'post');
-                        W_circ=padarray(all_W{s}(:,:,1,ov,oc),[M+2*Delta(s)-diam(s),N+2*Delta(s)-diam(s)],0,'post');
+                        J_circ=padarray(all_J{s}(:,:,1,ov,oc),[M+2*Delta(s)-diameter(s),N+2*Delta(s)-diameter(s)],0,'post');
+                        W_circ=padarray(all_W{s}(:,:,1,ov,oc),[M+2*Delta(s)-diameter(s),N+2*Delta(s)-diameter(s)],0,'post');
                         J_circ=circshift(J_circ,-[Delta(s) Delta(s)]);
                         W_circ=circshift(W_circ,-[Delta(s) Delta(s)]);
                         all_J_fft{s}(:,:,1,ov,oc)=fftn(J_circ);
@@ -300,16 +301,16 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                     % FFT
                     if (use_fft)
                         for s=1:n_scales
-                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
                             x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
-                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
                             y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
                         end
                     else
                         disp('Part no adaptada 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                         J_ov=all_J(:,:,:,ov,oc);
                         W_ov=all_W(:,:,:,ov,oc);
-                        J_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),J_ov,0,0);  % (max(1,M+1-diam):min(3*M,2*M+diam),max(1,N+1-diam):min(3*N,2*N+diam)
+                        J_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),J_ov,0,0);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
                         restr_J_conv_tmp=J_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
                         W_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),W_ov,0,0);
                         restr_W_conv_tmp=W_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
