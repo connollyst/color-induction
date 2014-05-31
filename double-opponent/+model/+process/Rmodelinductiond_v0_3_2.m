@@ -19,8 +19,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     %% Initialize parameters
     [M, N, K]            = MNK(Iitheta);
-    % maximum diameter of the area of influence
-    diameter             = 2*Delta+1;
     % output membrane potentials
     [gx_final, gy_final] = initialize_output(M, N, K, n_membr, n_scales);
 
@@ -35,7 +33,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     %% Prepare J & W: the excitatory and inhibitory masks
     [JW, M_norm_conv_fft, half_size_filter] = ...
-        model.terms.get_JW(M, N, K, diameter, Delta, M_norm_conv, interactions.radius_sc, config);
+        model.terms.get_JW(M, N, K, Delta, M_norm_conv, interactions.radius_sc, config);
 
     %% Preallocate x & y: the excitation and inhibition activity
     x = Iitheta{1};                 % initialized as the visual stimulus (p.192)

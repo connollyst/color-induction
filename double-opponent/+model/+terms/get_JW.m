@@ -1,18 +1,21 @@
-function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, diameter, Delta, M_norm_conv, radius_sc, config)
+function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, Delta, M_norm_conv, radius_sc, config)
 %JW Summary of this function goes here
 %   Detailed explanation goes here
+
     wave      = config.wave;
     zli       = config.zli;
     n_scales  = wave.n_scales;
+    % maximum diameter of the area of influence
+    diameter  = 2*Delta+1;
     all_J     = cell(n_scales,1);
     all_W     = cell(n_scales,1);
     all_J_fft = cell(n_scales,1);
     all_W_fft = cell(n_scales,1);
-    M_norm_conv_fft=cell(n_scales,1);
-    half_size_filter=cell(n_scales,1);
+    M_norm_conv_fft  = cell(n_scales,1);
+    half_size_filter = cell(n_scales,1);
     for s=1:n_scales
-        all_J{s}=zeros(diameter(s),diameter(s),K,K);
-        all_W{s}=zeros(diameter(s),diameter(s),K,K);
+        all_J{s} = zeros(diameter(s), diameter(s), K, K);
+        all_W{s} = zeros(diameter(s), diameter(s), K, K);
         for o=1:K
             [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=model.get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
         end
