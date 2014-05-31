@@ -1,4 +1,4 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask, interactions, config)
+function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask, interactions, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
     

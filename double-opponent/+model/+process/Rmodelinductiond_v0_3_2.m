@@ -1,11 +1,13 @@
 function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
-%Rmodelinductiond_v0_3_2 apply model to input image
-%   from NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
+%RMODELINDUCTIOND_V0_3_2 Apply model to input data
+%   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999
 %   Iitheta: cell struct of input stimuli at each membrane time step, eg:
 %            Iitheta{1}(:,:,2,3) is the full image decomposed at the
 %            second scale and third orientation.
 %   config:  the model configuration struct
+%
+%   gx_final:   the excitation membrane potentials
 
     %% get the structure and the parameters
     wave      = config.wave;
@@ -44,7 +46,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
-            [x, y] = model.process.updateXY(...
+            [x, y] = model.process.UpdateXY(...
                         t_membr, Iitheta, x, y, M, N, K, Delta, JW,...
                         normalization_masks, interactions, config...
                      );
@@ -63,20 +65,34 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 end
 
 function [M, N, K] = MNK(Iitheta)
-    M = size(Iitheta{1}, 1);   % input width
-    N = size(Iitheta{1}, 2);   % input height
+%MNK Extract M, N, & K properties of the input data
+%   Iitheta:    the input data
+%   
+%   M:          the input data width (cols)
+%   N:          the input data height (rows)
+%   K:          the number of neuron pairs in each hypercolumn
+%                   (i.e. the number of preferred orientations)
+    M = size(Iitheta{1}, 1);
+    N = size(Iitheta{1}, 2);
+    K = size(Iitheta{1}, 4);
     if M <= 10 || N <= 10
        disp('Bad stimulus dimensions! The toroidal boundary conditions are ill-defined.')
     end
-    % the number of neuron pairs in each hypercolumn (i.e. the number of preferred orientations)
-    K = size(Iitheta{1}, 4);
 end
 
 function [gx_final, gy_final] = initialize_output(M, N, K, n_membr, n_scales)
-    % membrane potentials
+%INITIALIZE_OUTPUT Initialize the output data structures
+%   M:          the input data width
+%   N:          the input data height
+%   K:          the number of preferred orientations
+%   n_membr:    the number of membrane time steps being processed
+%   n_scales:   the number of scale sizes being processed
+%
+%   gx_final:   the excitation membrane potentials
+%   gy_final:   the inhibition membrane potentials
+
     gx_final = cell(n_membr, 1);
     gy_final = cell(n_membr, 1);
-    % preallocate
     for i=1:n_membr
         gx_final{i} = zeros(M, N, n_scales, K); 
         gy_final{i} = zeros(M, N, n_scales, K);
