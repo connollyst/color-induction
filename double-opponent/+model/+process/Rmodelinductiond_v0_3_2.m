@@ -1,18 +1,18 @@
-function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
+function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     % from NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing Li
     % 1999
 
     %-------------------------------------------------------
     % get the structure and the parameters
-    wave      = struct.wave;
-    use_fft   = struct.compute.use_fft;
+    wave      = config.wave;
+    use_fft   = config.compute.use_fft;
     n_scales  = wave.n_scales;
     % make the structure explicit
-    zli       = struct.zli;
-    compute   = struct.compute;
+    zli       = config.zli;
+    compute   = config.compute;
     avoid_circshift_fft = compute.avoid_circshift_fft;
-    % struct.zli
+    % config.zli
     % differential equation
     n_membr   = zli.n_membr;
     n_iter    = zli.n_iter;
@@ -29,11 +29,11 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
     end
     % normalization (I_norm)
     r = zli.normalization_power;
-    % struct.compute
+    % config.compute
     % dynamic/constant
     % dynamic=compute.dynamic;
     % debug display
-    XOP_DEBUG = struct.compute.XOP_DEBUG;
+    XOP_DEBUG = config.compute.XOP_DEBUG;
     %-------------------------------------------------------
 
     M = size(Iitheta{1}, 1);
