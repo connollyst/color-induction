@@ -30,13 +30,12 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     %% Prepare normalization mask
     [M_norm_conv, inv_den] = model.make_M_norm_conv(config);
 
-    %% Prepare orientation/scale interaction for x_ei
-    [radius_sc, scale_filter, border_weight, PsiDtheta, Delta_ext] = ...
-        model.terms.interaction_maps(Delta, config);
+    %% Prepare orientation/scale interactions for x_ei
+    interactions = model.terms.interaction_maps(Delta, config);
 
     %% Prepare J & W: the excitatory and inhibitory masks
     [all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = ...
-        model.terms.JW(M, N, K, diameter, Delta, M_norm_conv, radius_sc, config);
+        model.terms.JW(M, N, K, diameter, Delta, M_norm_conv, interactions.radius_sc, config);
 
     %% Preallocate x & y: the excitation and inhibition activity
     % x is initialized as the visual stimulus (p.192)
@@ -50,7 +49,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane time step: %i\n', t_iter);
-            [x, y] = model.process.updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, radius_sc, border_weight, scale_filter, config);
+            [x, y] = model.process.updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, interactions, config);
         end
         toc
         gx_final{t_membr} = model.terms.newgx(x);

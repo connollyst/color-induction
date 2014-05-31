@@ -1,13 +1,24 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, radius_sc, border_weight, scale_filter, config)
+function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, interactions, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
     
-    var_noise           = 0.1 * 2;
+    %% Initialize Parameters
+    % Orientation/Scale Interactions
+    border_weight       = interactions.border_weight;
+    scale_filter        = interactions.scale_filter;
+    radius_sc           = interactions.radius_sc;
+    Delta_ext           = interactions.Delta_ext;
+    PsiDtheta           = interactions.PsiDtheta;
+    % Equaltion Parameters
     n_scales            = config.wave.n_scales;
     r                   = config.zli.normalization_power; % normalization (I_norm)
     prec                = 1/config.zli.n_iter;
+    var_noise           = 0.1 * 2;
+    % Computation Configurations
+    use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
 
+    %% Do Math
     toroidal_x=cell(n_scales+2*radius_sc,1);
     toroidal_y=cell(n_scales+2*radius_sc,1);
     for s=1:n_scales
@@ -54,7 +65,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
     I_norm=zeros(M,N,n_scales,K);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
-    if config.compute.use_fft
+    if use_fft
         newgx_toroidal_x_fft=cell(radius_sc+n_scales,1);
         for s=1:n_scales
             newgx_toroidal_x_fft{radius_sc+s}=cell(K,1);
@@ -82,7 +93,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
 
         for ov=1:K  % loop over all the orientations given the central (reference orientation)
             % FFT
-            if config.compute.use_fft
+            if use_fft
                 for s=1:n_scales
                     kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
@@ -120,7 +131,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
     end
     %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
+    %% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999)
     % (1) inhibitory neurons
     y = y + prec * (...
             - config.zli.alphay * y...                  % decay
