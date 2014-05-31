@@ -18,11 +18,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Delta     = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
 
     %% Initialize parameters
-    params = struct;
     [M, N, K]            = MNK(Iitheta);
-    params.M             = M;
-    params.N             = N;
-    params.K             = K;
     % maximum diameter of the area of influence
     diameter             = 2*Delta+1;
     % output membrane potentials

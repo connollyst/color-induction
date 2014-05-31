@@ -1,4 +1,4 @@
-function [M_norm_conv, inv_den] = Fer_M_norm_conv(config)
+function [M_norm_conv, inv_den] = make_M_norm_conv(config)
     n_scales    = config.wave.n_scales;
     dist_type   = config.zli.dist_type;
     scale_type  = config.zli.scale2size_type;
