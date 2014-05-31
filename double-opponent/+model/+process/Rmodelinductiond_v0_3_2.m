@@ -42,7 +42,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % normalization (I_norm)
     params.r         = zli.normalization_power;
     % membrane potentials
-    [gx_final, gy_final] = initialize_output(n_membr, n_scales);
+    [gx_final, gy_final] = initialize_output(n_membr, M, N, n_scales, K);
     % maximum diameter of the area of influence
     diameter = 2*Delta+1;
 
@@ -74,7 +74,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane time step: %i\n', t_iter);
-            [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, n_scales, radius_sc, border_weight, scale_filter, avoid_circshift_fft, use_fft, params, config);
+            [x, y] = model.process.updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, n_scales, radius_sc, border_weight, scale_filter, avoid_circshift_fft, use_fft, params, config);
         end
         toc
         gx_final{t_membr} = model.terms.newgx(x);
@@ -89,7 +89,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
 end
 
-function [gx_final, gy_final] = initialize_output(n_membr, n_scales)
+function [gx_final, gy_final] = initialize_output(n_membr, M, N, n_scales, K)
     % membrane potentials
     gx_final = cell(n_membr, 1);
     gy_final = cell(n_membr, 1);
