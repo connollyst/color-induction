@@ -1,5 +1,5 @@
 
-function [img_out]=general_NCZLd(image_data,n_membr, dynamic)
+function [img_out]=general_NCZLd(image_data, n_membr, dynamic)
 
 % This code implements the computational model described in the paper
 % 
@@ -13,9 +13,9 @@ function [img_out]=general_NCZLd(image_data,n_membr, dynamic)
 % Parameters:
 % 
 % image_data: That it the input image
-%   If it is a still image (static version), it has to be a two dimensional array.
+%   If it is a still image (static version), it has to be a two or three dimensional array.
 % 	If it is a temporal sequence of images with 'n_frames' frames (dynamical version),
-%   it has to be three dimensional with size (:,:,n_frames).
+%   it has to be cell structure of two or three dimensional images with size {n_frames}(:,:,:).
 % 
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
 %
