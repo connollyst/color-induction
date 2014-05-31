@@ -11,12 +11,10 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     %% get the structure and the parameters
     wave      = config.wave;
-    n_scales  = wave.n_scales;
     zli       = config.zli;
-    % config.zli
+    n_scales  = wave.n_scales;
     n_membr   = zli.n_membr;
     n_iter    = zli.n_iter;
-    % TODO the bowtie should not be scaled, right?
     Delta     = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
 
     %% Initialize parameters
