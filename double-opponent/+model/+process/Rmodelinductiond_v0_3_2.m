@@ -183,44 +183,36 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                 % excitatory-excitatory term:    x_ee
                 % excitatory-inhibitory term:    y_ie
 
-                x_ee_conv_tmp=zeros(M,N,n_scales,K);
-                y_ie_conv_tmp=zeros(M,N,n_scales,K);
+                x_ee_conv_tmp = zeros(M, N, n_scales, K);
+                y_ie_conv_tmp = zeros(M, N, n_scales, K);
 
                 for ov=1:K  % loop over all the orientations given the central (reference orientation)
                     % FFT
-                    if (use_fft)
+                    if use_fft
                         for s=1:n_scales
-                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
+                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                             x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
-                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
+                            kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                             y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
                         end
                     else
-                        disp('Part no adaptada 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                        J_ov=all_J(:,:,:,ov,oc);
-                        W_ov=all_W(:,:,:,ov,oc);
-                        J_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),J_ov,0,0);  % (max(1,M+1-diameter):min(3*M,2*M+diameter),max(1,N+1-diameter):min(3*N,2*N+diameter)
-                        restr_J_conv_tmp=J_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
-                        W_conv_tmp(:,:,:,ov)=convolutions.optima(newgx_toroidal_x(:,:,:,ov),W_ov,0,0);
-                        restr_W_conv_tmp=W_conv_tmp(Delta(s)+1:M+Delta(s),Delta(s)+1:N+Delta(s),radius_sc+1:radius_sc+n_scales,:);
+                        error('Non FFT approach is not implemented.');
                     end
                 end
                 x_ee(:,:,:,oc)=sum(x_ee_conv_tmp,4);
                 y_ie(:,:,:,oc)=sum(y_ie_conv_tmp,4);
             end   % of the loop over the central (reference) orientation
 
-
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % influence of the neighboring spatial frequencies
-            x_ee=convolutions.optima(x_ee,scale_filter,0,0);
-            y_ie=convolutions.optima(y_ie,scale_filter,0,0);
+            x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
+            y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
 
             %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % we generalize Z.Li's formula for the normalization by suming
             % over all the scales within a given hypercolumn (cf. p209, where she
             % already sums over all the orientations)
             I_norm=zeros(M,N,n_scales,K);
-            %		disp('Compte!!!!!!! No calculem I_norm incloent les escales !!!!!');
             for s=radius_sc+1:radius_sc+n_scales
                 radi=(size(M_norm_conv{s-radius_sc})-1)/2;
                 % sum over all the orientations
