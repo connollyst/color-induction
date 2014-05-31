@@ -7,8 +7,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %            second scale and third orientation.
 %   config:  the model configuration struct
 
-    %% ------------------------------------------------------
-    % get the structure and the parameters
+    %% get the structure and the parameters
     wave      = config.wave;
     use_fft   = config.compute.use_fft;
     n_scales  = wave.n_scales;
@@ -20,28 +19,16 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % differential equation
     n_membr   = zli.n_membr;
     n_iter    = zli.n_iter;
-    
-    % normalization
-    dist_type = zli.dist_type;
-    
     % Delta
     Delta     = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-    
-    
     M         = size(Iitheta{1}, 1);
     N         = size(Iitheta{1}, 2);
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%% Input data normalization %%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Input data normalization
 
     Iitheta = model.normalize_input(Iitheta, config);
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%% parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% parameters
     params = struct;
     
     % the number of neuron pairs in each hypercolumn (i.e. the number of preferred orientations)
@@ -67,43 +54,24 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         gy_final{i} = zeros(M, N, n_scales, K);
     end
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%% prepare the excitatory and inhibitory masks %%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     % maximum diameter of the area of influence
     diameter = 2*Delta+1;
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%% Normalization mask %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% normalization mask
 
-    [M_norm_conv, inv_den] = ...
-        model.Fer_M_norm_conv(n_scales, dist_type, zli.scale2size_type, zli.scale2size_epsilon);
+    [M_norm_conv, inv_den] = model.Fer_M_norm_conv(n_scales, zli);
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%% prepare orientation/scale interaction for x_ei   %%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% prepare orientation/scale interaction for x_ei
     
     [radius_sc, scale_filter, border_weight, PsiDtheta, Delta_ext] = ...
         model.terms.interaction_maps(Delta, config);
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%   prepare J_ithetajtheta' and J_ithetajtheta   %%%%%%%%%%%%%%%%%
-    %%%%%%%%%          for x_ee and y_ie					 %%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% prepare the excitatory and inhibitory masks
     
     [all_J_fft, all_W_fft, M_norm_conv_fft, half_size_filter] = ...
         model.terms.JW(n_scales, diameter, radius_sc, K, Delta, M, N, M_norm_conv, config);
 
-    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%% recurrent network: the loop over time    %%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% recurrent network: the loop over time
     K = size(Iitheta{1}, 4);
 
     % preallocate
