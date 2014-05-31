@@ -1,4 +1,4 @@
-function interactions = interaction_maps(Delta, config)
+function interactions = get_interactions(Delta, config)
 %INTERACTION_MAP Define the interaction maps used to define incluences
 %   Detailed explanation goes here
     

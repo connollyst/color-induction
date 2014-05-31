@@ -1,4 +1,4 @@
-function [M_norm_conv, M_norm_conv_fft, inv_den] = make_M_norm_conv(M, N, config)
+function norm_mask = get_normalization_masks(M, N, config)
     n_scales    = config.wave.n_scales;
     dist_type   = config.zli.dist_type;
     scale_type  = config.zli.scale2size_type;
@@ -20,6 +20,11 @@ function [M_norm_conv, M_norm_conv_fft, inv_den] = make_M_norm_conv(M, N, config
         inv_den{s} = 1/sum(M_norm_conv{s}(:));
     end
     M_norm_conv_fft = compute_M_norm_conv_fft(M, N, M_norm_conv, n_scales, config);
+    % Package up results to be returned
+    norm_mask = struct;
+    norm_mask.M_norm_conv     = M_norm_conv;
+    norm_mask.M_norm_conv_fft = M_norm_conv_fft;
+    norm_mask.inv_den         = inv_den;
 end
 
 function M_norm_conv_fft = compute_M_norm_conv_fft(M, N, M_norm_conv, n_scales, config)

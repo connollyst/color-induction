@@ -26,10 +26,10 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Iitheta = model.normalize_input(Iitheta, config);
     
     %% Prepare normalization mask
-    [M_norm_conv, M_norm_conv_fft, inv_den] = model.make_M_norm_conv(M, N, config);
+    norm_mask = model.terms.get_normalization_masks(M, N, config);
 
     %% Prepare orientation/scale interactions for x_ei
-    interactions = model.terms.interaction_maps(Delta, config);
+    interactions = model.terms.get_interactions(Delta, config);
 
     %% Prepare J & W: the excitatory and inhibitory masks
     [JW, half_size_filter] = ...
@@ -47,7 +47,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
             [x, y] = model.process.updateXY(...
                         t_membr, Iitheta, x, y, M, N, K, Delta, JW,...
-                        inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter,...
+                        norm_mask, half_size_filter,...
                         interactions, config...
                      );
         end
