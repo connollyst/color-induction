@@ -1,9 +1,13 @@
 function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
+%Rmodelinductiond_v0_3_2 apply model to input image
+%   from NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
+%   Li 1999
+%   Iitheta: cell struct of input stimuli at each membrane time step, eg:
+%            Iitheta{1}(:,:,2,3) is the full image decomposed at the
+%            second scale and third orientation.
+%   config:  the model configuration struct
 
-    % from NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing Li
-    % 1999
-
-    %-------------------------------------------------------
+    %% ------------------------------------------------------
     % get the structure and the parameters
     wave      = config.wave;
     use_fft   = config.compute.use_fft;
@@ -34,11 +38,12 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % dynamic=compute.dynamic;
     % debug display
     XOP_DEBUG = config.compute.XOP_DEBUG;
-    %-------------------------------------------------------
+    %% ------------------------------------------------------
 
     M = size(Iitheta{1}, 1);
     N = size(Iitheta{1}, 2);
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%% Input data normalization %%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,6 +57,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     [Iitheta,~,~] = model.curv_normalization(Iitheta, struct);
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%% parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,18 +82,21 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         gy_final{i}=zeros(M,N,n_scales,K);
     end
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%% prepare the excitatory and inhibitory masks %%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     diam=2*Delta+1; % maximum diameter of the area of influence
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%% Normalization mask %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     [M_norm_conv,inv_den]=model.Fer_M_norm_conv(n_scales,dist_type,zli.scale2size_type,zli.scale2size_epsilon);
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%% prepare orientation/scale interaction for x_ei   %%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,6 +136,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     scale_filter_other=scale_filter;
     scale_filter_other(1,1,1+radius_sc,1)=0;
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%   prepare J_ithetajtheta' and J_ithetajtheta   %%%%%%%%%%%%%%%%%
     %%%%%%%%%          for x_ee and y_ie					 %%%%%%%%%%%%%%%%%
@@ -199,6 +209,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     end
 
+    %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%% recurrent network: the loop over time    %%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
