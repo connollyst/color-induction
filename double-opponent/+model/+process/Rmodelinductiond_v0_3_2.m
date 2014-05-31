@@ -25,12 +25,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     dist_type = zli.dist_type;
     var_noise = 0.1 * 2;
     % Delta
-    Delta = zeros(n_scales);
-    if compute.scale_interaction_debug == 1
-        Delta = zli.Delta.*ones(1, n_scales);
-    else
-        Delta = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-    end
+    Delta = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     % normalization (I_norm)
     r = zli.normalization_power;
     % config.compute
