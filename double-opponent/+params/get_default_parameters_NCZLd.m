@@ -1,4 +1,4 @@
-function [strct]=get_default_parameters_NCZLd()
+function config = get_default_parameters_NCZLd()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% wavelets' parameters %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +46,6 @@ zli.boundary='mirror';  % or 'wrap'
 zli.normalization_power=2; % power of the denominator in the normalization step
 zli.kappax=1.0; % 1.6 !!!
 zli.kappay=2.0; % 1.6 !!!
-multires=wave.multires;
 zli.shift=1;		% minimum value of input data for Z.Li method
 zli.ini_scale=1;	% initial scale to process: scale=1 is the highest frequency plane
 zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (and its size will be wave.mida_min),
@@ -84,7 +83,9 @@ display_plot.plot_wavelet_planes=0;	% plot wavelet planes
 display_plot.store=1;					% 0 don't store/ 1 store
 display_plot.y_video=0.5;
 display_plot.x_video=68/128;
-strct=struct('zli',zli,'wave',wave,'image',image,'display',display_plot,'compute',compute);
+
+
+config = struct('zli',zli,'wave',wave,'image',image,'display',display_plot,'compute',compute);
 
 
 end
