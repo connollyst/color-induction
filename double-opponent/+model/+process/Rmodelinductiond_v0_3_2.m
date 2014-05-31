@@ -25,17 +25,12 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     dist_type = zli.dist_type;
     var_noise = 0.1 * 2;
     % Delta
-    Delta = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
+    Delta     = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     % normalization (I_norm)
-    r = zli.normalization_power;
-    % config.compute
-    % dynamic/constant
-    % dynamic=compute.dynamic;
-    % debug display
-    XOP_DEBUG = config.compute.XOP_DEBUG;
-
-    M = size(Iitheta{1}, 1);
-    N = size(Iitheta{1}, 2);
+    r         = zli.normalization_power;
+    
+    M         = size(Iitheta{1}, 1);
+    N         = size(Iitheta{1}, 2);
 
     %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,16 +134,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % preallocate
     x=Iitheta{1}; % visual input (Iitheta) initializes the activity levels newgx(x) (p.192)
     y=zeros(M,N,n_scales,K);
-
-    if XOP_DEBUG
-        for s=1:min(3,n_scales)
-            for o=1:3
-                fig(s,o)=figure('Name',['s: ' int2str(s) ', o: ' int2str(o)]);
-                pos=get(fig(s,o),'OuterPosition');
-                set(fig(s,o),'OuterPosition',[0+(o-1)*pos(3) 0+(s-1)*pos(4) pos(3) pos(4)]);
-            end
-        end
-    end
 
     % new 27 9 12 store I_norm values!
     vector_I_norm=zeros(3,n_membr*n_iter);
@@ -300,9 +285,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                 );
             % store I_norm
             vector_I_norm(:,(t_membr-1)*n_iter+t_iter)=[min(I_norm(:));max(I_norm(:));mean(I_norm(:))];
-            if XOP_DEBUG
-                show_x_y(fig,x,y,I_norm,Iitheta{t_membr},n_scales);
-            end
         end % end t_iter=1:n_iter
         toc
         gx_final{t_membr}=model.terms.newgx(x);
