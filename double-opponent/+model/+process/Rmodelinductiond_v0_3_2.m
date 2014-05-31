@@ -56,9 +56,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
     %%%%%%%%%%%%%%%%%%%%%%%%% parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    alphax=zli.alphax;
-    alphay=zli.alphay;
-
     % the number of neuron pairs in each hypercolumn (i.e. the number of preferred orientations)
     K=size(Iitheta{1},4); 
 
@@ -340,7 +337,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
                 radi=(size(M_norm_conv{s-radius_sc})-1)/2;
                 % sum over all the orientations
                 sum_newgx_toroidal_x_sc=sum(newgx_toroidal_x{s},4);
-                despl=[radi];
+                despl=radi;
                 kk=convolutions.optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
                 I_norm(:,:,s-radius_sc,:)=repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
             end
@@ -352,7 +349,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
             %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
             % (1) inhibitory neurons
             y = y+prec*(...
-                    - alphay*y...                               % decay
+                    - zli.alphay*y...                           % decay
                     + model.terms.newgx(x)...
                     + y_ie...
                     + 1.0...                                    % spontaneous firing rate
@@ -360,7 +357,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
                 );
             % (2) excitatory neurons
             x = x+prec*(...
-                    - alphax*x...				                % decay
+                    - zli.alphax*x...				            % decay
                     - x_ei...					                % ei term
                     + J0 * model.terms.newgx(x)...              % input
                     + x_ee...
