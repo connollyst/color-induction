@@ -32,7 +32,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Iitheta = model.normalize_input(Iitheta, config);
     
     %% Prepare normalization mask
-    [M_norm_conv, inv_den] = model.Fer_M_norm_conv(config);
+    [M_norm_conv, inv_den] = model.make_M_norm_conv(config);
 
     %% Prepare orientation/scale interaction for x_ei
     [radius_sc, scale_filter, border_weight, PsiDtheta, Delta_ext] = ...
