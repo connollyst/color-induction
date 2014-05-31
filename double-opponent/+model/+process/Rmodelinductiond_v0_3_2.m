@@ -38,17 +38,15 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         model.terms.JW(M, N, K, diameter, Delta, M_norm_conv, interactions.radius_sc, config);
 
     %% Preallocate x & y: the excitation and inhibition activity
-    % x is initialized as the visual stimulus (p.192)
-    x = Iitheta{1};
-    % y is initialized with zero activity
-    y = zeros(M, N, n_scales, K);
+    x = Iitheta{1};                 % initialized as the visual stimulus (p.192)
+    y = zeros(M, N, n_scales, K);   % initialized with zero activity
     
     %% Run recurrent network: the loop over time
     for t_membr=1:n_membr  % membrane time
         fprintf('Membrane time step: %i/%i\n', t_membr, n_membr);
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
-            fprintf('Membrane time step: %i\n', t_iter);
+            fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
             [x, y] = model.process.updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, interactions, config);
         end
         toc
