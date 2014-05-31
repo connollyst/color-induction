@@ -63,20 +63,19 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 end
 
 function [M, N, K] = MNK(Iitheta)
-    M  = size(Iitheta{1}, 1);   % input width
-    N  = size(Iitheta{1}, 2);   % input height
+    M = size(Iitheta{1}, 1);   % input width
+    N = size(Iitheta{1}, 2);   % input height
     if M <= 10 || N <= 10
        disp('Bad stimulus dimensions! The toroidal boundary conditions are ill-defined.')
     end
     % the number of neuron pairs in each hypercolumn (i.e. the number of preferred orientations)
-    K  = size(Iitheta{1}, 4);
+    K = size(Iitheta{1}, 4);
 end
 
 function [gx_final, gy_final] = initialize_output(M, N, K, n_membr, n_scales)
     % membrane potentials
     gx_final = cell(n_membr, 1);
     gy_final = cell(n_membr, 1);
-
     % preallocate
     for i=1:n_membr
         gx_final{i} = zeros(M, N, n_scales, K); 
