@@ -5,51 +5,49 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
 
     %-------------------------------------------------------
     % get the structure and the parameters
-    wave=struct.wave;
-    use_fft=struct.compute.use_fft;
-    n_scales=wave.n_scales;
+    wave      = struct.wave;
+    use_fft   = struct.compute.use_fft;
+    n_scales  = wave.n_scales;
     % make the structure explicit
-    zli=struct.zli;
-    compute=struct.compute;
-    avoid_circshift_fft=compute.avoid_circshift_fft;
+    zli       = struct.zli;
+    compute   = struct.compute;
+    avoid_circshift_fft = compute.avoid_circshift_fft;
     % struct.zli
     % differential equation
-    n_membr=zli.n_membr;
-    n_iter=zli.n_iter;
-    prec=1/n_iter;
+    n_membr   = zli.n_membr;
+    n_iter    = zli.n_iter;
+    prec      = 1/n_iter;
     % normalization
-    normal_input=zli.normal_input;
-    dist_type=zli.dist_type;
-    var_noise=0.1*2;
+    dist_type = zli.dist_type;
+    var_noise = 0.1 * 2;
     % Delta
-    Delta=zeros(n_scales);
-    if compute.scale_interaction_debug==1
-        Delta=zli.Delta.*ones(1,n_scales);
+    Delta = zeros(n_scales);
+    if compute.scale_interaction_debug == 1
+        Delta = zli.Delta.*ones(1, n_scales);
     else
-        Delta=zli.Delta*utils.scale2size(1:n_scales,zli.scale2size_type,zli.scale2size_epsilon);
+        Delta = zli.Delta*utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     end
     % normalization (I_norm)
-    r=zli.normalization_power;
+    r = zli.normalization_power;
     % struct.compute
     % dynamic/constant
     % dynamic=compute.dynamic;
     % debug display
-    XOP_DEBUG=struct.compute.XOP_DEBUG;
+    XOP_DEBUG = struct.compute.XOP_DEBUG;
     %-------------------------------------------------------
 
-    M=size(Iitheta{1},1);
-    N=size(Iitheta{1},2);
+    M = size(Iitheta{1}, 1);
+    N = size(Iitheta{1}, 2);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%% Input data normalization %%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
     % disp('Sha dembolicar amb un if el codi que intercanvia les orientacions en el cas wavelet!!!');
     for i=1:n_membr
-        Iitheta_2=Iitheta{i}(:,:,:,2);
-        Iitheta{i}(:,:,:,2)=Iitheta{i}(:,:,:,3);
-        Iitheta{i}(:,:,:,3)=Iitheta_2;
+        Iitheta_2 = Iitheta{i}(:,:,:,2);
+        Iitheta{i}(:,:,:,2) = Iitheta{i}(:,:,:,3);
+        Iitheta{i}(:,:,:,3) = Iitheta_2;
     end
 
     [Iitheta,normal_max,normal_min]=model.curv_normalization(Iitheta,struct);
@@ -353,21 +351,24 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta,struct)
 
             %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
             % (1) inhibitory neurons
-            y=y+prec*(-alphay*y...     % decay
-                +model.terms.newgx(x)...
-                +y_ie...
-                +1.0...     % spontaneous firing rate
-                +var_noise*(rand(M,N,n_scales,K))-0.5);  % neural noise (comment for speed)
+            y = y+prec*(...
+                    - alphay*y...                               % decay
+                    + model.terms.newgx(x)...
+                    + y_ie...
+                    + 1.0...                                    % spontaneous firing rate
+                    + var_noise*(rand(M,N,n_scales,K))-0.5...   % neural noise (comment for speed)
+                );
             % (2) excitatory neurons
-            x=x+prec*(-alphax*x...				% decay
-                -x_ei...						% ei term
-                +J0*model.terms.newgx(x)... % input
-                +x_ee...
-                +Iitheta{t_membr}... % Iitheta
-                +I_norm...				% normalization
-                +0.85...             % spontaneous firing rate
-                +var_noise*(rand(M,N,n_scales,K))-0.5);   % neural noise (comment for speed)
-
+            x = x+prec*(...
+                    - alphax*x...				                % decay
+                    - x_ei...					                % ei term
+                    + J0 * model.terms.newgx(x)...              % input
+                    + x_ee...
+                    + Iitheta{t_membr}...                       % Iitheta
+                    + I_norm...                                 % normalization
+                    + 0.85...                                   % spontaneous firing rate
+                    + var_noise*(rand(M,N,n_scales,K))-0.5...	% neural noise (comment for speed)
+                );
             % store I_norm
             vector_I_norm(:,(t_membr-1)*n_iter+t_iter)=[min(I_norm(:));max(I_norm(:));mean(I_norm(:))];
             if XOP_DEBUG
