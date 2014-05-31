@@ -1,6 +1,11 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, n_scales, radius_sc, border_weight, scale_filter, params, config)
+function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, radius_sc, border_weight, scale_filter, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
+    
+    var_noise           = 0.1 * 2;
+    n_scales            = config.wave.n_scales;
+    r                   = config.zli.normalization_power; % normalization (I_norm)
+    prec                = 1/config.zli.n_iter;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
 
     toroidal_x=cell(n_scales+2*radius_sc,1);
@@ -111,29 +116,29 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
         I_norm(:,:,s-radius_sc,:)=repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
     end
     for s=1:n_scales  % times  roughly 50 if the flag is 1
-        I_norm(:,:,s,:)=-2*(I_norm(:,:,s,:)*inv_den{s}).^params.r;
+        I_norm(:,:,s,:)=-2*(I_norm(:,:,s,:)*inv_den{s}).^r;
     end
     %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999) %%%%%%
     % (1) inhibitory neurons
-    y = y + params.prec * (...
-            - config.zli.alphay*y...                    % decay
+    y = y + prec * (...
+            - config.zli.alphay * y...                    % decay
             + model.terms.newgx(x)...
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
-            + params.var_noise*(rand(M,N,n_scales,K))-0.5...   % neural noise (comment for speed)
+            + var_noise*(rand(M,N,n_scales,K))-0.5...   % neural noise (comment for speed)
         );
     % (2) excitatory neurons
-    x = x + params.prec * (...
-            - config.zli.alphax*x...				    % decay
+    x = x + prec * (...
+            - config.zli.alphax * x...				    % decay
             - x_ei...					                % ei term
-            + params.J0 * model.terms.newgx(x)...              % input
+            + config.zli.J0 * model.terms.newgx(x)...              % input
             + x_ee...
             + Iitheta{t_membr}...                       % Iitheta
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
-            + params.var_noise*(rand(M,N,n_scales,K))-0.5...	% neural noise (comment for speed)
+            + var_noise*(rand(M,N,n_scales,K))-0.5...	% neural noise (comment for speed)
         );
 end
 

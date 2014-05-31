@@ -21,7 +21,8 @@ wave.mida_min=32;
 % differential equation. The total number of iterations is niter/prec
 zli.n_membr=10;		% precision of membrane time
 zli.n_iter=10;		% number of iterations; in the case of a dynamical stimulus, it is the number of frames
-
+zli.J0= 0.8;        % self-excitation coefficient (Li 1999) p209
+    
 % zli.total_iter=zli.n_iter/zli.prec;
 zli.dist_type='eucl';
 % zli.dist_type='manh';
