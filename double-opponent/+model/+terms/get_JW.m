@@ -1,9 +1,9 @@
-function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, Delta, M_norm_conv, radius_sc, config)
+function [JW, half_size_filter] = get_JW(M, N, K, Delta, radius_sc, config)
 %JW Summary of this function goes here
 %   Detailed explanation goes here
 
-    wave      = config.wave;
     zli       = config.zli;
+    wave      = config.wave;
     n_scales  = wave.n_scales;
     % maximum diameter of the area of influence
     diameter  = 2*Delta+1;
@@ -11,13 +11,14 @@ function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, Delta, M_norm
     all_W     = cell(n_scales,1);
     all_J_fft = cell(n_scales,1);
     all_W_fft = cell(n_scales,1);
-    M_norm_conv_fft  = cell(n_scales,1);
+   
     half_size_filter = cell(n_scales,1);
     for s=1:n_scales
         all_J{s} = zeros(diameter(s), diameter(s), K, K);
         all_W{s} = zeros(diameter(s), diameter(s), K, K);
         for o=1:K
-            [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=model.get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
+            [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
+                model.get_Jithetajtheta_v0_4(s, K, o, Delta(s), wave, zli);
         end
     end
 
@@ -31,7 +32,6 @@ function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, Delta, M_norm
             all_J{s}=J;
             all_W{s}=W;
         end
-
         % a matrix for each scale
         % fft for speed (convolutions are computed in another space)
         if config.compute.use_fft
@@ -48,23 +48,12 @@ function [JW, M_norm_conv_fft, half_size_filter] = get_JW(M, N, K, Delta, M_norm
                         W_circ=circshift(W_circ,-[Delta(s) Delta(s)]);
                         all_J_fft{s}(:,:,1,ov,oc)=fftn(J_circ);
                         all_W_fft{s}(:,:,1,ov,oc)=fftn(W_circ);
-                else
+                    else
                         % this fft requires circshift
                         all_J_fft{s}(:,:,1,ov,oc)=fftn(all_J{s}(:,:,1,ov,oc),[M+2*Delta(s),N+2*Delta(s)]);
                         all_W_fft{s}(:,:,1,ov,oc)=fftn(all_W{s}(:,:,1,ov,oc),[M+2*Delta(s),N+2*Delta(s)]);
                     end
                 end
-            end
-
-            radi=(size(M_norm_conv{s})-1)/2;
-            if config.compute.avoid_circshift_fft==1
-                % fft that do not requires circshift (by far better)
-                M_circ=padarray(M_norm_conv{s},[M+2*radi(1)-(radi(1)*2+1),N+2*radi(2)-(radi(2)*2+1)],0,'post');
-                M_circ=circshift(M_circ,-radi);
-                M_norm_conv_fft{s}=fftn(M_circ);
-            else
-                % this fft requires circshift (slower)
-                M_norm_conv_fft{s}=fftn(M_norm_conv{s},[M+2*radi(1),N+2*radi(2)]);
             end
         end
     end
