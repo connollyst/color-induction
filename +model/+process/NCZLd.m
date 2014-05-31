@@ -28,7 +28,12 @@ function [I_out] = NCZLd(I, config)
     %%%%% NCZLd for every channel %%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    I_out = model.process.NCZLd_channel_v1_0(I, config);
+    if is_uniform(I)
+        % If the image is uniform we do not process it
+        I_out = get_initial_I(I, n_membr, dynamic);
+    else
+        I_out = model.process.NCZLd_channel_v1_0(I, config);
+    end
     
     % Static case
     if dynamic == 0
@@ -54,4 +59,17 @@ function n_scales = calculate_scales(I, config)
     mida_min = config.wave.mida_min;
     % TODO scales should be calculated using all dimensions
     n_scales = floor(log(max(size(I(:,:,1))-1)/mida_min)/log(2)) + extra;
+end
+
+function uniform = is_uniform(I)
+    uniform = max(I(:)) == min(I(:));
+end
+
+function I_out = get_initial_I(I, n_membr, dynamic)
+    if dynamic ~= 1
+        I_out = zeros([size(I) n_membr]);
+    else
+        I_out = zeros(size(I));
+    end
+    I_out = I_out + min(I(:)); % give the initial value to all the pixels
 end
