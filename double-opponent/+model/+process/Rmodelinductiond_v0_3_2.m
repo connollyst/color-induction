@@ -38,7 +38,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % dynamic=compute.dynamic;
     % debug display
     XOP_DEBUG = config.compute.XOP_DEBUG;
-    %% ------------------------------------------------------
 
     M = size(Iitheta{1}, 1);
     N = size(Iitheta{1}, 2);
@@ -48,14 +47,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     %%%%%%%%%%%%%%%%%%%%%%%%% Input data normalization %%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % disp('Sha dembolicar amb un if el codi que intercanvia les orientacions en el cas wavelet!!!');
     for i=1:n_membr
         Iitheta_2 = Iitheta{i}(:,:,:,2);
         Iitheta{i}(:,:,:,2) = Iitheta{i}(:,:,:,3);
         Iitheta{i}(:,:,:,3) = Iitheta_2;
     end
 
-    [Iitheta,~,~] = model.curv_normalization(Iitheta, struct);
+    [Iitheta,~,~] = model.curv_normalization(Iitheta, config);
 
     %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,10 +61,9 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % the number of neuron pairs in each hypercolumn (i.e. the number of preferred orientations)
-    K=size(Iitheta{1},4); 
-
+    K  = size(Iitheta{1},4);
     % self-excitation coefficient (Li 1999)
-    J0=0.8;
+    J0 = 0.8;
 
     if N <= 10
        disp('Bad stimulus dimensions! The toroidal boundary conditions are ill-defined.')
@@ -153,10 +150,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         for o=1:K
             [all_J{s}(:,:,:,o),all_W{s}(:,:,:,o)]=model.get_Jithetajtheta_v0_4(s,K,o,Delta(s),wave,zli);
         end
-    end
-    % scales (cf. above )
-    if XOP_DEBUG
-        veure_J_W(all_J,all_W,K);
     end
 
     for s=1:n_scales
