@@ -26,14 +26,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Iitheta = model.normalize_input(Iitheta, config);
     
     %% Prepare normalization mask
-    norm_mask = model.terms.get_normalization_masks(M, N, config);
+    normalization_masks = model.terms.get_normalization_masks(M, N, config);
 
     %% Prepare orientation/scale interactions for x_ei
     interactions = model.terms.get_interactions(Delta, config);
-
+    
     %% Prepare J & W: the excitatory and inhibitory masks
-    [JW, half_size_filter] = ...
-        model.terms.get_JW(M, N, K, Delta, interactions.radius_sc, config);
+    JW = model.terms.get_JW(M, N, K, Delta, interactions.radius_sc, config);
 
     %% Preallocate x & y: the excitation and inhibition activity
     x = Iitheta{1};                 % initialized as the visual stimulus (p.192)
@@ -47,8 +46,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
             [x, y] = model.process.updateXY(...
                         t_membr, Iitheta, x, y, M, N, K, Delta, JW,...
-                        norm_mask, half_size_filter,...
-                        interactions, config...
+                        normalization_masks, interactions, config...
                      );
         end
         toc

@@ -37,8 +37,21 @@ function interactions = get_interactions(Delta, config)
     weight_scales = [e f e];
     interactions.scale_filter             = zeros(1, 1, 1+2*radius_sc, 1);
     interactions.scale_filter(1, 1, :, 1) = weight_scales;
+    
+    % TODO what is this??
+    interactions.half_size_filter = get_half_size_filter(n_scales, radius_sc, Delta);
 end
 
 function psi = Psi(Dtheta)
     psi = cos(abs(Dtheta)).^6;
 end
+
+function half_size_filter = get_half_size_filter(n_scales, radius_sc, Delta)
+    half_size_filter = cell(n_scales,1);
+    for s=1:n_scales
+        if radius_sc >0
+            half_size_filter{s} = [Delta(s) Delta(s) 0];
+        end
+    end
+end
+

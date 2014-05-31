@@ -1,4 +1,4 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask, half_size_filter, interactions, config)
+function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask, interactions, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -7,6 +7,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
     % Orientation/Scale Interactions
+    half_size_filter    = interactions.half_size_filter;
     border_weight       = interactions.border_weight;
     scale_filter        = interactions.scale_filter;
     radius_sc           = interactions.radius_sc;
