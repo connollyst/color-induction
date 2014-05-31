@@ -1,6 +1,8 @@
-function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, n_scales, radius_sc, border_weight, scale_filter, avoid_circshift_fft, use_fft, params, config)
+function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, Delta_ext, all_J_fft, all_W_fft, inv_den, M_norm_conv, M_norm_conv_fft, half_size_filter, n_scales, radius_sc, border_weight, scale_filter, params, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
+    avoid_circshift_fft = config.compute.avoid_circshift_fft;
+
     toroidal_x=cell(n_scales+2*radius_sc,1);
     toroidal_y=cell(n_scales+2*radius_sc,1);
     for s=1:n_scales
@@ -47,7 +49,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
     I_norm=zeros(M,N,n_scales,K);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (use_fft)
+    if config.compute.use_fft
         newgx_toroidal_x_fft=cell(radius_sc+n_scales,1);
         for s=1:n_scales
             newgx_toroidal_x_fft{radius_sc+s}=cell(K,1);
@@ -75,7 +77,7 @@ function [x, y] = updateXY(t_membr, Iitheta, x, y, M, N, K, PsiDtheta, Delta, De
 
         for ov=1:K  % loop over all the orientations given the central (reference orientation)
             % FFT
-            if use_fft
+            if config.compute.use_fft
                 for s=1:n_scales
                     kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},all_J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+M,Delta(s)+1:Delta(s)+N);
