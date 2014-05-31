@@ -37,7 +37,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     %%%%%%%%%%%%%%%%%%%%%%%%% Input data normalization %%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    Iitheta = normalize_input(Iitheta, config);
+    Iitheta = model.normalize_input(Iitheta, config);
 
     %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -269,14 +269,3 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     end
 
 end
-
-function Iitheta = normalize_input(Iitheta, config)
-    for i=1:config.zli.n_membr;
-        Iitheta_2 = Iitheta{i}(:,:,:,2);
-        Iitheta{i}(:,:,:,2) = Iitheta{i}(:,:,:,3);
-        Iitheta{i}(:,:,:,3) = Iitheta_2;
-    end
-
-    [Iitheta,~,~] = model.curv_normalization(Iitheta, config);
-end
-
