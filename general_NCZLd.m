@@ -1,6 +1,4 @@
-
-function [img_out]=general_NCZLd(image_data, n_membr, dynamic)
-
+function img_out = general_NCZLd(image_data, n_membr, dynamic)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -23,8 +21,6 @@ function [img_out]=general_NCZLd(image_data, n_membr, dynamic)
 % 
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
-
-
 
 %--------------------------------------------------------------------
 % build the structure
