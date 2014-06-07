@@ -16,9 +16,10 @@ function [I_out] = NCZLd_channel_v1_0(I, config)
     I_channels = size(I, 3);
     I_out = zeros(I_width, I_height, I_channels, n_membr);
     
+    % TODO process all channels at once
     for channel=1:I_channels
         fprintf('Processing channel %i/%i\n', channel, I_channels);
-        [curv, w, c]  = utils.wavelet_decomposition(I, n_membr, n_scales, dynamic);
+        [curv, w, c]  = utils.wavelet_decomposition(I(:,:,channel,:), n_membr, n_scales, dynamic);
         curv_final    = model.process.NCZLd_channel_ON_OFF_v1_1(curv, config);
         I_channel_out = utils.wavelet_decomposition_inverse(I, w, c, curv_final, n_membr, n_scales);
         I_out(:,:,channel,:) = I_channel_out;
