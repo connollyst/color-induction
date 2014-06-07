@@ -18,6 +18,7 @@ function [I_out] = NCZLd(I, config)
     
     % Calculate number of scales automatically
     if config.wave.n_scales == 0
+        % TODO what channel(s) are used?
         config.wave.n_scales = calculate_scales(I, config);    
     end
     fprintf('Processing at %i scales\n', config.wave.n_scales);
