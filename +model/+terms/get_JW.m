@@ -13,8 +13,11 @@ function JW = get_JW(M, N, K, Delta, radius_sc, config)
     all_W_fft = cell(n_scales,1);
    
     for s=1:n_scales
+        % TODO J & W should NOT be sized by the scale!
         all_J{s} = zeros(diameter(s), diameter(s), K, K);
         all_W{s} = zeros(diameter(s), diameter(s), K, K);
+        % TODO This assumes that the central cell is orientation selective.
+        %      If the cell is not oriented, J & W should be... circular?
         for o=1:K
             [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
                 model.get_Jithetajtheta_v0_4(s, K, o, Delta(s), wave, zli);

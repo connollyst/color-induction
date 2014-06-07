@@ -31,6 +31,7 @@ for o=1:K
     M_exc_conv=zeros(size(d));
     M_inh_conv=zeros(size(d));
     
+    % should this be 0 = orient??
     if (o~=orient && orient_interaction==0)
         J_exc(:,:,o)=0;
         W_inh(:,:,o)=0;
