@@ -13,9 +13,11 @@ function [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic)
     % different wavelet decompositions		
     for ff=1:niter_wav
         % TODO why are w & c needed for inverse transformation?
-        [w, c] = wavelets.a_trous(img(:,:,ff), n_scales-1);
+        [w, c] = wavelets.DWD_orient_undecimated(img(:,:,ff), n_scales-1);
         for s=1:n_scales-1
-            for o=1:3
+            ws = w{s};
+            n_orientations = size(ws, 3);
+            for o=1:n_orientations
                 curv{ff}{s}{o}=w{s}(:,:,o);
             end
         end

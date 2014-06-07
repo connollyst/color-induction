@@ -16,7 +16,7 @@ function img_out = wavelet_decomposition_inverse(img, w, c, curv_final, n_membr,
             end
        end
        c{n_scales-1}   = curv_final{ff}{n_scales}{1};
-       img_out(:,:,ff) = wavelets.Ia_trous(w,c);
+       img_out(:,:,ff) = wavelets.IDWD_orient_undecimated(w,c);
     end
 end
 
