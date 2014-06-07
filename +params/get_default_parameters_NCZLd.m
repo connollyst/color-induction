@@ -3,7 +3,10 @@ function config = get_default_parameters_NCZLd()
 %%%%%%%% wavelets' parameters %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % decomposition choice
-wave.multires='a_trous';
+wave.multires='DWD_orient_undecimated';
+
+% number of orientations
+wave.n_orients=3;
 
 % number of scales (if 0: code calculates it automatically)
 wave.n_scales=0; 

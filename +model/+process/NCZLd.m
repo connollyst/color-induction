@@ -1,14 +1,19 @@
 function [I_out] = NCZLd(I, config)
-    I = double(I);
-    
+%   I: the input images, either in the form I(cols, rows, colors) or
+%      I{frames}(cols, rows, colors)
+%   config: the algorithm configuration structure
+
+
     % Track processing time
     start_time = tic;
     
+    I = init_input(I);
+    
     % Display input image dimensions
-    I_width    = size(I, 1);
-    I_height   = size(I, 2);
-    I_channels = size(I, 3);
-    fprintf('Image size: %ix%ix%i\n', I_width, I_height, I_channels);
+    config.image.width      = size(I{1}, 1);
+    config.image.height     = size(I{1}, 2);
+    config.image.n_channels = size(I{1}, 3);
+    fprintf('Image size: %ix%ix%i\n', config.image.width, config.image.height, config.image.n_channels);
     
     %-------------------------------------------------------
     zli     = config.zli;
@@ -41,6 +46,20 @@ function [I_out] = NCZLd(I, config)
     toc(start_time)
 end
 
+function I_init = init_input(I_in)
+%INIT_INPUT initialize the input image(s)
+%   If it is a single image, return a 1x1 cell containg just that image.
+%   If it is a cell array of images, return the cell array.
+    if ~iscell(I_in)
+        I_in = double(I_in);
+        I_init = cell(1, 1);
+        I_init{1} = I_in;
+    else
+        % TODO validate input images: same dimensions
+        I_init = I_in;
+    end
+end
+
 function n_scales = calculate_scales(I, config)
     if config.zli.fin_scale_offset == 0
         % parameter to adjust the correct number of the last wavelet plane (obsolete)
@@ -50,21 +69,22 @@ function n_scales = calculate_scales(I, config)
         extra = 3;
     end
     mida_min = config.wave.mida_min;
-    % TODO scales should be calculated using all dimensions
-    n_scales = floor(log(max(size(I(:,:,1))-1)/mida_min)/log(2)) + extra;
+    % TODO scales should be calculated using all colors/frames
+    n_scales = floor(log(max(size(I{1}(:,:,1))-1)/mida_min)/log(2)) + extra;
 end
 
 function uniform = is_uniform(I)
-    uniform = max(I(:)) == min(I(:));
+    % TODO how should this behave for colored images and movies?
+    uniform = max(I{1}(:)) == min(I{1}(:));
 end
 
 function I_out = get_initial_I(I, n_membr, dynamic)
     if dynamic ~= 1
-        I_out = zeros([size(I) n_membr]);
+        I_out = zeros([size(I{1}) n_membr]);
     else
-        I_out = zeros(size(I));
+        I_out = zeros(size(I{1}));
     end
-    I_out = I_out + min(I(:)); % give the initial value to all the pixels
+    I_out = I_out + min(I{1}(:)); % give the initial value to all the pixels
 end
 
 function I_out = average_scale_output(I_out, config, n_membr, dynamic)

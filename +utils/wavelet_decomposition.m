@@ -1,38 +1,46 @@
-function [curv, w, c] = wavelet_decomposition(img, n_membr, n_scales, dynamic)
-%WAVELET_DECOMPOSITION Decompose the given img with a wavelet transform
+function [curv, w, c] = wavelet_decomposition(I, config)
+%WAVELET_DECOMPOSITION Decompose the given image(s) with a wavelet.
+%   
 
-    curv = cell([n_membr, n_scales, 1]);
+    n_membr    = config.zli.n_membr;
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    n_channels = config.image.n_channels;
+    dynamic    = config.compute.dynamic;
+    
+    curv = cell(n_membr, n_scales, n_orients);
 
-    % number of wavelet decompositions to perform
+    % Number of wavelet decompositions to perform.
+    % If this is not dynamic, we decompose the first frame and duplicate.
+    % Otherwise, we expect an frame for each membrane time step.
     if dynamic == 1
-        niter_wav = n_membr;
+        n_iters = n_membr;
     else
-        niter_wav = 1;
+        n_iters = 1;
     end
     
     % different wavelet decompositions		
-    for ff=1:niter_wav
-        % TODO why are w & c needed for inverse transformation?
-        [w, c] = wavelets.DWD_orient_undecimated(img(:,:,ff), n_scales-1);
-        for s=1:n_scales-1
-            ws = w{s};
-            n_orientations = size(ws, 3);
-            for o=1:n_orientations
-                curv{ff}{s}{o}=w{s}(:,:,o);
+    for i=1:n_iters
+        for channel=1:n_channels
+            [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
+            for s=1:n_scales-1
+                for o=1:n_orients
+                    curv{i,s,o}(:,:,channel) = w{s}(:,:,o);
+                end
             end
+            % TODO we keep the residual as the extra scale.. sloppy
+            curv{i,n_scales,1}(:,:,channel) = c{n_scales-1};
         end
-        curv{ff}{n_scales}{1}=c{n_scales-1};
     end
     
     % replicate wavelet planes if static stimulus
     if dynamic ~= 1
-        for s=1:n_scales
-            for o=1:size(curv{1}{s},2)
-                for ff=2:n_membr
-                    curv{ff}{s}{o}=curv{1}{s}{o};
+        for i=2:n_membr
+            for s=1:n_scales
+                for o=1:n_orients
+                    curv{i,s,o} = curv{1,s,o};
                 end
             end
         end
     end
 end
-
