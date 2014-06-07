@@ -1,6 +1,6 @@
-function [curv_final_out, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF] = NCZLd_channel_ON_OFF_v1_1(curv_in,struct)
-
+function [curv_final_out, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF] = NCZLd_channel_ON_OFF_v1_1(curv_in, config)
 % from NCZLd_channel_ON_OFF_v1_1.m to Rmodelinductiond_v0_3_2.m
+% 
 
 % separate ON and OFF channels
 % start the recovering at the level of the wavelet/Gabor responses
@@ -10,19 +10,19 @@ curv_final_out = curv_in;
 
 %-------------------------------------------------------
 % make the structure explicit/get the parameters
-zli           = struct.zli;
-display_plot  = struct.display_plot;
-image         = struct.image;
-% struct.zli  
+zli           = config.zli;
+display_plot  = config.display_plot;
+image         = config.image;
+% config.zli  
 % normalization
 n_membr       = zli.n_membr;
 ON_OFF        = zli.ON_OFF;
 plot_wavelet_planes = display_plot.plot_wavelet_planes;
-% struct.compute
+% config.compute
 % dynamic/constant
 % dynamic=compute.dynamic;
 % n_orient=size(curv{1}{scale},2);
-fin_scale     = struct.wave.fin_scale;
+fin_scale     = config.wave.fin_scale;
 %-------------------------------------------------------
 
 curv=cell(n_membr,1);
@@ -37,7 +37,7 @@ for ff=1:n_membr
 	end
 end
 % number of scales
-struct.wave.n_scales=fin_scale;
+config.wave.n_scales=fin_scale;
 % initialize
 curv_final     = curv;	 
 index_ON       = cell(n_membr,1);
@@ -67,14 +67,14 @@ switch(ON_OFF)
             % positius +++++++++++++++++++++++++++++++++++++++++++++++++++
             %%% MAIN PROCESS %%%
 			disp('Starting ON processing');
-            iFactor_ON=model.process.Rmodelinductiond_v0_3_2(curv_ON, struct);
+            iFactor_ON=model.process.Rmodelinductiond_v0_3_2(curv_ON, config);
             %%% END MAIN PROCESS %%%
             
             
             % negatius ----------------------------------------------------
             %%% MAIN PROCESS %%%
 			disp('Starting OFF processing');
-            iFactor_OFF=model.process.Rmodelinductiond_v0_3_2(curv_OFF, struct);
+            iFactor_OFF=model.process.Rmodelinductiond_v0_3_2(curv_OFF, config);
             %%% END MAIN PROCESS %%%
             
             iFactor=iFactor_ON;
@@ -94,7 +94,7 @@ switch(ON_OFF)
             dades{t_membr}=abs(curv{t_membr});
         end
         
-        iFactor=Rmodelinductiond_v0_3_2(dades, struct);
+        iFactor=Rmodelinductiond_v0_3_2(dades, config);
         
         for t_membr=1:n_membr
             curv_final{t_membr}=curv{t_membr}.*iFactor{t_membr}*zli.normal_output;t;
@@ -105,7 +105,7 @@ switch(ON_OFF)
         for t_membr=1:n_membr
             dades{t_membr}=curv{t_membr}.*curv{t_membr};
         end
-        iFactor=Rmodelinductiond_v0_3_2(dades, struct);
+        iFactor=Rmodelinductiond_v0_3_2(dades, config);
         for t_membr=1:n_membr
             curv_final{t_membr}=curv{t_membr}.*iFactor{t_membr}*zli.normal_output;
         end
@@ -121,7 +121,7 @@ for ff=1:n_membr
 end
 
 % save raw values for all
-if struct.display_plot.store==1
+if config.display_plot.store==1
     save([image.name '_curv'],'curv');
     save([image.name '_curv_final'],'curv_final');
     switch(ON_OFF)
