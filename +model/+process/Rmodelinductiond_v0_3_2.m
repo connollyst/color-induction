@@ -41,25 +41,25 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % TODO perhaps J & W don't need the interactions.radius_sc?
     JW = model.terms.get_JW(n_cols, n_rows, n_orients, Delta, interactions.radius_sc, config);
 
-    %% Preallocate x & y: the excitation and inhibition activity
-    x = Iitheta{1, 1, 1};                           % initialized as the visual stimulus (p.192)
-    y = zeros(n_cols, n_rows, n_scales, n_orients); % initialized with zero activity
+    %% Set the initial x (excitation) & y (inhibition) activity
+    [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels);
     
     %% Run recurrent network: the loop over time
-    for t_membr=1:n_membr  % membrane time
-        fprintf('Membrane time step: %i/%i\n', t_membr, n_membr);
+    for t=1:n_membr  % membrane time
+        fprintf('Membrane time step: %i/%i\n', t, n_membr);
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
             [x, y] = model.process.UpdateXY(...
-                        t_membr, Iitheta, x, y, n_cols, n_rows, n_orients,...
+                        t, Iitheta, x, y, n_cols, n_rows, n_orients,...
                         Delta, JW,...
                         normalization_masks, interactions, config...
                      );
         end
         toc
-        gx_final{t_membr} = model.terms.newgx(x);
-        gy_final{t_membr} = model.terms.newgy(y);
+        % TODO newgx/y should return the scale/orient as a cell array
+        gx_final{t,:,:} = model.terms.newgx(x);
+        gy_final{t,:,:} = model.terms.newgy(y);
     end
 
     % TODO some kind of normalization specific to 3 orientations, refactor
@@ -93,6 +93,28 @@ function [gx_final, gy_final] = initialize_output(n_membr, n_scales, n_orients, 
                 gx_final{t,s,o} = zeros(n_cols, n_rows, n_channels); 
                 gy_final{t,s,o} = zeros(n_cols, n_rows, n_channels);
             end
+        end
+    end
+end
+
+function [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels)
+%INITIALIZE_INPUT Initialize the initial stimulus to the system.
+%   x: the initial exitation stimulus
+%   y: the initial inhibition stimulus
+
+    % x is initialized as the visual stimulus (p.192)
+    x = cell(n_scales, n_orients);
+    for s=1:n_scales
+        for o=1:n_orients
+            x{s,o} = Iitheta{1, s, o};
+        end
+    end
+    
+    % y is initialized with zero activity
+    y = cell(n_scales, n_orients);
+    for s=1:n_scales
+        for o=1:n_orients
+            y{s,o} = zeros(n_cols, n_rows, n_channels);
         end
     end
 end
