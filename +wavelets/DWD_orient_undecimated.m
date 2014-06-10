@@ -1,4 +1,4 @@
-function [w c] = DWD_orient_undecimated(image, wlev)
+function [w, c] = DWD_orient_undecimated(image, wlev)
 % Implementation of Mallate Discrete Wavelet Transform.
 %
 % outputs:

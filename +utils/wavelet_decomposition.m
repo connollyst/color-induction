@@ -1,6 +1,8 @@
 function [curv, w, c] = wavelet_decomposition(I, config)
 %WAVELET_DECOMPOSITION Decompose the given image(s) with a wavelet.
-%   
+%   I:      The input image data, a cell array where each element is a 2 or 3
+%           dimensional image.
+%   config: The configuration data struct.
 
     n_membr    = config.zli.n_membr;
     n_scales   = config.wave.n_scales;
@@ -23,6 +25,7 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     for i=1:n_iters
         for channel=1:n_channels
             [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
+            % TODO the w and c returned are just for the last channel..!
             for s=1:n_scales-1
                 for o=1:n_orients
                     curv{i,s,o}(:,:,channel) = w{s}(:,:,o);
@@ -43,4 +46,5 @@ function [curv, w, c] = wavelet_decomposition(I, config)
             end
         end
     end
+    % TODO shouldn't the residual be replicated also?.. why isn't it?
 end
