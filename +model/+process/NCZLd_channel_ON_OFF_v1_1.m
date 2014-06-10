@@ -110,7 +110,6 @@ function [curv_final, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF] = 
     disp('Starting ON processing');
     iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(curv_ON, config);
 
-
     %% Negatius ----------------------------------------------------
     disp('Starting OFF processing');
     iFactor_OFF = model.process.Rmodelinductiond_v0_3_2(curv_OFF, config);

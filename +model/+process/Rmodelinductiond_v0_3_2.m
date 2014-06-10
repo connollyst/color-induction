@@ -1,11 +1,12 @@
 function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
-%RMODELINDUCTIOND_V0_3_2 Apply model to input data
+%RMODELINDUCTIOND_V0_3_2 Apply induction model to input data.
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
-%   Li 1999
-%   Iitheta: cell struct of input stimuli at each membrane time step, eg:
-%            Iitheta{1}(:,:,2,3) is the full image decomposed at the
-%            second scale and third orientation.
-%   config:  the model configuration struct
+%   Li 1999.
+%   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
+%            Iitheta{t,s,o}(c,r,d) is the column (c), row (r) and color
+%            dimension (d) of image (t), decomposed at scale (s) and
+%            orientation (o).
+%   config:  The model configuration struct
 %
 %   gx_final:   the excitation membrane potentials
 
