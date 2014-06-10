@@ -1,5 +1,5 @@
 function JW = get_JW(M, N, K, Delta, radius_sc, config)
-%GET_JW Get the J & W 
+%GET_JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
 %   Detailed explanation goes here
 
     zli       = config.zli;
@@ -20,7 +20,7 @@ function JW = get_JW(M, N, K, Delta, radius_sc, config)
         %      If the cell is not oriented, J & W should be... circular?
         for o=1:K
             [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
-                model.get_Jithetajtheta_v0_4(s, K, o, Delta(s), wave, zli);
+                model.get_Jithetajtheta_v0_4(s, K, o, Delta(s), wave.multires, zli);
         end
     end
 

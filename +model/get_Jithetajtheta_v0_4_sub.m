@@ -1,8 +1,7 @@
-function [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,wave, zli)
+function [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,multires, zli)
 
 
 
-multires=wave.multires;
 orient_interaction=zli.orient_interaction;
 
 diam=2*Delta+1; % maximum diameter of the area of influence
