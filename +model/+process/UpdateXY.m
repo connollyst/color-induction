@@ -99,10 +99,10 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     n_orients           = config.wave.n_orients;
     
     radius_sc           = interactions.radius_sc;
-    border_weight       = interactions.border_weight;
     Delta_ext           = interactions.Delta_ext;
+    border_weight       = interactions.border_weight;
     
-    magic_num  = n_scales + 2 * radius_sc;
+    magic_num  = n_scales + 2 * radius_sc;  % Whaaa??
     
     toroidal_x = cell(magic_num, 1);
     toroidal_y = cell(magic_num, 1);

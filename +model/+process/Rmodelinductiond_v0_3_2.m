@@ -99,8 +99,14 @@ end
 
 function [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels)
 %INITIALIZE_INPUT Initialize the initial stimulus to the system.
-%   x: the initial exitation stimulus
-%   y: the initial inhibition stimulus
+%   x and y are two dimensional cell arrays of n-dimensional images. The
+%   first cell dimension is the scale of the wavelet decomposition
+%   (neural frequency preference) and the second cell dimension is the
+%   orientation of the wavelet decomposition (neural orientation
+%   preference).
+%
+%   x: Cell array of the initial exitation stimulus
+%   y: Cell array of the initial inhibition stimulus
 
     % x is initialized as the visual stimulus (p.192)
     x = cell(n_scales, n_orients);
