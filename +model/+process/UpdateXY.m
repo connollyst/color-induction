@@ -3,9 +3,6 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
 %   Detailed explanation goes here
     
     %% Initialize Parameters
-    inv_den             = norm_mask.inv_den;
-    M_norm_conv         = norm_mask.M_norm_conv;
-    M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
     % Orientation/Scale Interactions
     half_size_filter    = interactions.half_size_filter;
     border_weight       = interactions.border_weight;
@@ -22,9 +19,8 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
 
-    %% Do Math
-    toroidal_x=cell(n_scales+2*radius_sc,1);
-    toroidal_y=cell(n_scales+2*radius_sc,1);
+    toroidal_x = cell(n_scales+2*radius_sc,1);
+    toroidal_y = cell(n_scales+2*radius_sc,1);
     for s=1:n_scales
         % mirror boundary condition
         toroidal_x{s+radius_sc}=padarray(x(:,:,s,:),[Delta(s),Delta(s),0],'symmetric');
@@ -53,14 +49,14 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
         kk_tmp2_y(Delta(n_scales)+1:Delta(n_scales)+M,Delta(n_scales)+1:Delta(n_scales)+N,:)=kk_tmp2_y(Delta(n_scales)+1:Delta(n_scales)+M,Delta(n_scales)+1:Delta(n_scales)+N,:)+border_weight(i) * newgy_toroidal_y{n_scales+radius_sc-(i-1)}(Delta(n_scales-i+1)+1:Delta(n_scales-i+1)+M,Delta(n_scales-i+1)+1:Delta(n_scales-i+1)+N,:);
     end
 
-    newgx_toroidal_x{1:radius_sc}=kk_tmp1;
-    newgx_toroidal_x{n_scales+radius_sc+1:n_scales+2*radius_sc}=kk_tmp2;
-    newgy_toroidal_y{1:radius_sc}=kk_tmp1_y;
-    newgy_toroidal_y{n_scales+radius_sc+1:n_scales+2*radius_sc}=kk_tmp2_y;
+    newgx_toroidal_x{1:radius_sc} = kk_tmp1;
+    newgx_toroidal_x{n_scales+radius_sc+1:n_scales+2*radius_sc} = kk_tmp2;
+    newgy_toroidal_y{1:radius_sc} = kk_tmp1_y;
+    newgy_toroidal_y{n_scales+radius_sc+1:n_scales+2*radius_sc} = kk_tmp2_y;
 
     for s=1:n_scales+2*radius_sc
-        restr_newgx_toroidal_x(:,:,s,:)=newgx_toroidal_x{s}(Delta_ext(s)+1:Delta_ext(s)+M,Delta_ext(s)+1:Delta_ext(s)+N,:);
-        restr_newgy_toroidal_y(:,:,s,:)=newgy_toroidal_y{s}(Delta_ext(s)+1:Delta_ext(s)+M,Delta_ext(s)+1:Delta_ext(s)+N,:);
+        restr_newgx_toroidal_x(:,:,s,:)=newgx_toroidal_x{s}(Delta_ext(s)+1:Delta_ext(s)+M, Delta_ext(s)+1:Delta_ext(s)+N, :);
+        restr_newgy_toroidal_y(:,:,s,:)=newgy_toroidal_y{s}(Delta_ext(s)+1:Delta_ext(s)+M, Delta_ext(s)+1:Delta_ext(s)+N, :);
     end
 
     x_ee   = zeros(M, N, n_scales, K);
@@ -118,31 +114,49 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
     y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
 
     %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % we generalize Z.Li's formula for the normalization by suming
-    % over all the scales within a given hypercolumn (cf. p209, where she
-    % already sums over all the orientations)
-    I_norm=zeros(M,N,n_scales,K);
+    I_norm = normalize(M, N, n_scales, K, norm_mask, radius_sc, newgx_toroidal_x);
+    %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    [x, y] = calculate_xy(Iitheta, t_membr, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config);
+end
+
+% TODO get M, N, n_scales, K from config
+function I_norm = normalize(M, N, n_scales, K, norm_mask, radius_sc, newgx_toroidal_x)
+%NORMALIZE
+%   We generalize Z.Li's formula for the normalization by suming over all
+%   the scales within a given hypercolumn (cf. p209, where she already sums
+%   over all the orientations)
+
+    inv_den             = norm_mask.inv_den;
+    M_norm_conv         = norm_mask.M_norm_conv;
+    M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
+
+    I_norm = zeros(M, N, n_scales, K);
     for s=radius_sc+1:radius_sc+n_scales
         radi=(size(M_norm_conv{s-radius_sc})-1)/2;
         % sum over all the orientations
-        sum_newgx_toroidal_x_sc=sum(newgx_toroidal_x{s},4);
-        despl=radi;
-        kk=convolutions.optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
-        I_norm(:,:,s-radius_sc,:)=repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
+        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s},4);
+        despl = radi;
+        kk = convolutions.optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
+        I_norm(:,:,s-radius_sc,:) = repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
     end
     for s=1:n_scales  % times  roughly 50 if the flag is 1
-        I_norm(:,:,s,:)=-2*(I_norm(:,:,s,:)*inv_den{s}).^r;
+        I_norm(:,:,s,:) = -2 * (I_norm(:,:,s,:) * inv_den{s}) .^ r;
     end
-    %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end
 
-    %% CENTRAL FORMULA (formulae (1) and (2) p.192, Li 1999)
+% TODO just pass the current image as Iitheta, no need to pass t_membr
+function [x, y] = calculate_xy(Iitheta, t_membr, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config)
+%CALCULATE_XY
+%   Formula (1) and (2) p.192, Li 1999
+    
     % (1) inhibitory neurons
     y = y + prec * (...
             - config.zli.alphay * y...                  % decay
             + model.terms.newgx(x)...
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
-            + var_noise*(rand(M,N,n_scales,K))-0.5...   % neural noise (comment for speed)
+            + generate_noise(var_noise, config)...      % neural noise (comment for speed)
         );
     % (2) excitatory neurons
     x = x + prec * (...
@@ -150,10 +164,18 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
             - x_ei...					                % ei term
             + config.zli.J0 * model.terms.newgx(x)...              % input
             + x_ee...
-            + Iitheta{t_membr}...                       % Iitheta (isn't this x?)
+            + Iitheta{t_membr}...                       % Iitheta
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
-            + var_noise*(rand(M,N,n_scales,K))-0.5...	% neural noise (comment for speed)
+            + generate_noise(var_noise, config)...      % neural noise (comment for speed)
         );
 end
 
+function noise = generate_noise(var_noise, config)
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;   % TODO reshape noise to include channels
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    noise      = var_noise * (rand(n_cols, n_rows, n_scales, n_orients)) - 0.5;
+end
