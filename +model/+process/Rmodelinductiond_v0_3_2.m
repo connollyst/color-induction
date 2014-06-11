@@ -10,28 +10,21 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %
 %   gx_final:   the excitation membrane potentials
 
+    validate_input(config)
+    
     %% Get the configuration parameters
-    image      = config.image;
     wave       = config.wave;
     zli        = config.zli;
-    n_cols     = image.width;
-    n_rows     = image.height;
-    n_channels = image.n_channels;
     n_scales   = wave.n_scales;
-    n_orients  = wave.n_orients;
     n_membr    = zli.n_membr;
     n_iter     = zli.n_iter;
     Delta      = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-
-    if n_cols <= 10 || n_rows <= 10
-       error('Bad stimulus dimensions: the toroidal boundary conditions are ill-defined.');
-    end
     
     %% Initialize output membrane potentials
     [gx_final, gy_final] = initialize_output(config);
 
     %% Normalization
-    Iitheta = model.normalize_input(Iitheta, config);
+    Iitheta             = model.normalize_input(Iitheta, config);
     normalization_masks = model.terms.get_normalization_masks(config);
 
     %% Prepare orientation/scale/color interactions for x_ei
@@ -42,7 +35,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     JW = model.terms.get_JW(Delta, interactions.scale_distance, config);
 
     %% Set the initial x (excitation) & y (inhibition) activity
-    [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels);
+    [x, y] = initialize_input(Iitheta, config);
     
     %% Run recurrent network: the loop over time
     for t=1:n_membr  % membrane time
@@ -73,6 +66,15 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
 end
 
+function validate_input(config)
+    
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    if n_cols <= 10 || n_rows <= 10
+       error('Bad stimulus dimensions: the toroidal boundary conditions are ill-defined.');
+    end
+end
+
 function [gx_final, gy_final] = initialize_output(config)
 %INITIALIZE_OUTPUT Initialize the output data structures
 %   gx_final:   the excitation membrane potentials
@@ -97,7 +99,7 @@ function [gx_final, gy_final] = initialize_output(config)
     end
 end
 
-function [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels)
+function [x, y] = initialize_input(Iitheta, config)
 %INITIALIZE_INPUT Initialize the initial stimulus to the system.
 %   x and y are two dimensional cell arrays of n-dimensional images. The
 %   first cell dimension is the scale of the wavelet decomposition
@@ -108,6 +110,12 @@ function [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows,
 %   x: Cell array of the initial exitation stimulus
 %   y: Cell array of the initial inhibition stimulus
 
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    
     % x is initialized as the visual stimulus (p.192)
     x = cell(n_scales, n_orients);
     for s=1:n_scales
