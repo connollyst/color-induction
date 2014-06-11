@@ -1,33 +1,30 @@
-function [x, y] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, config)
-%UPDATEXY Summary of this function goes here
-%   Detailed explanation goes here
-    
-    %% Initialize Parameters
-    % Orientation/Scale Interactions
-    scale_filter        = interactions.scale_filter;
-    radius_sc           = interactions.radius_sc;
-    
+function [x_out, y_out] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, config)
+%UPDATEXY Update the excitatiory (x) and inhibitory (y) membrane potentials
+%   tIitheta:       Cell array of new input stimulus.
+%   x:              The current excitatory membrane potentials.
+%   y:              The current inhibitory membrane potentials.
+%   Delta:          ???
+%   JW:             The excitation (J) and inhibition (W) connection masks.
+%   norm_mask:      Normalized interaction mask. (TODO part of interactions?)
+%   interactions:   Structure array defining the neuronal interactions.
+%   config:         Structure array of general application configurations.
+%
+%   x_out:          The new excitatory membrane potentials.
+%   y_out:          The new inhibitory membrane potentials.
+
+    % TODO there must be better names??
     [newgx_toroidal_x, ~, ~, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config);
-    
-    [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config);
-    
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % influence of the neighboring spatial frequencies
-    x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
-    y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
-
-    %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config);
-    %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [x_ee, x_ei, y_ie]                               = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config);
+    I_norm                                           = normalize(norm_mask, newgx_toroidal_x, interactions, config);
+    [x_out, y_out]                                   = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
 end
 
 function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config)
+%GET_EXCITATION_AND_INHIBITION
 
     % Orientation/Scale Interactions
     half_size_filter    = interactions.half_size_filter;
+    scale_filter        = interactions.scale_filter;
     PsiDtheta           = interactions.PsiDtheta;
     % Equaltion Parameters
     n_cols              = config.image.width;
@@ -57,10 +54,10 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
         % excitatory-inhibitory term (no existia):   x_ei
         % influence of the neighboring scales first
 
-        sum_scale_newgy_toroidal_y=convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
-        restr_sum_scale_newgy_toroidal_y=sum_scale_newgy_toroidal_y(:,:,radius_sc+1:radius_sc+n_scales,:); % restriction over scales
-        w=zeros(1,1,1,n_orients);w(1,1,1,:)=PsiDtheta(oc,:);
-        x_ei(:,:,:,oc)=sum(restr_sum_scale_newgy_toroidal_y.*repmat(w,[n_cols,n_rows,n_scales,1]),4);
+        sum_scale_newgy_toroidal_y = convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
+        restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,radius_sc+1:radius_sc+n_scales,:); % restriction over scales
+        w = zeros(1,1,1,n_orients);w(1,1,1,:)=PsiDtheta(oc,:);
+        x_ei(:,:,:,oc) = sum(restr_sum_scale_newgy_toroidal_y.*repmat(w,[n_cols,n_rows,n_scales,1]),4);
 
         % excitatory and inhibitory terms (the big sums)
         % excitatory-excitatory term:    x_ee
@@ -85,10 +82,17 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
         x_ee(:,:,:,oc) = sum(x_ee_conv_tmp, 4);
         y_ie(:,:,:,oc) = sum(y_ie_conv_tmp, 4);
     end   % of the loop over the central (reference) orientation
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % influence of the neighboring spatial frequencies
+    x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
+    y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
+    % TODO why not x_ei?
 end
 
 function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config)
-    
+%ADD_PADDING Add padding to prevent edge effects.
+
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_scales            = config.wave.n_scales;
@@ -153,7 +157,7 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     end
 end
 
-function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
+function I_norm = normalize(norm_mask, newgx_toroidal_x, interactions, config)
 %NORMALIZE
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
@@ -163,12 +167,11 @@ function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
     n_rows              = config.image.height;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-
     r                   = config.zli.normalization_power; % normalization (I_norm)
-    
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
+    radius_sc           = interactions.radius_sc;
     
     I_norm = zeros(n_cols, n_rows, n_scales, n_orients);
     for s=radius_sc+1:radius_sc+n_scales
@@ -194,15 +197,16 @@ function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
 end
 
 function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
-%CALCULATE_XY
-%   Formula (1) and (2) p.192, Li 1999
+%CALCULATE_XY Formulas (1) and (2) p.192, Li 1999
+%   Calculate the next excitatory (x) and inhibitory (y) membrane
+%   potentials.
 
     prec = 1/config.zli.n_iter;
     
     % (1) inhibitory neurons
     y = y + prec * (...
             - config.zli.alphay * y...                  % decay
-            + model.terms.newgx(x)...
+            + model.terms.newgx(x)...                   % TODO why not x_ee?
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
             + generate_noise(config)...                 % neural noise (comment for speed)
@@ -213,7 +217,7 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             - x_ei...					                % ei term
             + config.zli.J0 * model.terms.newgx(x)...   % input
             + x_ee...
-            + tIitheta...                               % Iitheta
+            + tIitheta...                               % Iitheta at time t
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
             + generate_noise(config)...                 % neural noise (comment for speed)
