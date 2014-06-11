@@ -28,11 +28,11 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     end
     
     %% Initialize output membrane potentials
-    [gx_final, gy_final] = initialize_output(n_membr, n_scales, n_orients, n_cols, n_rows, n_channels);
+    [gx_final, gy_final] = initialize_output(config);
 
     %% Normalization
     Iitheta = model.normalize_input(Iitheta, config);
-    normalization_masks = model.terms.get_normalization_masks(n_cols, n_rows, config);
+    normalization_masks = model.terms.get_normalization_masks(config);
 
     %% Prepare orientation/scale/color interactions for x_ei
     interactions = model.terms.get_interactions(Delta, config);
@@ -73,18 +73,18 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
 end
 
-function [gx_final, gy_final] = initialize_output(n_membr, n_scales, n_orients, n_cols, n_rows, n_channels)
+function [gx_final, gy_final] = initialize_output(config)
 %INITIALIZE_OUTPUT Initialize the output data structures
-%   n_membr:    the number of membrane time steps being processed
-%   n_scales:   the number of scale sizes being processed
-%   n_orients:  the number of preferred orientations
-%   n_cols:     the number of cols in the input images (width)
-%   n_rows:     the number of rows in the input images (height)
-%   n_channels: the number of color channels in the input images
-%
 %   gx_final:   the excitation membrane potentials
 %   gy_final:   the inhibition membrane potentials
 
+    n_membr    = config.zli.n_membr;
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    
     gx_final = cell(n_membr, n_scales, n_orients);
     gy_final = cell(n_membr, n_scales, n_orients);
     for t=1:n_membr
