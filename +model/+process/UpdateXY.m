@@ -4,22 +4,40 @@ function [x, y] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, c
     
     %% Initialize Parameters
     % Orientation/Scale Interactions
-    half_size_filter    = interactions.half_size_filter;
     scale_filter        = interactions.scale_filter;
     radius_sc           = interactions.radius_sc;
+    
+    [newgx_toroidal_x, ~, ~, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config);
+    
+    [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config);
+    
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % influence of the neighboring spatial frequencies
+    x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
+    y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
+
+    %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config);
+    %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+end
+
+function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config)
+
+    % Orientation/Scale Interactions
+    half_size_filter    = interactions.half_size_filter;
     PsiDtheta           = interactions.PsiDtheta;
     % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    var_noise           = 0.1 * 2;
     % Computation Configurations
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
-
-    [newgx_toroidal_x, ~, ~, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config);
-
+    
     x_ee   = zeros(n_cols, n_rows, n_scales, n_orients);
     x_ei   = zeros(n_cols, n_rows, n_scales, n_orients);
     y_ie   = zeros(n_cols, n_rows, n_scales, n_orients);
@@ -29,8 +47,8 @@ function [x, y] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, c
         newgx_toroidal_x_fft = cell(radius_sc+n_scales,1);
         for s=1:n_scales
             newgx_toroidal_x_fft{radius_sc+s}=cell(n_orients,1);
-            for o=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                newgx_toroidal_x_fft{radius_sc+s}{o}=fftn(newgx_toroidal_x{radius_sc+s}(:,:,o));
+            for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+                newgx_toroidal_x_fft{radius_sc+s}{ov} = fftn(newgx_toroidal_x{radius_sc+s}(:,:,ov));
             end
         end
     end
@@ -67,17 +85,6 @@ function [x, y] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, c
         x_ee(:,:,:,oc) = sum(x_ee_conv_tmp, 4);
         y_ie(:,:,:,oc) = sum(y_ie_conv_tmp, 4);
     end   % of the loop over the central (reference) orientation
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % influence of the neighboring spatial frequencies
-    x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
-    y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
-
-    %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config);
-    %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config);
 end
 
 function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config)
@@ -146,7 +153,6 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     end
 end
 
-% TODO get n_cols, n_rows, n_scales, n_orients from config
 function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
 %NORMALIZE
 %   We generalize Z.Li's formula for the normalization by suming over all
@@ -187,11 +193,11 @@ function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
     end
 end
 
-function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config)
+function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
 %CALCULATE_XY
 %   Formula (1) and (2) p.192, Li 1999
 
-    prec                = 1/config.zli.n_iter;
+    prec = 1/config.zli.n_iter;
     
     % (1) inhibitory neurons
     y = y + prec * (...
@@ -199,7 +205,7 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noi
             + model.terms.newgx(x)...
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
-            + generate_noise(var_noise, config)...      % neural noise (comment for speed)
+            + generate_noise(config)...                 % neural noise (comment for speed)
         );
     % (2) excitatory neurons
     x = x + prec * (...
@@ -210,15 +216,17 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noi
             + tIitheta...                               % Iitheta
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
-            + generate_noise(var_noise, config)...      % neural noise (comment for speed)
+            + generate_noise(config)...                 % neural noise (comment for speed)
         );
 end
 
-function noise = generate_noise(var_noise, config)
+function noise = generate_noise(config)
+%GENERATE_NOISE Generate neural noise.
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;   % TODO reshape noise to include channels
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
+    var_noise  = 0.1 * 2;
     noise      = var_noise * (rand(n_cols, n_rows, n_scales, n_orients)) - 0.5;
 end
