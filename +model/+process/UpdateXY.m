@@ -12,8 +12,6 @@ function [x, y] = UpdateXY(tIitheta, x, y, M, N, K, Delta, JW, norm_mask, intera
     PsiDtheta           = interactions.PsiDtheta;
     % Equaltion Parameters
     n_scales            = config.wave.n_scales;
-    r                   = config.zli.normalization_power; % normalization (I_norm)
-    prec                = 1/config.zli.n_iter;
     var_noise           = 0.1 * 2;
     % Computation Configurations
     use_fft             = config.compute.use_fft;
@@ -62,7 +60,6 @@ function [x, y] = UpdateXY(tIitheta, x, y, M, N, K, Delta, JW, norm_mask, intera
     x_ee   = zeros(M, N, n_scales, K);
     x_ei   = zeros(M, N, n_scales, K);
     y_ie   = zeros(M, N, n_scales, K);
-    I_norm = zeros(M, N, n_scales, K);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
     if use_fft
@@ -133,10 +130,12 @@ function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
 
+    r                   = config.zli.normalization_power; % normalization (I_norm)
+    
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
-
+    
     I_norm = zeros(n_cols, n_rows, n_scales, n_orients);
     for s=radius_sc+1:radius_sc+n_scales
         radi=(size(M_norm_conv{s-radius_sc})-1)/2;
@@ -163,6 +162,8 @@ end
 function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config)
 %CALCULATE_XY
 %   Formula (1) and (2) p.192, Li 1999
+
+    prec                = 1/config.zli.n_iter;
     
     % (1) inhibitory neurons
     y = y + prec * (...
