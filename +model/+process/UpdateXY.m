@@ -1,4 +1,4 @@
-function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask, interactions, config)
+function [x, y] = UpdateXY(tIitheta, x, y, M, N, K, Delta, JW, norm_mask, interactions, config)
 %UPDATEXY Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -114,39 +114,53 @@ function [x, y] = UpdateXY(t_membr, Iitheta, x, y, M, N, K, Delta, JW, norm_mask
     y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
 
     %%%%%%%%%%%%%% normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    I_norm = normalize(M, N, n_scales, K, norm_mask, radius_sc, newgx_toroidal_x);
+    I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config);
     %%%%%%%%%%%%%% end normalization %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    [x, y] = calculate_xy(Iitheta, t_membr, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config);
+    [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config);
 end
 
 % TODO get M, N, n_scales, K from config
-function I_norm = normalize(M, N, n_scales, K, norm_mask, radius_sc, newgx_toroidal_x)
+function I_norm = normalize(norm_mask, radius_sc, newgx_toroidal_x, config)
 %NORMALIZE
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
 %   over all the orientations)
 
+    n_cols              = config.image.width;
+    n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
+    n_scales            = config.wave.n_scales;
+    n_orients           = config.wave.n_orients;
+
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
 
-    I_norm = zeros(M, N, n_scales, K);
+    I_norm = zeros(n_cols, n_rows, n_scales, n_orients);
     for s=radius_sc+1:radius_sc+n_scales
         radi=(size(M_norm_conv{s-radius_sc})-1)/2;
         % sum over all the orientations
-        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s},4);
+        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 4);
         despl = radi;
-        kk = convolutions.optima(sum_newgx_toroidal_x_sc(Delta_ext(s)+1-radi(1):Delta_ext(s)+M+radi(1),Delta_ext(s)+1-radi(2):Delta_ext(s)+N+radi(2)),M_norm_conv_fft{s-radius_sc},despl,1,avoid_circshift_fft); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
-        I_norm(:,:,s-radius_sc,:) = repmat(kk(radi(1)+1:M+radi(1),radi(2)+1:N+radi(2)),[1 1 K]);
+        kk = convolutions.optima( ...
+            sum_newgx_toroidal_x_sc( ...
+                Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
+                Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2) ...
+            ), ...
+            M_norm_conv_fft{s-radius_sc}, despl, 1, avoid_circshift_fft ...
+        ); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
+        I_norm(:, :, s-radius_sc, :) = repmat( ...
+            kk(radi(1) + 1 : n_cols + radi(1), radi(2) + 1 : n_rows + radi(2)),...
+            [1 1 n_orients] ...
+        );
     end
-    for s=1:n_scales  % times  roughly 50 if the flag is 1
+    for s=1:n_scales  % times roughly 50 if the flag is 1
         I_norm(:,:,s,:) = -2 * (I_norm(:,:,s,:) * inv_den{s}) .^ r;
     end
 end
 
-% TODO just pass the current image as Iitheta, no need to pass t_membr
-function [x, y] = calculate_xy(Iitheta, t_membr, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config)
+function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, var_noise, config)
 %CALCULATE_XY
 %   Formula (1) and (2) p.192, Li 1999
     
@@ -162,9 +176,9 @@ function [x, y] = calculate_xy(Iitheta, t_membr, I_norm, x, y, x_ee, x_ei, y_ie,
     x = x + prec * (...
             - config.zli.alphax * x...				    % decay
             - x_ei...					                % ei term
-            + config.zli.J0 * model.terms.newgx(x)...              % input
+            + config.zli.J0 * model.terms.newgx(x)...   % input
             + x_ee...
-            + Iitheta{t_membr}...                       % Iitheta
+            + tIitheta...                               % Iitheta
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
             + generate_noise(var_noise, config)...      % neural noise (comment for speed)
