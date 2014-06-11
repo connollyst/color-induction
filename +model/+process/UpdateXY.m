@@ -41,11 +41,11 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
     if use_fft
-        newgx_toroidal_x_fft = cell(radius_sc+n_scales,1);
+        newgx_toroidal_x_fft = cell(scale_distance+n_scales,1);
         for s=1:n_scales
-            newgx_toroidal_x_fft{radius_sc+s}=cell(n_orients,1);
+            newgx_toroidal_x_fft{scale_distance+s}=cell(n_orients,1);
             for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                newgx_toroidal_x_fft{radius_sc+s}{ov} = fftn(newgx_toroidal_x{radius_sc+s}(:,:,ov));
+                newgx_toroidal_x_fft{scale_distance+s}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,ov));
             end
         end
     end
@@ -55,7 +55,7 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
         % influence of the neighboring scales first
 
         sum_scale_newgy_toroidal_y = convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
-        restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,radius_sc+1:radius_sc+n_scales,:); % restriction over scales
+        restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,scale_distance+1:scale_distance+n_scales,:); % restriction over scales
         w = zeros(1,1,1,n_orients);w(1,1,1,:)=PsiDtheta(oc,:);
         x_ei(:,:,:,oc) = sum(restr_sum_scale_newgy_toroidal_y.*repmat(w,[n_cols,n_rows,n_scales,1]),4);
 
@@ -70,9 +70,9 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
             % FFT
             if use_fft
                 for s=1:n_scales
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},JW.J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
+                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{scale_distance+s}{ov},JW.J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+n_cols,Delta(s)+1:Delta(s)+N);
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{radius_sc+s}{ov},JW.W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
+                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{scale_distance+s}{ov},JW.W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
                     y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+n_cols,Delta(s)+1:Delta(s)+N);
                 end
             else
@@ -98,24 +98,24 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     
-    radius_sc           = interactions.radius_sc;
+    scale_distance           = interactions.scale_distance;
     Delta_ext           = interactions.Delta_ext;
     border_weight       = interactions.border_weight;
     
-    magic_num  = n_scales + 2 * radius_sc;  % Whaaa??
+    magic_num  = n_scales + 2 * scale_distance;  % Whaaa??
     
     toroidal_x = cell(magic_num, 1);
     toroidal_y = cell(magic_num, 1);
     for s=1:n_scales
         % mirror boundary condition
-        toroidal_x{s+radius_sc} = padarray(x(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
-        toroidal_y{s+radius_sc} = padarray(y(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
+        toroidal_x{s+scale_distance} = padarray(x(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
+        toroidal_y{s+scale_distance} = padarray(y(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
     end	% of the loop over scales
     % Assign values to the pad (for scales)
-    kk_tmp1                = zeros(size(toroidal_x{radius_sc+1})); 
-    kk_tmp2                = zeros(size(toroidal_x{n_scales+radius_sc}));
-    kk_tmp1_y              = zeros(size(toroidal_y{radius_sc+1})); 
-    kk_tmp2_y              = zeros(size(toroidal_y{n_scales+radius_sc}));
+    kk_tmp1                = zeros(size(toroidal_x{scale_distance+1})); 
+    kk_tmp2                = zeros(size(toroidal_x{n_scales+scale_distance}));
+    kk_tmp1_y              = zeros(size(toroidal_y{scale_distance+1})); 
+    kk_tmp2_y              = zeros(size(toroidal_y{n_scales+scale_distance}));
     newgx_toroidal_x       = cell(magic_num, 1);
     newgy_toroidal_y       = cell(magic_num, 1);
     restr_newgx_toroidal_x = zeros(n_cols, n_rows, magic_num, n_orients);
@@ -127,7 +127,7 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     end
 
     % .. what sorcery is this?
-    for i=1:radius_sc+1
+    for i=1:scale_distance+1
         cols      = Delta(1)+1:Delta(1)+n_cols;
         rows      = Delta(1)+1:Delta(1)+n_rows;
         i_cols    = Delta(i)+1:Delta(i)+n_cols;
@@ -136,18 +136,18 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
         s_rows    = Delta(n_scales)+1:Delta(n_scales)+n_rows;
         si_cols   = Delta(n_scales-i+1)+1:Delta(n_scales-i+1)+n_cols;
         si_rows   = Delta(n_scales-i+1)+1:Delta(n_scales-i+1)+n_rows;
-        radius_i  = radius_sc+i;
-        radius_si = n_scales+radius_sc-(i-1);
+        radius_i  = scale_distance+i;
+        radius_si = n_scales+scale_distance-(i-1);
         kk_tmp1(cols,rows,:)       = kk_tmp1(cols,rows,:)       + border_weight(i) * newgx_toroidal_x{radius_i}(i_cols,i_rows,:);
         kk_tmp1_y(cols,rows,:)     = kk_tmp1_y(cols,rows,:)     + border_weight(i) * newgy_toroidal_y{radius_i}(i_cols,i_rows,:);
         kk_tmp2(s_cols,s_rows,:)   = kk_tmp2(s_cols,s_rows,:)   + border_weight(i) * newgx_toroidal_x{radius_si}(si_cols,si_rows,:);
         kk_tmp2_y(s_cols,s_rows,:) = kk_tmp2_y(s_cols,s_rows,:) + border_weight(i) * newgy_toroidal_y{radius_si}(si_cols,si_rows,:);
     end
 
-    newgx_toroidal_x{1:radius_sc} = kk_tmp1;
-    newgy_toroidal_y{1:radius_sc} = kk_tmp1_y;
-    newgx_toroidal_x{n_scales+radius_sc+1:magic_num} = kk_tmp2;
-    newgy_toroidal_y{n_scales+radius_sc+1:magic_num} = kk_tmp2_y;
+    newgx_toroidal_x{1:scale_distance} = kk_tmp1;
+    newgy_toroidal_y{1:scale_distance} = kk_tmp1_y;
+    newgx_toroidal_x{n_scales+scale_distance+1:magic_num} = kk_tmp2;
+    newgy_toroidal_y{n_scales+scale_distance+1:magic_num} = kk_tmp2_y;
 
     for s=1:magic_num
         cols = Delta_ext(s)+1 : Delta_ext(s)+n_cols;
@@ -171,11 +171,11 @@ function I_norm = normalize(norm_mask, newgx_toroidal_x, interactions, config)
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
-    radius_sc           = interactions.radius_sc;
+    scale_distance           = interactions.scale_distance;
     
     I_norm = zeros(n_cols, n_rows, n_scales, n_orients);
-    for s=radius_sc+1:radius_sc+n_scales
-        radi=(size(M_norm_conv{s-radius_sc})-1)/2;
+    for s=scale_distance+1:scale_distance+n_scales
+        radi=(size(M_norm_conv{s-scale_distance})-1)/2;
         % sum over all the orientations
         sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 4);
         despl = radi;
@@ -184,9 +184,9 @@ function I_norm = normalize(norm_mask, newgx_toroidal_x, interactions, config)
                 Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
                 Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2) ...
             ), ...
-            M_norm_conv_fft{s-radius_sc}, despl, 1, avoid_circshift_fft ...
+            M_norm_conv_fft{s-scale_distance}, despl, 1, avoid_circshift_fft ...
         ); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
-        I_norm(:, :, s-radius_sc, :) = repmat( ...
+        I_norm(:, :, s-scale_distance, :) = repmat( ...
             kk(radi(1) + 1 : n_cols + radi(1), radi(2) + 1 : n_rows + radi(2)),...
             [1 1 n_orients] ...
         );

@@ -38,8 +38,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     interactions = model.terms.get_interactions(Delta, config);
     
     %% Prepare J & W: the excitatory and inhibitory masks
-    % TODO perhaps J & W don't need the interactions.radius_sc?
-    JW = model.terms.get_JW(n_cols, n_rows, n_orients, Delta, interactions.radius_sc, config);
+    % TODO perhaps J & W don't need the interactions.scale_distance?
+    JW = model.terms.get_JW(n_cols, n_rows, n_orients, Delta, interactions.scale_distance, config);
 
     %% Set the initial x (excitation) & y (inhibition) activity
     [x, y] = initialize_input(Iitheta, n_scales, n_orients, n_cols, n_rows, n_channels);
