@@ -25,8 +25,8 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     for i=1:n_iters
         for channel=1:n_channels
             % TODO provide wavelet funciton dynamically
-            [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
             % TODO the w and c returned are just for the last channel..!
+            [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
             for s=1:n_scales-1
                 for o=1:n_orients
                     curv{o,s,i}(:,:,channel) = w{s}(:,:,o);
