@@ -50,10 +50,15 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                      );
         end
         toc
+        x = temp.new_to_old(x); % DELETEME!!
+        y = temp.new_to_old(y); % DELETEME!!
         % TODO newgx/y should return the scale/orient as a cell array
-            % TODO update from {t,s,o} to {o,s,t}
-        gx_final{t,:,:} = model.terms.newgx(x);
-        gy_final{t,:,:} = model.terms.newgy(y);
+        x = model.terms.newgx(x);
+        y = model.terms.newgy(y);
+        x = temp.old_to_new(x); % DELETEME!!
+        y = temp.old_to_new(y); % DELETEME!!
+        gx_final(:,:,t) = x;
+        gy_final(:,:,t) = y;
     end
 
     % TODO some kind of normalization specific to 3 orientations, refactor

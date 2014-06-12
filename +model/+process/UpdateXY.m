@@ -140,9 +140,9 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
     % TEMP!!!
     % We've restructured x and y, this rebuilds the old structure so we can
     % understand what was being done in this function..
-    x        = temp.new_to_old(x);
-    y        = temp.new_to_old(y);
-    tIitheta = temp.new_to_old(tIitheta);
+    x        = temp.new_to_old(x);          % DELETEME!!
+    y        = temp.new_to_old(y);          % DELETEME!!
+    tIitheta = temp.new_to_old(tIitheta);   % DELETEME!!
     
     prec = 1/config.zli.n_iter;
     
@@ -166,9 +166,8 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             + generate_noise(config)...                 % neural noise (comment for speed)
         );
     
-    % TEMP!!
-    x = temp.old_to_new(x);
-    y = temp.old_to_new(y);
+    x = temp.old_to_new(x); % DELETEME!!
+    y = temp.old_to_new(y); % DELETEME!!
 end
 
 function noise = generate_noise(config)

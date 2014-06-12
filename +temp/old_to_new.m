@@ -3,6 +3,8 @@ function new = old_to_new(old)
 %   Converts old multi-dimensional matrix data structure to the new cell
 %   array data structure.
 
+    size(old) % temp
+    
     n_scales  = 2;
     n_orients = 3;
     new = cell(n_orients, n_scales);

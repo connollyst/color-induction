@@ -5,6 +5,8 @@ function old = new_to_old(new)
 %   single color dimension, here we use the first color dimension from the
 %   new data structure.
 
+    new % temp
+    
     n_scales  = 2;
     n_orients = 3;
     old = zeros(64, 64, 2, 3);
