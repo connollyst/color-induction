@@ -10,7 +10,7 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     n_channels = config.image.n_channels;
     dynamic    = config.compute.dynamic;
     
-    curv = cell(n_membr, n_scales, n_orients);
+    curv = cell(n_orients, n_scales, n_membr);
 
     % Number of wavelet decompositions to perform.
     % If this is not dynamic, we decompose the first frame and duplicate.
@@ -24,15 +24,16 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     % different wavelet decompositions		
     for i=1:n_iters
         for channel=1:n_channels
+            % TODO provide wavelet funciton dynamically
             [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
             % TODO the w and c returned are just for the last channel..!
             for s=1:n_scales-1
                 for o=1:n_orients
-                    curv{i,s,o}(:,:,channel) = w{s}(:,:,o);
+                    curv{o,s,i}(:,:,channel) = w{s}(:,:,o);
                 end
             end
             % TODO we keep the residual as the extra scale.. sloppy
-            curv{i,n_scales,1}(:,:,channel) = c{n_scales-1};
+            curv{1,n_scales,i}(:,:,channel) = c{n_scales-1};
         end
     end
     
@@ -41,10 +42,9 @@ function [curv, w, c] = wavelet_decomposition(I, config)
         for i=2:n_membr
             for s=1:n_scales
                 for o=1:n_orients
-                    curv{i,s,o} = curv{1,s,o};
+                    curv{o,s,i} = curv{o,s,1};
                 end
             end
         end
     end
-    % TODO shouldn't the residual be replicated also?.. why isn't it?
 end
