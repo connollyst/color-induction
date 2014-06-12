@@ -1,4 +1,4 @@
-function [I_out] = NCZLd(I, config)
+function O = NCZLd(I, config)
 %   I: the input images, either in the form I(cols, rows, colors) or
 %      I{frames}(cols, rows, colors)
 %   config: the algorithm configuration structure
@@ -36,10 +36,10 @@ function [I_out] = NCZLd(I, config)
 
     if is_uniform(I)
         % If the image is uniform we do not process it
-        I_out = get_initial_I(I, n_membr, dynamic);
+        O = get_initial_I(I, n_membr, dynamic);
     else
-        I_out = model.process.NCZLd_channel_v1_0(I, config);
-        I_out = average_scale_output(I_out, config, n_membr, dynamic);
+        O = model.process.NCZLd_channel_v1_0(I, config);
+        O = average_scale_output(O, config, n_membr, dynamic);
     end
 
     % Print processing time
@@ -78,24 +78,24 @@ function uniform = is_uniform(I)
     uniform = max(I{1}(:)) == min(I{1}(:));
 end
 
-function I_out = get_initial_I(I, n_membr, dynamic)
+function O = get_initial_I(I, n_membr, dynamic)
     if dynamic ~= 1
-        I_out = zeros([size(I{1}) n_membr]);
+        O = zeros([size(I{1}) n_membr]);
     else
-        I_out = zeros(size(I{1}));
+        O = zeros(size(I{1}));
     end
-    I_out = I_out + min(I{1}(:)); % give the initial value to all the pixels
+    O = O + min(I{1}(:)); % give the initial value to all the pixels
 end
 
-function I_out = average_scale_output(I_out, config, n_membr, dynamic)
+function O = average_scale_output(I, config, n_membr, dynamic)
     % Static case
     if dynamic == 0
         % We take the mean as the output, as in Li, 1999
         n_frames_promig = config.image.n_frames_promig;
-        ff_ini          = n_membr-n_frames_promig+1;
-        ff_fin          = n_membr;
-        I_out_flat      = cat(n_membr, I_out{:});
-        I_out_flat      = I_out_flat(:, :, :, :, ff_ini:ff_fin);
-        I_out           = mean(I_out_flat, 5);
+        t_start         = n_membr - n_frames_promig + 1;
+        t_end           = n_membr;
+        I_flat          = cat(n_membr, I{:});
+        I_flat          = I_flat(:, :, :, :, t_start:t_end);
+        O               = mean(I_flat, 5);
     end
 end
