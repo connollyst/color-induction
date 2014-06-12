@@ -64,10 +64,9 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % TODO some kind of normalization specific to 3 orientations, refactor
     for t=1:n_membr
         for s=1:n_scales
-            % TODO update from {t,s,o} to {o,s,t}
-            gx_final_2 = gx_final{t,s,2}(:,:,:);
-            gx_final{t,s,2}(:,:,:) = gx_final{t,s,3}(:,:,:);
-            gx_final{t,2,3}(:,:,:) = gx_final_2;
+            gx_final_2 = gx_final{2,s,t}(:,:,:);
+            gx_final{2,s,t}(:,:,:) = gx_final{3,s,t}(:,:,:);
+            gx_final{3,2,t}(:,:,:) = gx_final_2;
         end
     end
 
