@@ -7,7 +7,6 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     n_membr    = config.zli.n_membr;
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
-    n_channels = config.image.n_channels;
     dynamic    = config.compute.dynamic;
     
     curv = cell(n_orients, n_scales, n_membr);
@@ -27,11 +26,12 @@ function [curv, w, c] = wavelet_decomposition(I, config)
         [w, c] = wavelets.DWD_orient_undecimated(I{i}, n_scales-1);
         for s=1:n_scales-1
             for o=1:n_orients
-                curv{o,s,i} = w{s}(:,:,o);
+                curv{o,s,i} = w{o,s};
             end
         end
         % TODO we keep the residual as the extra scale.. sloppy
-        curv{1,n_scales,i}(:,:,channel) = c{n_scales-1};
+        % TODO does this work with scales > 2???
+        curv{1,n_scales,i} = c{n_scales-1};
     end
     
     % replicate wavelet planes if static stimulus

@@ -14,7 +14,7 @@ function b = symmetric_filtering(a, h)
 
     a_padded = mirroring(a, pad_sz);                  % pad edges
     b_padded = imfilter(a_padded, h);                 % filter padded matrix
-    b        = b_padded((pad_sz + 1):(end - pad_sz),(pad_sz + 1):(end - pad_sz)); % remove padding
+    b        = b_padded((pad_sz + 1):(end - pad_sz),(pad_sz + 1):(end - pad_sz),:); % remove padding
 
 end
 
@@ -28,14 +28,14 @@ function mc = mirroring(w,n)
 %   w: wavelet plane
 %   n: extent of padding
 
-    [i, j] = size(w);
+    [c, r, ~] = size(w);
 
-    A  = flipud(w(2:(2+n-1),:));    % top padding
-    B  = flipud(w(i-n:i-1,:));      % bottom padding
-    mc = [A;w;B];                   % add padding
+    A  = flipdim(w(2:(2+n-1),:,:),2);   % top padding
+    B  = flipdim(w(c-n:c-1,:,:)  ,2);   % bottom padding
+    mc = [A;w;B];                       % add padding
 
-    A  = fliplr(mc(:,2:(2+n-1)));   % left padding
-    B  = fliplr(mc(:,j-n:j-1));     % right padding
-    mc = [A mc B];                  % add padding
+    A  = flipdim(mc(:,2:(2+n-1),:),1);  % left padding
+    B  = flipdim(mc(:,r-n:r-1,:)  ,1);  % right padding
+    mc = [A mc B];                      % add padding
 
 end

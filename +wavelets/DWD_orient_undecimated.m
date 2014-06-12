@@ -15,8 +15,8 @@ function [w, c] = DWD_orient_undecimated(image, scales)
     energy     = sum(h);
     inv_energy = 1/energy;
     h          = h*inv_energy;
-    w          = cell(scales, 3);
-    c          = cell(scales, 1);
+    w          = cell(3, scales);
+    c          = cell(1, scales);
     for s = 1:scales
         orig_image = image;
         inv_sum    = 1/sum(h);
@@ -30,14 +30,14 @@ function [w, c] = DWD_orient_undecimated(image, scales)
         % Decimate GF along vertical direction
         HGF        = wavelets.symmetric_filtering(HF, h')    * inv_sum;	% blur
         % Save horizontal and vertical wavelet planes
-        w{s,1}     = GF;
-        w{s,2}     = GHF;
+        w{1,s}     = GF;
+        w{2,s}     = GHF;
         % Create and save wavelet plane
         DF         = orig_image - (HGF + GF + GHF);
-        w{s,3}     = DF;
+        w{3,s}     = DF;
         % Save residual
-        C          = image - (w{s,1}(:,:,1)+w{s,1}(:,:,2)+w{s,1}(:,:,3));
-        c{s,1}     = C;
+        C          = image - (w{1,s} + w{2,s} + w{3,s});
+        c{1,s}     = C;
         % Update image to be used at next scale
         image      = C;
         % Upsample filter
