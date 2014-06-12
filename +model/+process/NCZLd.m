@@ -94,7 +94,8 @@ function I_out = average_scale_output(I_out, config, n_membr, dynamic)
         n_frames_promig = config.image.n_frames_promig;
         ff_ini          = n_membr-n_frames_promig+1;
         ff_fin          = n_membr;
-        I_out           = I_out(:, :, :, ff_ini:ff_fin);
-        I_out           = mean(I_out, 4);
+        I_out_flat      = cat(n_membr, I_out{:});
+        I_out_flat      = I_out_flat(:, :, :, :, ff_ini:ff_fin);
+        I_out           = mean(I_out_flat, 5);
     end
 end
