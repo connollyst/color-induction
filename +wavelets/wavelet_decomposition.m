@@ -23,18 +23,15 @@ function [curv, w, c] = wavelet_decomposition(I, config)
     
     % different wavelet decompositions		
     for i=1:n_iters
-        for channel=1:n_channels
-            % TODO provide wavelet funciton dynamically
-            % TODO the w and c returned are just for the last channel..!
-            [w, c] = wavelets.DWD_orient_undecimated(I{i}(:,:,channel), n_scales-1);
-            for s=1:n_scales-1
-                for o=1:n_orients
-                    curv{o,s,i}(:,:,channel) = w{s}(:,:,o);
-                end
+        % TODO provide wavelet funciton dynamically
+        [w, c] = wavelets.DWD_orient_undecimated(I{i}, n_scales-1);
+        for s=1:n_scales-1
+            for o=1:n_orients
+                curv{o,s,i} = w{s}(:,:,o);
             end
-            % TODO we keep the residual as the extra scale.. sloppy
-            curv{1,n_scales,i}(:,:,channel) = c{n_scales-1};
         end
+        % TODO we keep the residual as the extra scale.. sloppy
+        curv{1,n_scales,i}(:,:,channel) = c{n_scales-1};
     end
     
     % replicate wavelet planes if static stimulus
