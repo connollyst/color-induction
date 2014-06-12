@@ -3,10 +3,10 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999.
 %   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
-%            Iitheta{t,s,o}(c,r,d) is the column (c), row (r) and color
+%            Iitheta{o,s,t}(c,r,d) is the column (c), row (r) and color
 %            dimension (d) of image (t), decomposed at scale (s) and
 %            orientation (o).
-%   config:  The model configuration struct
+%   config:  The model configuration struct array
 %
 %   gx_final:   the excitation membrane potentials
 
@@ -43,7 +43,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
-            tIitheta = Iitheta{t}; % TODO this is not correct anymore
+            tIitheta = get_tIitheta(Iitheta, t, config);
             [x, y] = model.process.UpdateXY(...
                         tIitheta, x, y, Delta, JW,...
                         normalization_masks, interactions, config...
@@ -51,6 +51,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         end
         toc
         % TODO newgx/y should return the scale/orient as a cell array
+            % TODO update from {t,s,o} to {o,s,t}
         gx_final{t,:,:} = model.terms.newgx(x);
         gy_final{t,:,:} = model.terms.newgy(y);
     end
@@ -58,6 +59,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % TODO some kind of normalization specific to 3 orientations, refactor
     for t=1:n_membr
         for s=1:n_scales
+            % TODO update from {t,s,o} to {o,s,t}
             gx_final_2 = gx_final{t,s,2}(:,:,:);
             gx_final{t,s,2}(:,:,:) = gx_final{t,s,3}(:,:,:);
             gx_final{t,2,3}(:,:,:) = gx_final_2;
@@ -80,20 +82,20 @@ function [gx_final, gy_final] = initialize_output(config)
 %   gx_final:   the excitation membrane potentials
 %   gy_final:   the inhibition membrane potentials
 
+    n_orients  = config.wave.n_orients;
+    n_scales   = config.wave.n_scales;
     n_membr    = config.zli.n_membr;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
-    n_scales   = config.wave.n_scales;
-    n_orients  = config.wave.n_orients;
     
-    gx_final = cell(n_membr, n_scales, n_orients);
-    gy_final = cell(n_membr, n_scales, n_orients);
+    gx_final = cell(n_orients, n_scales, n_membr);
+    gy_final = cell(n_orients, n_scales, n_membr);
     for t=1:n_membr
         for s=1:n_scales
             for o=1:n_orients
-                gx_final{t,s,o} = zeros(n_cols, n_rows, n_channels); 
-                gy_final{t,s,o} = zeros(n_cols, n_rows, n_channels);
+                gx_final{o,s,t} = zeros(n_cols, n_rows, n_channels); 
+                gy_final{o,s,t} = zeros(n_cols, n_rows, n_channels);
             end
         end
     end
@@ -110,17 +112,18 @@ function [x, y] = initialize_input(Iitheta, config)
 %   x: Cell array of the initial exitation stimulus
 %   y: Cell array of the initial inhibition stimulus
 
+    n_orients  = config.wave.n_orients;
+    n_scales   = config.wave.n_scales;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
-    n_scales   = config.wave.n_scales;
-    n_orients  = config.wave.n_orients;
     
     % x is initialized as the visual stimulus (p.192)
+    t = 1; % use first time frame
     x = cell(n_scales, n_orients);
     for s=1:n_scales
         for o=1:n_orients
-            x{s,o} = Iitheta{1, s, o};
+            x{o,s} = Iitheta{o,s,t};
         end
     end
     
@@ -128,7 +131,19 @@ function [x, y] = initialize_input(Iitheta, config)
     y = cell(n_scales, n_orients);
     for s=1:n_scales
         for o=1:n_orients
-            y{s,o} = zeros(n_cols, n_rows, n_channels);
+            y{o,s} = zeros(n_cols, n_rows, n_channels);
+        end
+    end
+end
+
+function tIitheta = get_tIitheta(Iitheta, t, config)
+    n_orients = config.wave.n_orients;
+    n_scales  = config.wave.n_scales;
+    tIitheta  = cell(n_orients, n_scales);
+    % TODO we can just select like Iitheta(:,:,t)
+    for s=1:n_scales
+        for o=1:n_orients
+            tIitheta{o,s} = Iitheta{o,s,t};
         end
     end
 end
