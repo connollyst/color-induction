@@ -30,8 +30,7 @@ function [curv, w, c] = wavelet_decomposition(I, config)
             end
         end
         % TODO we keep the residual as the extra scale.. sloppy
-        % TODO does this work with scales > 2???
-        curv{1,n_scales,i} = c{n_scales-1};
+        curv(1:n_scales-1,3,i) = c;
     end
     
     % replicate wavelet planes if static stimulus
