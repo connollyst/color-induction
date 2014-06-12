@@ -9,15 +9,15 @@ function [curv_final_out, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF
     curv_final_out = curv_in;
 
     %-------------------------------------------------------
-    zli           = config.zli;
     display_plot  = config.display_plot;
-    n_membr       = zli.n_membr;
-    ON_OFF        = zli.ON_OFF;
+    n_membr       = config.zli.n_membr;
+    ON_OFF        = config.zli.ON_OFF;
     fin_scale     = config.wave.fin_scale;
+    n_orients      = config.wave.n_orients;
     plot_wavelet_planes = display_plot.plot_wavelet_planes;
     %-------------------------------------------------------
 
-    % TODO is this necessary? Is Matlab pass by reference or value?
+    % TODO is this necessary? Is MATLAB pass by reference or value?
     curv = curv_in;
     
     % Number of scales
@@ -37,7 +37,7 @@ function [curv_final_out, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF
 
     for t=1:n_membr
         for s=1:fin_scale
-            for o=1:n_orient
+            for o=1:n_orients
                 % TODO can we just assign, without the loops?
                 curv_final_out{o,s,t} = curv_final{o,s,t}(:,:,:);
             end
@@ -106,8 +106,8 @@ function [curv_final, curv_ON_final, curv_OFF_final, iFactor_ON, iFactor_OFF] = 
     %% Prepare output
     iFactor = iFactor_ON;
     for t=1:n_membr
-        curv_ON_final{t}  =  curv_ON{t}     .* iFactor_ON{t}  * zli.normal_output;
-        curv_OFF_final{t} = -curv_OFF{t}    .* iFactor_OFF{t} * zli.normal_output;
+        curv_ON_final{t}  =  curv_ON{t}     .* iFactor_ON{t}  * config.zli.normal_output;
+        curv_OFF_final{t} = -curv_OFF{t}    .* iFactor_OFF{t} * config.zli.normal_output;
         iFactor{t}        = iFactor_ON{t}    + iFactor_OFF{t};
         curv_final{t}     = curv_ON_final{t} + curv_OFF_final{t};
     end
