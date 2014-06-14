@@ -30,12 +30,12 @@ function mc = mirroring(w,n)
 
     [c, r, ~] = size(w);
 
-    A  = flipdim(w(2:(2+n-1),:,:),2);   % top padding
-    B  = flipdim(w(c-n:c-1,:,:)  ,2);   % bottom padding
+    A  = flipdim(w(2:(2+n-1),:,:),1);   % top padding
+    B  = flipdim(w(c-n:c-1,:,:)  ,1);   % bottom padding
     mc = [A;w;B];                       % add padding
 
-    A  = flipdim(mc(:,2:(2+n-1),:),1);  % left padding
-    B  = flipdim(mc(:,r-n:r-1,:)  ,1);  % right padding
+    A  = flipdim(mc(:,2:(2+n-1),:),2);  % left padding
+    B  = flipdim(mc(:,r-n:r-1,:)  ,2);  % right padding
     mc = [A mc B];                      % add padding
 
 end
