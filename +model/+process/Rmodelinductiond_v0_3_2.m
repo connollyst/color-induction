@@ -61,22 +61,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         gy_final(:,:,t) = y;
     end
 
-    % TODO some kind of normalization specific to 3 orientations, refactor
-    for t=1:n_membr
-        for s=1:n_scales
-            gx_final_2 = gx_final{2,s,t}(:,:,:);
-            gx_final{2,s,t}(:,:,:) = gx_final{3,s,t}(:,:,:);
-            gx_final{3,2,t}(:,:,:) = gx_final_2;
-        end
-    end
-
+    % Move the diagonal orientation back to the 3rd position
+    % TODO why..?
+    gx_final([3,2],:,:) = gx_final([2,3],:,:);
 end
 
 function validate_input(config)
-    
-    n_cols     = config.image.width;
-    n_rows     = config.image.height;
-    if n_cols <= 10 || n_rows <= 10
+    if config.image.width <= 10 || config.image.height <= 10
        error('Bad stimulus dimensions: the toroidal boundary conditions are ill-defined.');
     end
 end
