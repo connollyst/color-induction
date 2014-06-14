@@ -5,14 +5,9 @@ function Iitheta = normalize_input(Iitheta, config)
 %            for example, Iitheta{1}(:,:,2,3) is the entire input signal at
 %            the first time step, second scale, and third orientation.
 
-    if size(Iitheta{1}, 4) > 1
-        % Normalize by orientations
-        for i=1:config.zli.n_membr;
-            Iitheta_2 = Iitheta{i}(:,:,:,2);
-            Iitheta{i}(:,:,:,2) = Iitheta{i}(:,:,:,3);
-            Iitheta{i}(:,:,:,3) = Iitheta_2;
-        end
-    end
+    % Move the diagonal orientation to the middle orientation position
+    % TODO move this up to the wavelet decomposition step!
+    Iitheta([2,3],:,:) = Iitheta([3,2],:,:);
     
     [Iitheta,~,~] = model.curv_normalization(Iitheta, config);
 end
