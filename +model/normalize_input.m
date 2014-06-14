@@ -32,7 +32,7 @@ function Iitheta = normalize_input(Iitheta, config)
 end
 
 function Iitheta = normalize_all(Iitheta, config)
-%NORMALIZE_ALL Normalize for all the data.
+%NORMALIZE_ALL Normalize all the data at once.
 
     shift         = config.zli.shift;
     factor_normal = config.zli.normal_input;
@@ -73,7 +73,7 @@ function Iitheta = normalize_all(Iitheta, config)
 end
 
 function Iitheta = normalize_scales(Iitheta, config)
-%NORMALIZE_SCALES Normalize for every scale.
+%NORMALIZE_SCALES Normalize for each scale independently.
 
     shift         = config.zli.shift;
     factor_normal = config.zli.normal_input;
@@ -113,13 +113,20 @@ function Iitheta = normalize_scales(Iitheta, config)
 end
 
 function Iitheta = normalize_absolute(Iitheta, config)
-%NORMALIZE_ABSOLUTE
+%NORMALIZE_ABSOLUTE Normalize the data using the absolute min and max.
 
+    shift         = config.zli.shift;
     normal_min    = config.zli.normal_min_absolute;
     normal_max    = config.zli.normal_max_absolute;
     factor_normal = config.zli.normal_input;
     
-    for i=1:config.zli.n_membr
-        Iitheta{i}=((Iitheta{i}-normal_min)/(normal_max-normal_min))*(factor_normal-shift)+shift;
+    for t=1:config.zli.n_membr
+        for s=1:config.wave.n_scales
+            for o=1:config.wave.n_orients
+                Iitheta{o,s,t} = (...
+                    (Iitheta{o,s,t}-normal_min)/(normal_max-normal_min)...
+                    ) * (factor_normal - shift) + shift;
+            end
+        end
     end
 end
