@@ -24,22 +24,20 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
         % mirror boundary condition
         toroidal_x{s+scale_distance} = padarray(x(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
         toroidal_y{s+scale_distance} = padarray(y(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
-    end	% of the loop over scales
-    % Assign values to the pad (for scales)
-    kk_tmp1                = zeros(size(toroidal_x{scale_distance+1})); 
-    kk_tmp2                = zeros(size(toroidal_x{n_scales+scale_distance}));
-    kk_tmp1_y              = zeros(size(toroidal_y{scale_distance+1})); 
-    kk_tmp2_y              = zeros(size(toroidal_y{n_scales+scale_distance}));
+    end
     newgx_toroidal_x       = cell(magic_num, 1);
     newgy_toroidal_y       = cell(magic_num, 1);
-    restr_newgx_toroidal_x = zeros(n_cols, n_rows, magic_num, n_orients);
-    restr_newgy_toroidal_y = zeros(n_cols, n_rows, magic_num, n_orients);
-
     for s=1:magic_num
         newgx_toroidal_x{s} = model.terms.newgx(toroidal_x{s});
         newgy_toroidal_y{s} = model.terms.newgy(toroidal_y{s});
     end
 
+    kk_tmp1                = zeros(size(toroidal_x{scale_distance+1})); 
+    kk_tmp2                = zeros(size(toroidal_x{n_scales+scale_distance}));
+    kk_tmp1_y              = zeros(size(toroidal_y{scale_distance+1})); 
+    kk_tmp2_y              = zeros(size(toroidal_y{n_scales+scale_distance}));
+    restr_newgx_toroidal_x = zeros(n_cols, n_rows, magic_num, n_orients);
+    restr_newgy_toroidal_y = zeros(n_cols, n_rows, magic_num, n_orients);
     % .. what sorcery is this?
     for i=1:scale_distance+1
         cols      = Delta(1)+1:Delta(1)+n_cols;
