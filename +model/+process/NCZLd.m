@@ -95,6 +95,7 @@ function O = average_scale_output(I, config, n_membr, dynamic)
         t_start         = n_membr - n_frames_promig + 1;
         t_end           = n_membr;
         I_flat          = cat(n_membr, I{:});
+        % TODO this only works when n_membr is 5
         I_flat          = I_flat(:, :, :, :, t_start:t_end);
         O               = mean(I_flat, 5);
     end
