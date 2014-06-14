@@ -5,6 +5,9 @@ function Iitheta = normalize_input(Iitheta, config)
 %            for example, Iitheta{3,2,1}(:,:,:) is the entire input signal
 %            at the first time step, second scale, and third orientation.
 
+    % TODO in the original code, the last scale (residuals) is gone by now!
+    Iitheta(:,config.wave.n_scales+1,:) = [];
+    
     % Move the diagonal orientation to the middle orientation position
     % TODO move this up to the wavelet decomposition step!
     Iitheta([2,3],:,:) = Iitheta([3,2],:,:);
@@ -18,9 +21,16 @@ function Iitheta = normalize_input(Iitheta, config)
             Iitheta = normalize_absolute(Iitheta, config);
     end
 
-    % Per posar a zero el que era zero inicialment (Li1998)
-    for i=1:config.zli.n_membr
-        Iitheta{i}(Iitheta{i} == config.zli.shift) = 0;
+    % Per posar a zero el que era zero inicialment (Li 1998)
+    % TODO I don't think this is correct..
+    %      anything with value 1 gets set to 0, this makes some images
+    %      blocky and leaves others alone.
+    for t=1:config.zli.n_membr
+        for s=1:config.wave.n_scales
+            for o=1:config.wave.n_orients
+                Iitheta{o,s,t}(Iitheta{o,s,t} == config.zli.shift) = 0;
+            end
+        end
     end
 end
 
@@ -29,13 +39,15 @@ function Iitheta = normalize_all(Iitheta, config)
 
     factor_normal = config.zli.normal_input;
     n_membr       = config.zli.n_membr;
+    n_scales      = config.wave.n_scales;
+    n_orients     = config.wave.n_orients;
     shift         = config.zli.shift;
     normal_max_v  = zeros(n_membr, 1);
     normal_min_v  = zeros(n_membr, 1);
 
     for i=1:n_membr
-        normal_max_v(i) = max(Iitheta{i}(:),[],1);
-        normal_min_v(i) = min(Iitheta{i}(:),[],1);
+        normal_max_v(i) = max(max([Iitheta{:,:,1}],[],1));
+        normal_min_v(i) = min(min([Iitheta{:,:,1}],[],1));
     end
 
     normal_max = max(normal_max_v(:),[],1);
@@ -44,8 +56,14 @@ function Iitheta = normalize_all(Iitheta, config)
     if normal_max == normal_min
         Iitheta{i} = 1;
     else
-        for i=1:n_membr
-            Iitheta{i}=((Iitheta{i}-normal_min)/(normal_max-normal_min))*(factor_normal-shift)+shift;
+        for t=1:n_membr
+            for s=1:n_scales
+                for o=1:n_orients
+                    Iitheta{o,s,t} = (...
+                        (Iitheta{o,s,t}-normal_min)/(normal_max-normal_min)...
+                    ) * (factor_normal-shift) + shift;
+                end
+            end
         end
     end
 end
