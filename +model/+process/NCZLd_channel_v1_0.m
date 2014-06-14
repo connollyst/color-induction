@@ -21,5 +21,5 @@ function I_out = NCZLd_channel_v1_0(I, config)
     
     [curv, w, c] = wavelets.wavelet_decomposition(I, config);
     curv_final   = model.process.NCZLd_channel_ON_OFF_v1_1(curv, config);
-    I_out        = wavelets.wavelet_decomposition_inverse(curv_final, w, c, config);
+    I_out        = wavelets.wavelet_decomposition_inverse(curv_final, config);
 end
