@@ -22,9 +22,6 @@ function Iitheta = normalize_input(Iitheta, config)
     end
 
     % Per posar a zero el que era zero inicialment (Li 1998)
-    % TODO I don't think this is correct..
-    %      anything with value 1 gets set to 0, this makes some images
-    %      blocky and leaves others alone.
     for t=1:config.zli.n_membr
         for s=1:config.wave.n_scales
             for o=1:config.wave.n_orients
@@ -37,24 +34,31 @@ end
 function Iitheta = normalize_all(Iitheta, config)
 %NORMALIZE_ALL Normalize for all the data.
 
+    shift         = config.zli.shift;
     factor_normal = config.zli.normal_input;
     n_membr       = config.zli.n_membr;
     n_scales      = config.wave.n_scales;
     n_orients     = config.wave.n_orients;
-    shift         = config.zli.shift;
     normal_max_v  = zeros(n_membr, 1);
     normal_min_v  = zeros(n_membr, 1);
 
-    for i=1:n_membr
-        normal_max_v(i) = max(max([Iitheta{:,:,1}],[],1));
-        normal_min_v(i) = min(min([Iitheta{:,:,1}],[],1));
+    for t=1:n_membr
+        normal_max_v(t) = max(max([Iitheta{:,:,t}],[],1));
+        normal_min_v(t) = min(min([Iitheta{:,:,t}],[],1));
     end
 
     normal_max = max(normal_max_v(:),[],1);
     normal_min = min(normal_min_v(:),[],1);
 
     if normal_max == normal_min
-        Iitheta{i} = 1;
+        for t=1:n_membr
+            for s=1:n_scales
+                for o=1:n_orients
+                    % Why not 1.02 like in normalize_scales?
+                    Iitheta{o,s,t}(:,:,:) = 1;
+                end
+            end
+        end
     else
         for t=1:n_membr
             for s=1:n_scales
@@ -71,17 +75,18 @@ end
 function Iitheta = normalize_scales(Iitheta, config)
 %NORMALIZE_SCALES Normalize for every scale.
 
+    shift         = config.zli.shift;
     factor_normal = config.zli.normal_input;
-    n_membr   = config.zli.n_membr;
-    n_scales = config.wave.n_scales;
+    n_membr       = config.zli.n_membr;
+    n_scales      = config.wave.n_scales;
+    n_orients     = config.wave.n_orients;
     
-    normal_max_v = zeros(n_scales,n_membr);
-    normal_min_v = zeros(n_scales,n_membr);
+    normal_max_v  = zeros(n_scales, n_membr);
+    normal_min_v  = zeros(n_scales, n_membr);
     for s=1:n_scales
-        for i=1:n_membr
-            kk = Iitheta{i}(:,:,s,:);
-            normal_max_v(s,i) = max(kk(:),[],1);
-            normal_min_v(s,i) = min(kk(:),[],1);
+        for t=1:n_membr
+            normal_max_v(s,t) = max(max([Iitheta{:,s,t}],[],1));
+            normal_min_v(s,t) = max(max([Iitheta{:,s,t}],[],1));
         end
     end
     normal_max = max(normal_max_v,[],2);
@@ -89,12 +94,19 @@ function Iitheta = normalize_scales(Iitheta, config)
 
     for s=1:n_scales
         if normal_max(s)==normal_min(s)
-            for i=1:n_membr
-                Iitheta{i}(:,:,s,:)=1.02; % El minim segons Li1998
+            for t=1:n_membr
+                for o=1:n_orients
+                    % TODO is this correctly assigned?
+                    Iitheta{o,s,t}(:,:,:) = 1.02; % El minim segons Li1998
+                end
             end
         else
-            for i=1:n_membr
-                Iitheta{i}(:,:,s,:)=((Iitheta{i}(:,:,s,:)-normal_min(s))/(normal_max(s)-normal_min(s)))*(factor_normal-shift)+shift;
+            for t=1:n_membr
+                for o=1:n_orients
+                    Iitheta{o,s,t} = (...
+                        (Iitheta{o,s,t}-normal_min(s))/(normal_max(s)-normal_min(s))...
+                    ) * (factor_normal - shift) + shift;
+                end
             end
         end
     end
