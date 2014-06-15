@@ -43,8 +43,8 @@ function Iitheta = normalize_all(Iitheta, config)
     normal_min_v  = zeros(n_membr, 1);
 
     for t=1:n_membr
-        normal_max_v(t) = max(max([Iitheta{:,:,t}],[],1));
-        normal_min_v(t) = min(min([Iitheta{:,:,t}],[],1));
+        normal_max_v(t) = max(max(max([Iitheta{:,:,t}],[],1)));
+        normal_min_v(t) = max(min(min([Iitheta{:,:,t}],[],1)));
     end
 
     normal_max = max(normal_max_v(:),[],1);
