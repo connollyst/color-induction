@@ -174,7 +174,6 @@ function noise = generate_noise(config)
 %GENERATE_NOISE Generate neural noise.
     n_cols     = config.image.width;
     n_rows     = config.image.height;
-    n_channels = config.image.n_channels;   % TODO reshape noise to include channels
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     var_noise  = 0.1 * 2;
