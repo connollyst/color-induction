@@ -1,4 +1,4 @@
-function [curv, w, c] = wavelet_decomposition(I, config)
+function curv = wavelet_decomposition(I, config)
 %WAVELET_DECOMPOSITION Decompose the given image(s) with a wavelet.
 %   I:      The input image data, a cell array where each element is a 2 or 3
 %           dimensional image.
