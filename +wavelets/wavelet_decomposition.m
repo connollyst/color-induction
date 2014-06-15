@@ -4,12 +4,13 @@ function [curv, w, c] = wavelet_decomposition(I, config)
 %           dimensional image.
 %   config: The configuration data struct.
 
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;
     n_membr    = config.zli.n_membr;
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     dynamic    = config.compute.dynamic;
-    
-    curv = cell(n_orients, n_scales, n_membr);
 
     % Number of wavelet decompositions to perform.
     % If this is not dynamic, we decompose the first frame and duplicate.
@@ -20,27 +21,21 @@ function [curv, w, c] = wavelet_decomposition(I, config)
         n_iters = 1;
     end
     
+    curv = cell(n_membr, 1);
     % different wavelet decompositions		
     for i=1:n_iters
         % TODO provide wavelet funciton dynamically
         [w, c] = wavelets.DWD_orient_undecimated(I{i}, n_scales-1);
-        for s=1:n_scales-1
-            for o=1:n_orients
-                curv{o,s,i} = w{o,s};
-            end
-        end
+        curv{i} = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+        curv{i}(:,:,:,1:n_scales-1,:) = w;
         % TODO we keep the residual as the extra scale.. sloppy
-        curv(1:n_scales-1,3,i) = c;
+        curv{i}(:,:,:,3,1:n_scales-1) = c;
     end
     
     % replicate wavelet planes if static stimulus
     if dynamic ~= 1
         for i=2:n_membr
-            for s=1:n_scales
-                for o=1:n_orients
-                    curv{o,s,i} = curv{o,s,1};
-                end
-            end
+            curv{i} = curv{1};
         end
     end
 end

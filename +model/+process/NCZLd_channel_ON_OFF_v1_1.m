@@ -56,6 +56,7 @@ function curv_final = process_ON_OFF_separately(curv, config)
 
     %% Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     disp('Starting ON processing');
+    % TODO we should have an iFactor for each dimension!!
     iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(curv_ON, config);
 
     %% Negatius ----------------------------------------------------
