@@ -50,15 +50,15 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                      );
         end
         toc
-        x = temp.new_to_old(x); % DELETEME!!
-        y = temp.new_to_old(y); % DELETEME!!
+        x2 = temp.new_to_old(x); % DELETEME!!
+        y2 = temp.new_to_old(y); % DELETEME!!
         % TODO newgx/y should return the scale/orient as a cell array
-        x = model.terms.newgx(x);
-        y = model.terms.newgy(y);
-        x = temp.old_to_new(x); % DELETEME!!
-        y = temp.old_to_new(y); % DELETEME!!
-        gx_final(:,:,t) = x;
-        gy_final(:,:,t) = y;
+        x2 = model.terms.newgx(x2);
+        y2 = model.terms.newgy(y2);
+        x2 = temp.old_to_new(x2); % DELETEME!!
+        y2 = temp.old_to_new(y2); % DELETEME!!
+        gx_final(:,:,t) = x2;
+        gy_final(:,:,t) = y2;
     end
 
     % Move the diagonal orientation back to the 3rd position
