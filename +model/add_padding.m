@@ -3,6 +3,7 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
 
     n_cols              = config.image.width;
     n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     
@@ -10,24 +11,18 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     Delta_ext           = interactions.Delta_ext;
     border_weight       = interactions.border_weight;
     
-    magic_num  = n_scales + 2 * scale_distance;  % Whaaa??
+    n_scale_interactions  = n_scales + 2 * scale_distance;  % Whaaa??
     
-    % TEMP!!!
-    % We've restructured x and y, this rebuilds the old structure so we can
-    % understand what was being done in this function..
-    x = temp.new_to_old(x);
-    y = temp.new_to_old(y);
-    
-    toroidal_x = cell(magic_num, 1);
-    toroidal_y = cell(magic_num, 1);
+    toroidal_x = cell(n_scale_interactions, 1);
+    toroidal_y = cell(n_scale_interactions, 1);
     for s=1:n_scales
         % mirror boundary condition
-        toroidal_x{s+scale_distance} = padarray(x(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
-        toroidal_y{s+scale_distance} = padarray(y(:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
+        toroidal_x{s+scale_distance} = padarray(x(:,:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
+        toroidal_y{s+scale_distance} = padarray(y(:,:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
     end
-    newgx_toroidal_x       = cell(magic_num, 1);
-    newgy_toroidal_y       = cell(magic_num, 1);
-    for s=1:magic_num
+    newgx_toroidal_x       = cell(n_scale_interactions, 1);
+    newgy_toroidal_y       = cell(n_scale_interactions, 1);
+    for s=1:n_scale_interactions
         newgx_toroidal_x{s} = model.terms.newgx(toroidal_x{s});
         newgy_toroidal_y{s} = model.terms.newgy(toroidal_y{s});
     end
@@ -36,8 +31,8 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     kk_tmp2                = zeros(size(toroidal_x{n_scales+scale_distance}));
     kk_tmp1_y              = zeros(size(toroidal_y{scale_distance+1})); 
     kk_tmp2_y              = zeros(size(toroidal_y{n_scales+scale_distance}));
-    restr_newgx_toroidal_x = zeros(n_cols, n_rows, magic_num, n_orients);
-    restr_newgy_toroidal_y = zeros(n_cols, n_rows, magic_num, n_orients);
+    restr_newgx_toroidal_x = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    restr_newgy_toroidal_y = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
     % .. what sorcery is this?
     for i=1:scale_distance+1
         cols      = Delta(1)+1:Delta(1)+n_cols;
@@ -58,13 +53,13 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
 
     newgx_toroidal_x{1:scale_distance} = kk_tmp1;
     newgy_toroidal_y{1:scale_distance} = kk_tmp1_y;
-    newgx_toroidal_x{n_scales+scale_distance+1:magic_num} = kk_tmp2;
-    newgy_toroidal_y{n_scales+scale_distance+1:magic_num} = kk_tmp2_y;
+    newgx_toroidal_x{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2;
+    newgy_toroidal_y{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_y;
 
-    for s=1:magic_num
-        cols = Delta_ext(s)+1 : Delta_ext(s)+n_cols;
-        rows = Delta_ext(s)+1 : Delta_ext(s)+n_rows;
-        restr_newgx_toroidal_x(:,:,s,:) = newgx_toroidal_x{s}(cols, rows, :);
-        restr_newgy_toroidal_y(:,:,s,:) = newgy_toroidal_y{s}(cols, rows, :);
+    for s=1:n_scale_interactions
+        %cols = Delta_ext(s)+1 : Delta_ext(s)+n_cols;
+        %rows = Delta_ext(s)+1 : Delta_ext(s)+n_rows;
+        %restr_newgx_toroidal_x(:,:,:,s,:) = newgx_toroidal_x{s}(cols, rows, :);
+        %restr_newgy_toroidal_y(:,:,:,s,:) = newgy_toroidal_y{s}(cols, rows, :);
     end
 end

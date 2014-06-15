@@ -21,7 +21,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Delta      = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     
     %% Initialize output membrane potentials
-    [gx_final, gy_final] = initialize_output(config);
+    gx_final = utils.initialize_data(config);
+    gy_final = utils.initialize_data(config);
 
     %% Normalization
     Iitheta             = model.normalize_input(Iitheta, config);
@@ -43,7 +44,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
             fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
-            tIitheta = get_tIitheta(Iitheta, t, config);
+            tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
                         tIitheta, x, y, Delta, JW,...
                         normalization_masks, interactions, config...
@@ -72,30 +73,6 @@ function validate_input(config)
     end
 end
 
-function [gx_final, gy_final] = initialize_output(config)
-%INITIALIZE_OUTPUT Initialize the output data structures
-%   gx_final:   the excitation membrane potentials
-%   gy_final:   the inhibition membrane potentials
-
-    n_orients  = config.wave.n_orients;
-    n_scales   = config.wave.n_scales;
-    n_membr    = config.zli.n_membr;
-    n_cols     = config.image.width;
-    n_rows     = config.image.height;
-    n_channels = config.image.n_channels;
-    
-    gx_final = cell(n_orients, n_scales, n_membr);
-    gy_final = cell(n_orients, n_scales, n_membr);
-    for t=1:n_membr
-        for s=1:n_scales
-            for o=1:n_orients
-                gx_final{o,s,t} = zeros(n_cols, n_rows, n_channels); 
-                gy_final{o,s,t} = zeros(n_cols, n_rows, n_channels);
-            end
-        end
-    end
-end
-
 function [x, y] = initialize_input(Iitheta, config)
 %INITIALIZE_INPUT Initialize the initial stimulus to the system.
 %   x and y are two dimensional cell arrays of n-dimensional images. The
@@ -107,38 +84,15 @@ function [x, y] = initialize_input(Iitheta, config)
 %   x: Cell array of the initial exitation stimulus
 %   y: Cell array of the initial inhibition stimulus
 
-    n_orients  = config.wave.n_orients;
-    n_scales   = config.wave.n_scales;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
+    n_orients  = config.wave.n_orients;
+    n_scales   = config.wave.n_scales;
     
     % x is initialized as the visual stimulus (p.192)
-    t = 1; % use first time frame
-    x = cell(n_scales, n_orients);
-    for s=1:n_scales
-        for o=1:n_orients
-            x{o,s} = Iitheta{o,s,t};
-        end
-    end
+    x = Iitheta{1}; % use first time frame
     
     % y is initialized with zero activity
-    y = cell(n_scales, n_orients);
-    for s=1:n_scales
-        for o=1:n_orients
-            y{o,s} = zeros(n_cols, n_rows, n_channels);
-        end
-    end
-end
-
-function tIitheta = get_tIitheta(Iitheta, t, config)
-    n_orients = config.wave.n_orients;
-    n_scales  = config.wave.n_scales;
-    tIitheta  = cell(n_orients, n_scales);
-    % TODO we can just select like Iitheta(:,:,t)
-    for s=1:n_scales
-        for o=1:n_orients
-            tIitheta{o,s} = Iitheta{o,s,t};
-        end
-    end
+    y = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
 end

@@ -4,17 +4,23 @@ function Iitheta = normalize_input(Iitheta, config)
 %            each cell is a the signal at a membrane time step such that,
 %            for example, Iitheta{3,2,1}(:,:,:) is the entire input signal
 %            at the first time step, second scale, and third orientation.
-
-    % TODO in the original code, the last scale (residuals) is gone by now!
-    Iitheta(:,config.wave.n_scales+1,:) = [];
     
-    % Move the diagonal orientation to the middle orientation position
-    % TODO move this up to the wavelet decomposition step!
-    Iitheta([2,3],:,:) = Iitheta([3,2],:,:);
+    for t=1:config.zli.n_membr
+        % TODO in the original code, the last scale (residuals) is gone by now!
+        Iitheta{t}(:,:,:,config.wave.n_scales+1,:) = [];
+        % Move the diagonal orientation to the middle orientation position
+        % TODO move this up to the wavelet decomposition step!
+        Iitheta{t}(:,:,:,:,[2,3]) = Iitheta{t}(:,:,:,:,[3,2]);
+    end
+    
+    %DEBUGGING
+    config.zli.normal_type = 'color';
     
     switch config.zli.normal_type
         case ('all')
             Iitheta = normalize_all(Iitheta, config);
+        case ('color')
+            Iitheta = normalize_colors(Iitheta, config);
         case ('scale')
             Iitheta = normalize_scales(Iitheta, config);
         case ('absolute')
@@ -23,11 +29,7 @@ function Iitheta = normalize_input(Iitheta, config)
 
     % Per posar a zero el que era zero inicialment (Li 1998)
     for t=1:config.zli.n_membr
-        for s=1:config.wave.n_scales
-            for o=1:config.wave.n_orients
-                Iitheta{o,s,t}(Iitheta{o,s,t} == config.zli.shift) = 0;
-            end
-        end
+        Iitheta{t}(Iitheta{t} == config.zli.shift) = 0;
     end
 end
 
@@ -37,14 +39,12 @@ function Iitheta = normalize_all(Iitheta, config)
     shift         = config.zli.shift;
     factor_normal = config.zli.normal_input;
     n_membr       = config.zli.n_membr;
-    n_scales      = config.wave.n_scales;
-    n_orients     = config.wave.n_orients;
     normal_max_v  = zeros(n_membr, 1);
     normal_min_v  = zeros(n_membr, 1);
 
     for t=1:n_membr
-        normal_max_v(t) = max(max(max([Iitheta{:,:,t}],[],1)));
-        normal_min_v(t) = max(min(min([Iitheta{:,:,t}],[],1)));
+        normal_max_v(t) = max(Iitheta{t}(:));
+        normal_min_v(t) = min(Iitheta{t}(:));
     end
 
     normal_max = max(normal_max_v(:),[],1);
@@ -52,21 +52,48 @@ function Iitheta = normalize_all(Iitheta, config)
 
     if normal_max == normal_min
         for t=1:n_membr
-            for s=1:n_scales
-                for o=1:n_orients
-                    % Why not 1.02 like in normalize_scales?
-                    Iitheta{o,s,t}(:,:,:) = 1;
-                end
-            end
+            % Why not 1.02 like in normalize_scales?
+            Iitheta{t}(:,:) = 1;
         end
     else
         for t=1:n_membr
-            for s=1:n_scales
-                for o=1:n_orients
-                    Iitheta{o,s,t} = (...
-                        (Iitheta{o,s,t}-normal_min)/(normal_max-normal_min)...
-                    ) * (factor_normal-shift) + shift;
-                end
+            Iitheta{t} = ( ...
+                (Iitheta{t} - normal_min) / (normal_max - normal_min) ...
+            ) * (factor_normal - shift) + shift;
+        end
+    end
+end
+
+function Iitheta = normalize_colors(Iitheta, config)
+%NORMALIZE_COLORS Normalize for each color channel independently.
+
+    shift         = config.zli.shift;
+    factor_normal = config.zli.normal_input;
+    n_membr       = config.zli.n_membr;
+    n_channels    = config.image.n_channels;
+    
+    normal_max_v  = zeros(n_channels, n_membr);
+    normal_min_v  = zeros(n_channels, n_membr);
+    for c=1:n_channels
+        for t=1:n_membr
+            scale = Iitheta{t}(:,:,c,:,:);
+            normal_max_v(c,t) = max(scale(:));
+            normal_min_v(c,t) = min(scale(:));
+        end
+    end
+    normal_max = max(normal_max_v,[],2);
+    normal_min = min(normal_min_v,[],2);
+
+    for c=1:n_channels
+        if normal_max(c)==normal_min(c)
+            for t=1:n_membr
+                Iitheta{t}(:,:) = 1.02; % El minim segons Li1998
+            end
+        else
+            for t=1:n_membr
+                Iitheta{t}(:,:,c,:,:) = (...
+                    (Iitheta{t}(:,:,c,:,:)-normal_min(c))/(normal_max(c)-normal_min(c))...
+                ) * (factor_normal - shift) + shift;
             end
         end
     end
@@ -79,14 +106,14 @@ function Iitheta = normalize_scales(Iitheta, config)
     factor_normal = config.zli.normal_input;
     n_membr       = config.zli.n_membr;
     n_scales      = config.wave.n_scales;
-    n_orients     = config.wave.n_orients;
     
     normal_max_v  = zeros(n_scales, n_membr);
     normal_min_v  = zeros(n_scales, n_membr);
     for s=1:n_scales
         for t=1:n_membr
-            normal_max_v(s,t) = max(max([Iitheta{:,s,t}],[],1));
-            normal_min_v(s,t) = max(max([Iitheta{:,s,t}],[],1));
+            scale = Iitheta{t}(:,:,:,s,:);
+            normal_max_v(s,t) = max(scale(:));
+            normal_min_v(s,t) = min(scale(:));
         end
     end
     normal_max = max(normal_max_v,[],2);
@@ -95,18 +122,13 @@ function Iitheta = normalize_scales(Iitheta, config)
     for s=1:n_scales
         if normal_max(s)==normal_min(s)
             for t=1:n_membr
-                for o=1:n_orients
-                    % TODO is this correctly assigned?
-                    Iitheta{o,s,t}(:,:,:) = 1.02; % El minim segons Li1998
-                end
+                Iitheta{t}(:,:) = 1.02; % El minim segons Li1998
             end
         else
             for t=1:n_membr
-                for o=1:n_orients
-                    Iitheta{o,s,t} = (...
-                        (Iitheta{o,s,t}-normal_min(s))/(normal_max(s)-normal_min(s))...
-                    ) * (factor_normal - shift) + shift;
-                end
+                Iitheta{t}(:,:,:,s,:) = (...
+                    (Iitheta{t}(:,:,:,s,:)-normal_min(s))/(normal_max(s)-normal_min(s))...
+                ) * (factor_normal - shift) + shift;
             end
         end
     end
@@ -121,12 +143,8 @@ function Iitheta = normalize_absolute(Iitheta, config)
     factor_normal = config.zli.normal_input;
     
     for t=1:config.zli.n_membr
-        for s=1:config.wave.n_scales
-            for o=1:config.wave.n_orients
-                Iitheta{o,s,t} = (...
-                    (Iitheta{o,s,t}-normal_min)/(normal_max-normal_min)...
-                    ) * (factor_normal - shift) + shift;
-            end
-        end
+        Iitheta{t} = (...
+            (Iitheta{t} - normal_min)/(normal_max - normal_min)...
+            ) * (factor_normal - shift) + shift;
     end
 end
