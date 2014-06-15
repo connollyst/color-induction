@@ -42,16 +42,12 @@ function curv_final = process_ON_OFF_separately(curv, config)
 
     %% Calculate the ON/OFF signals
     for t=1:n_membr
-        for s=1:fin_scale
-            for o=1:n_orients
-                index_OFF        = find(curv{o,s,t} <= 0);
-                index_ON         = find(curv{o,s,t} >= 0);
-                curv_ON{o,s,t}   =  curv{o,s,t};
-                curv_OFF{o,s,t}  = -curv{o,s,t};
-                curv_ON{o,s,t}(index_OFF) = 0;
-                curv_OFF{o,s,t}(index_ON) = 0;
-            end
-        end
+        index_OFF             = curv{t} <= 0;
+        index_ON              = curv{t} >= 0;
+        curv_ON{t}            =  curv{t};
+        curv_OFF{t}           = -curv{t};
+        curv_ON{t}(index_OFF) = 0;
+        curv_OFF{t}(index_ON) = 0;
     end
 
     %% Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
