@@ -153,13 +153,6 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
 %CALCULATE_XY Formulas (1) and (2) p.192, Li 1999
 %   Calculate the next excitatory (x) and inhibitory (y) membrane
 %   potentials.
-
-    % TEMP!!!
-    % We've restructured x and y, this rebuilds the old structure so we can
-    % understand what was being done in this function..
-    x        = temp.new_to_old(x);          % DELETEME!!
-    y        = temp.new_to_old(y);          % DELETEME!!
-    tIitheta = temp.new_to_old(tIitheta);   % DELETEME!!
     
     prec = 1/config.zli.n_iter;
     
@@ -182,9 +175,6 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             + 0.85...                                   % spontaneous firing rate
             + generate_noise(config)...                 % neural noise (comment for speed)
         );
-    
-    x = temp.old_to_new(x); % DELETEME!!
-    y = temp.old_to_new(y); % DELETEME!!
 end
 
 function noise = generate_noise(config)
