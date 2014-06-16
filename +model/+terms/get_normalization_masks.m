@@ -1,5 +1,19 @@
 function norm_mask = get_normalization_masks(config)
-%GET_NORMALIZATION_MASK
+%GET_NORMALIZATION_MASK Returns the normalization masks for each scale.
+%   Generates and returns a structure array containing the original and
+%   FFT normalization convolution masks for each scale.
+    
+    [M_norm_conv, inv_den] = compute_M_norm_conv(config);
+    M_norm_conv_fft        = compute_M_norm_conv_fft(M_norm_conv, config);
+    
+    % Package up results to be returned
+    norm_mask = struct;
+    norm_mask.M_norm_conv     = M_norm_conv;
+    norm_mask.M_norm_conv_fft = M_norm_conv_fft;
+    norm_mask.inv_den         = inv_den;
+end
+
+function [M_norm_conv, inv_den] = compute_M_norm_conv(config)
     n_scales    = config.wave.n_scales;
     dist_type   = config.zli.dist_type;
     scale_type  = config.zli.scale2size_type;
@@ -16,19 +30,13 @@ function norm_mask = get_normalization_masks(config)
         M_norm_conv{s}(d<=2) = 1;
         inv_den{s} = 1/sum(M_norm_conv{s}(:));
     end
-    M_norm_conv_fft = compute_M_norm_conv_fft(M_norm_conv, n_scales, config);
-    
-    % Package up results to be returned
-    norm_mask = struct;
-    norm_mask.M_norm_conv     = M_norm_conv;
-    norm_mask.M_norm_conv_fft = M_norm_conv_fft;
-    norm_mask.inv_den         = inv_den;
 end
 
-function M_norm_conv_fft = compute_M_norm_conv_fft(M_norm_conv, n_scales, config)
+function M_norm_conv_fft = compute_M_norm_conv_fft(M_norm_conv, config)
+    n_scales        = config.wave.n_scales;
     n_cols          = config.image.width;
     n_rows          = config.image.height;
-    M_norm_conv_fft = cell(n_scales,1);
+    M_norm_conv_fft = cell(n_scales, 1);
     for s=1:n_scales
         if config.compute.use_fft
             radi=(size(M_norm_conv{s})-1)/2;
