@@ -16,6 +16,8 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interac
     [newgx_toroidal_x, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, Delta, interactions, config);
     [x_ee, x_ei, y_ie]                               = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, Delta, JW, interactions, config);
     I_norm                                           = normalize(norm_mask, newgx_toroidal_x, interactions, config);
+    imagesc(I_norm(:,:));
+    waitforbuttonpress;
     [x_out, y_out]                                   = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
 end
 
@@ -30,23 +32,26 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     % Computation Configurations
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    x_ee   = zeros(n_cols, n_rows, n_scales, n_orients);
-    x_ei   = zeros(n_cols, n_rows, n_scales, n_orients);
-    y_ie   = zeros(n_cols, n_rows, n_scales, n_orients);
+    x_ee   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    x_ei   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    y_ie   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
     if use_fft
-        newgx_toroidal_x_fft = cell(scale_distance+n_scales,1);
+        newgx_toroidal_x_fft = cell(scale_distance+n_scales, n_channels);
         for s=1:n_scales
-            newgx_toroidal_x_fft{scale_distance+s}=cell(n_orients,1);
-            for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                newgx_toroidal_x_fft{scale_distance+s}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,ov));
+            for c=1:n_channels
+                newgx_toroidal_x_fft{scale_distance+s, c} = cell(n_orients, 1);
+                for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+                    newgx_toroidal_x_fft{scale_distance+s, c}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,c,1,ov));
+                end
             end
         end
     end
@@ -56,32 +61,40 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
         % influence of the neighboring scales first
 
         sum_scale_newgy_toroidal_y = convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
-        restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,scale_distance+1:scale_distance+n_scales,:); % restriction over scales
-        w = zeros(1,1,1,n_orients);w(1,1,1,:)=PsiDtheta(oc,:);
-        x_ei(:,:,:,oc) = sum(restr_sum_scale_newgy_toroidal_y.*repmat(w,[n_cols,n_rows,n_scales,1]),4);
+        restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,:,scale_distance+1:scale_distance+n_scales,:); % restriction over scales
+        w = zeros(1,1,1,1,n_orients); w(1,1,1,1,:) = PsiDtheta(oc,:);
+        x_ei(:,:,:,:,oc) = sum(restr_sum_scale_newgy_toroidal_y .* repmat(w,[n_cols,n_rows,n_channels,n_scales,1]), 5);
 
         % excitatory and inhibitory terms (the big sums)
         % excitatory-excitatory term:    x_ee
         % excitatory-inhibitory term:    y_ie
 
-        x_ee_conv_tmp = zeros(n_cols, n_rows, n_scales, n_orients);
-        y_ie_conv_tmp = zeros(n_cols, n_rows, n_scales, n_orients);
+        x_ee_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+        y_ie_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
 
         for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
             % FFT
             if use_fft
                 for s=1:n_scales
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{scale_distance+s}{ov},JW.J_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
-                    x_ee_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+n_cols,Delta(s)+1:Delta(s)+n_rows);
-                    kk=convolutions.optima_fft(newgx_toroidal_x_fft{scale_distance+s}{ov},JW.W_fft{s}(:,:,1,ov,oc),half_size_filter{s},1,avoid_circshift_fft);
-                    y_ie_conv_tmp(:,:,s,ov)=kk(Delta(s)+1:Delta(s)+n_cols,Delta(s)+1:Delta(s)+n_rows);
+                    for c=1:n_channels
+                        cols = Delta(s)+1:Delta(s)+n_cols;
+                        rows = Delta(s)+1:Delta(s)+n_rows;
+                        x_fft = newgx_toroidal_x_fft{scale_distance+s,c}{ov};
+                        J_fft_s = JW.J_fft{s}(:,:,1,ov,oc);
+                        W_fft_s = JW.W_fft{s}(:,:,1,ov,oc);
+                        s_filter = half_size_filter{s};
+                        kk = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
+                        x_ee_conv_tmp(:,:,c,s,ov) = kk(cols, rows);
+                        kk = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
+                        y_ie_conv_tmp(:,:,c,s,ov) = kk(cols, rows);
+                    end
                 end
             else
                 error('Non FFT approach is not implemented.');
             end
         end
-        x_ee(:,:,:,oc) = sum(x_ee_conv_tmp, 4);
-        y_ie(:,:,:,oc) = sum(y_ie_conv_tmp, 4);
+        x_ee(:,:,:,:,oc) = sum(x_ee_conv_tmp, 5);
+        y_ie(:,:,:,:,oc) = sum(y_ie_conv_tmp, 5);
     end   % of the loop over the central (reference) orientation
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,36 +112,40 @@ function I_norm = normalize(norm_mask, newgx_toroidal_x, interactions, config)
 
     n_cols              = config.image.width;
     n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
-    r                   = config.zli.normalization_power; % normalization (I_norm)
+    r                   = config.zli.normalization_power;
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
     scale_distance      = interactions.scale_distance;
     Delta_ext           = interactions.Delta_ext;
     
-    I_norm = zeros(n_cols, n_rows, n_scales, n_orients);
-    for s=scale_distance+1:scale_distance+n_scales
-        radi=(size(M_norm_conv{s-scale_distance})-1)/2;
-        % sum over all the orientations
-        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 4);
-        despl = radi;
-        kk = convolutions.optima( ...
-            sum_newgx_toroidal_x_sc( ...
-                Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
-                Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2) ...
-            ), ...
-            M_norm_conv_fft{s-scale_distance}, despl, 1, avoid_circshift_fft ...
-        ); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
-        I_norm(:, :, s-scale_distance, :) = repmat( ...
-            kk(radi(1) + 1 : n_cols + radi(1), radi(2) + 1 : n_rows + radi(2)),...
-            [1 1 n_orients] ...
-        );
+    I_norm = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    for c=1:n_channels
+        for s=scale_distance+1:scale_distance+n_scales
+            s2 = s - scale_distance;
+            radi=(size(M_norm_conv{s2})-1)/2;
+            % sum over all the orientations
+            sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 5);
+            despl = radi;
+            kk = convolutions.optima( ...
+                sum_newgx_toroidal_x_sc( ...
+                    Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
+                    Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2) ...
+                ), ...
+                M_norm_conv_fft{s2}, despl, 1, avoid_circshift_fft ...
+            ); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
+            kk_cols = radi(1) + 1 : n_cols + radi(1);
+            kk_rows = radi(2) + 1 : n_rows + radi(2);
+            I_norm_s2 = repmat(kk(kk_cols, kk_rows), [1 1 n_orients]);
+            I_norm(:, :, c, s2, :) = I_norm_s2;
+        end
     end
     for s=1:n_scales  % times roughly 50 if the flag is 1
-        I_norm(:,:,s,:) = -2 * (I_norm(:,:,s,:) * inv_den{s}) .^ r;
+        I_norm(:,:,:,s,:) = -2 * (I_norm(:,:,:,s,:) * inv_den{s}) .^ r;
     end
 end
 
