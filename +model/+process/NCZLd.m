@@ -94,9 +94,8 @@ function O = average_scale_output(I, config, n_membr, dynamic)
         n_frames_promig = config.image.n_frames_promig;
         t_start         = n_membr - n_frames_promig + 1;
         t_end           = n_membr;
-        I_flat          = cat(n_membr, I{:});
-        % TODO this only works when n_membr is 5
-        I_flat          = I_flat(:, :, :, :, t_start:t_end);
-        O               = mean(I_flat, 5);
+        I_dims = ndims(I{1});
+        I_flat = cat(I_dims+1, I{t_start:t_end});
+        O = mean(I_flat, I_dims+1);
     end
 end
