@@ -1,7 +1,7 @@
 function rec = IDWD_orient_undecimated(w, c)
-    n_scales = length(c);
-    rec      = c{n_scales,1};
+    n_scales = size(c, 4);
+    rec      = c(:,:,:,n_scales);
     for s = n_scales:-1:1
-        rec = rec + w{1,s} + w{2,s} + w{3,s};
+        rec = rec + w(:,:,:,s,1) + w(:,:,:,s,2) + w(:,:,:,s,3);
     end
 end
