@@ -3,7 +3,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999.
 %   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
-%            Iitheta{o,s,t}(c,r,d) is the column (c), row (r) and color
+%            Iitheta{t}(c,r,d,s,o) is the column (c), row (r) and color
 %            dimension (d) of image (t), decomposed at scale (s) and
 %            orientation (o).
 %   config:  The model configuration struct array
