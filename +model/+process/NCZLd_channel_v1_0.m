@@ -16,10 +16,6 @@ function I_out = NCZLd_channel_v1_0(I, config)
 %          Each cell in the array has the dimensions of the original image,
 %          each pixel indicating the excitation at that row, column &
 %          channel.
-    
-    % TODO this isn't necessary, the residual isn't an extra scale anymore
-    config.wave.fin_scale = config.wave.n_scales - config.zli.fin_scale_offset;
-    
     [wavelet, residual] = wavelets.wavelet_decomposition(I, config);
     wavelet_out         = model.process.NCZLd_channel_ON_OFF_v1_1(wavelet, config);
     I_out               = wavelets.wavelet_decomposition_inverse(wavelet_out, residual, config);

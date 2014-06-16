@@ -1,12 +1,6 @@
 function Iitheta_final = NCZLd_channel_ON_OFF_v1_1(Iitheta, config)
 %NCZLd_CHANNEL_ON_OFF_V1_1 Separate ON and OFF channels and start
 %   recovering the response at the level of the wavelet/Gabor responses.
-    
-    % Number of scales
-    % TODO this is super sloppy..
-    config.wave.n_scales = config.wave.fin_scale;
-    
-    % choose the algorithm (separated, abs, quadratic) 
     switch config.zli.ON_OFF
         case 0 % Separated
             Iitheta_final = process_ON_OFF_separately(Iitheta, config);

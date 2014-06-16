@@ -64,9 +64,9 @@ function n_scales = calculate_scales(I, config)
     if config.zli.fin_scale_offset == 0
         % parameter to adjust the correct number of the last wavelet plane (obsolete)
         % TODO if this is obsolete, can it be removed?
-        extra = 2;
+        extra = 1;
     else
-        extra = 3;
+        extra = 2;
     end
     mida_min = config.wave.mida_min;
     % TODO scales should be calculated using all colors/frames
