@@ -2,16 +2,13 @@ function curv_final = NCZLd_channel_ON_OFF_v1_1(curv, config)
 %NCZLd_CHANNEL_ON_OFF_V1_1 Separate ON and OFF channels and start
 %   recovering thye response at the level of the wavelet/Gabor responses.
 % 
-
-    ON_OFF        = config.zli.ON_OFF;
-    fin_scale     = config.wave.fin_scale;
     
     % Number of scales
     % TODO this is super sloppy..
-    config.wave.n_scales = fin_scale;
+    config.wave.n_scales = config.wave.fin_scale;
     
     % choose the algorithm (separated, abs, quadratic) 
-    switch(ON_OFF)
+    switch config.zli.ON_OFF
         case 0 % Separated
             curv_final = process_ON_OFF_separately(curv, config);
         case 1 % ABS
@@ -25,13 +22,6 @@ function curv_final = process_ON_OFF_separately(curv, config)
 %PROCESS_ON_OFF_SEPARATELY Process the ON and OFF channels independently.
 
     n_membr  = config.zli.n_membr;
-    n_scales = config.wave.n_scales;
-    
-    %% Remove residual scale
-    for t=1:n_membr
-        % TODO we shouldn't even package these together in the first place
-        curv{t}(:,:,:,n_scales,:) = [];
-    end
     
     %% Initialize data structures
     curv_ON        = curv;
