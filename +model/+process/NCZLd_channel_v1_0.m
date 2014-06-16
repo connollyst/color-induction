@@ -17,32 +17,10 @@ function I_out = NCZLd_channel_v1_0(I, config)
 %          each pixel indicating the excitation at that row, column &
 %          channel.
     
+    % TODO this isn't necessary, the residual isn't an extra scale anymore
     config.wave.fin_scale = config.wave.n_scales - config.zli.fin_scale_offset;
     
-    curv             = wavelets.wavelet_decomposition(I, config);
-    [curv, residual] = separate_residual(curv, config);               % TODO deleteme
-    curv_final       = model.process.NCZLd_channel_ON_OFF_v1_1(curv, config);
-    curv_final       = attach_residual(curv_final, residual, config); % TODO deleteme
-    I_out            = wavelets.wavelet_decomposition_inverse(curv_final, config);
-end
-
-function [curv, residual] = separate_residual(curv, config)
-    n_membr  = config.zli.n_membr;
-    n_scales = config.wave.n_scales;
-    residual = cell(size(curv));
-    for t=1:n_membr
-        % TODO we shouldn't even package these together in the first place
-        residual{t} = curv{t}(:,:,:,n_scales,:);
-        curv{t}(:,:,:,n_scales,:) = [];
-    end
-end
-
-function curv_final_out = attach_residual(curv_final, residual, config)
-    n_membr  = config.zli.n_membr;
-    n_scales = config.wave.n_scales;
-    curv_final_out = curv_final;
-    % Add the residuals as an extra scale
-    for t=1:n_membr
-        curv_final_out{t}(:,:,:,n_scales,:) = residual{t};
-    end
+    [wavelet, residual] = wavelets.wavelet_decomposition(I, config);
+    wavelet_out         = model.process.NCZLd_channel_ON_OFF_v1_1(wavelet, config);
+    I_out               = wavelets.wavelet_decomposition_inverse(wavelet_out, residual, config);
 end
