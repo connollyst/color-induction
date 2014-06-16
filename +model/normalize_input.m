@@ -6,8 +6,6 @@ function Iitheta = normalize_input(Iitheta, config)
 %            at the first time step, second scale, and third orientation.
     
     for t=1:config.zli.n_membr
-        % TODO in the original code, the last scale (residuals) is gone by now!
-        Iitheta{t}(:,:,:,config.wave.n_scales+1,:) = [];
         % Move the diagonal orientation to the middle orientation position
         % TODO move this up to the wavelet decomposition step!
         Iitheta{t}(:,:,:,:,[2,3]) = Iitheta{t}(:,:,:,:,[3,2]);
