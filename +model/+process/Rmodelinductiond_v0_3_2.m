@@ -51,20 +51,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
                      );
         end
         toc
-        x2 = temp.new_to_old(x); % DELETEME!!
-        y2 = temp.new_to_old(y); % DELETEME!!
-        % TODO newgx/y should return the scale/orient as a cell array
-        x2 = model.terms.newgx(x2);
-        y2 = model.terms.newgy(y2);
-        x2 = temp.old_to_new(x2); % DELETEME!!
-        y2 = temp.old_to_new(y2); % DELETEME!!
-        gx_final(:,:,t) = x2;
-        gy_final(:,:,t) = y2;
+        % TODO we are not using initialization
+        gx_final{t} = model.terms.newgx(x);
+        gy_final{t} = model.terms.newgy(y);
+        % Move the diagonal orientation back to the 3rd position
+        % TODO why..?
+        gx_final{t}(:,:,:,:,[2,3]) = gx_final{t}(:,:,:,:,[3,2]);
     end
-
-    % Move the diagonal orientation back to the 3rd position
-    % TODO why..?
-    gx_final([3,2],:,:) = gx_final([2,3],:,:);
 end
 
 function validate_input(config)
