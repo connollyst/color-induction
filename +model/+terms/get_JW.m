@@ -1,18 +1,18 @@
 function JW = get_JW(Delta, scale_distance, config)
 %GET_JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
 
-    zli       = config.zli;
-    n_cols    = config.image.width;
-    n_rows    = config.image.height;
-    n_scales  = config.wave.n_scales;
-    n_orients = config.wave.n_orients;
-    multires  = config.wave.multires;
+    zli        = config.zli;
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    multires   = config.wave.multires;
     % maximum diameter of the area of influence
-    diameter  = 2*Delta+1;
-    all_J     = cell(n_scales,1);
-    all_W     = cell(n_scales,1);
-    all_J_fft = cell(n_scales,1);
-    all_W_fft = cell(n_scales,1);
+    diameter   = 2*Delta+1;
+    all_J      = cell(n_scales, 1);
+    all_W      = cell(n_scales, 1);
+    all_J_fft  = cell(n_scales, 1);
+    all_W_fft  = cell(n_scales, 1);
    
     for s=1:n_scales
         % TODO J & W should NOT be sized by the scale!
@@ -27,11 +27,12 @@ function JW = get_JW(Delta, scale_distance, config)
     end
 
     for s=1:n_scales
-        if scale_distance >0
+        if scale_distance > 0
+            % Why doe we have a scale dimension of n=1??
             J = zeros(diameter(s), diameter(s), 1, n_orients, n_orients);
             W = zeros(diameter(s), diameter(s), 1, n_orients, n_orients);
-            J(:,:,1,:,:) = 1*all_J{s}(:,:,:,:);
-            W(:,:,1,:,:) = 1*all_W{s}(:,:,:,:);
+            J(:,:,1,:,:) = 1 * all_J{s}(:,:,:,:);
+            W(:,:,1,:,:) = 1 * all_W{s}(:,:,:,:);
             all_J{s} = J;
             all_W{s} = W;
         end
