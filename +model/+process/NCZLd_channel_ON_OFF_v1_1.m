@@ -1,4 +1,4 @@
-function curv_final_out = NCZLd_channel_ON_OFF_v1_1(curv, config)
+function curv_final = NCZLd_channel_ON_OFF_v1_1(curv, config)
 %NCZLd_CHANNEL_ON_OFF_V1_1 Separate ON and OFF channels and start
 %   recovering thye response at the level of the wavelet/Gabor responses.
 % 
@@ -19,19 +19,19 @@ function curv_final_out = NCZLd_channel_ON_OFF_v1_1(curv, config)
         case 2 % Square (quadratic)
             curv_final = process_ON_OFF_square(curv, config);
     end
-
-    curv_final_out = cell(size(curv));
-    curv_final_out(:,fin_scale+1,:) = curv(:,fin_scale+1,:);
-    curv_final_out(:,1:fin_scale,:) = curv_final(:,1:fin_scale,:);
-
 end
 
 function curv_final = process_ON_OFF_separately(curv, config)
 %PROCESS_ON_OFF_SEPARATELY Process the ON and OFF channels independently.
 
-    n_membr        = config.zli.n_membr;
-    fin_scale      = config.wave.fin_scale;
-    n_orients      = config.wave.n_orients;
+    n_membr  = config.zli.n_membr;
+    n_scales = config.wave.n_scales;
+    
+    %% Remove residual scale
+    for t=1:n_membr
+        % TODO we shouldn't even package these together in the first place
+        curv{t}(:,:,:,n_scales,:) = [];
+    end
     
     %% Initialize data structures
     curv_ON        = curv;
@@ -62,14 +62,10 @@ function curv_final = process_ON_OFF_separately(curv, config)
     %% Prepare output
     iFactor = iFactor_ON;
     for t=1:n_membr
-        for s=1:fin_scale
-            for o=1:n_orients
-                curv_ON_final{o,s,t}  =  curv_ON{o,s,t}     .* iFactor_ON{o,s,t}  * config.zli.normal_output;
-                curv_OFF_final{o,s,t} = -curv_OFF{o,s,t}    .* iFactor_OFF{o,s,t} * config.zli.normal_output;
-                iFactor{o,s,t}        = iFactor_ON{o,s,t}    + iFactor_OFF{o,s,t};
-                curv_final{o,s,t}     = curv_ON_final{o,s,t} + curv_OFF_final{o,s,t};
-            end
-        end
+        curv_ON_final{t}  =  curv_ON{t}     .* iFactor_ON{t}  * config.zli.normal_output;
+        curv_OFF_final{t} = -curv_OFF{t}    .* iFactor_OFF{t} * config.zli.normal_output;
+        iFactor{t}        = iFactor_ON{t}    + iFactor_OFF{t};
+        curv_final{t}     = curv_ON_final{t} + curv_OFF_final{t};
     end
 end
 
