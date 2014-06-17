@@ -162,7 +162,7 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             + model.terms.newgx(x)...                   % TODO why not x_ee?
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
-            + generate_noise(config)...                 % neural noise (comment for speed)
+            + model.terms.noise(config)...              % neural noise (comment for speed)
         );
     % (2) excitatory neurons
     x = x + prec * (...
@@ -173,17 +173,6 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             + tIitheta...                               % Iitheta at time t
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
-            + generate_noise(config)...                 % neural noise (comment for speed)
+            + model.terms.noise(config)...              % neural noise (comment for speed)
         );
-end
-
-function noise = generate_noise(config)
-%GENERATE_NOISE Generate neural noise.
-    n_cols     = config.image.width;
-    n_rows     = config.image.height;
-    n_channels = config.image.n_channels;
-    n_scales   = config.wave.n_scales;
-    n_orients  = config.wave.n_orients;
-    var_noise  = 0.1 * 2;
-    noise      = var_noise * (rand(n_cols, n_rows, n_channels, n_scales, n_orients)) - 0.5;
 end
