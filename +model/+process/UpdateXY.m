@@ -12,28 +12,25 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interac
 %   x_out:          The new excitatory membrane potentials.
 %   y_out:          The new inhibitory membrane potentials.
 
-    % TODO there must be better names??
-    [newgx_toroidal_x, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, Delta, interactions, config);
-    %imagesc(restr_newgy_toroidal_y(:,:));
+    [newgx, ~, ~, newgy] = model.add_padding(x, y, Delta, interactions, config);
+    [x_ee, x_ei, y_ie]   = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    I_norm               = model.normalize_output(norm_mask, newgx_toroidal_x, interactions, config);
+    [x_out, y_out]       = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    %imagesc(newgy(:,:));
     %waitforbuttonpress;
-    [x_ee, x_ei, y_ie]                               = model.get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, Delta, JW, interactions, config);
     %figure(1);
     %subplot(3,1,1); imagesc(x_ee(:,:));
     %subplot(3,1,2); imagesc(x_ei(:,:));
     %subplot(3,1,3); imagesc(y_ie(:,:));
     %waitforbuttonpress;
-    I_norm                                           = model.normalize_output(norm_mask, newgx_toroidal_x, interactions, config);
     %imagesc(I_norm(:,:));
     %waitforbuttonpress;
-    [x_out, y_out]                                   = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     %figure(1);
     %subplot(2,1,1); imagesc(x_out(:,:));
     %subplot(2,1,2); imagesc(y_out(:,:));
     %waitforbuttonpress;
-    
-    
     figure(1);
-    subplot(7,1,1); imagesc(restr_newgy_toroidal_y(:,:));
+    subplot(7,1,1); imagesc(newgy(:,:));
     subplot(7,1,2); imagesc(x_ee(:,:));
     subplot(7,1,3); imagesc(x_ei(:,:));
     subplot(7,1,4); imagesc(y_ie(:,:));
