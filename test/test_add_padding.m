@@ -72,7 +72,7 @@ function [x, y, Delta, interactions, config] = get_input(instance)
     x            = addColorDimension(input.x);
     y            = addColorDimension(input.y);
     Delta        = input.Delta;
-    state        = load('data/UpdateXY_config_interactions.mat');
+    state        = load('data/state_UpdateXY.mat');
     interactions = state.interactions;
     config       = state.config;
 end
