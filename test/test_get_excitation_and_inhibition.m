@@ -20,28 +20,28 @@ end
 function assert_x_ee(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [x_ee, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
-    expected = get_output(instance);
+    expected = get_expected(instance);
     assertEqualMatricies(x_ee, expected.x_ee);
 end
 
 function assert_x_ei(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [~, x_ei, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
-    expected = get_output(instance);
+    expected = get_expected(instance);
     assertEqualMatricies(x_ei, expected.x_ei);
 end
 
 function assert_y_ie(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
-    expected = get_output(instance);
+    expected = get_expected(instance);
     assertEqualMatricies(y_ie, expected.y_ie);
 end
 
 %% TEST UTILITIES
 
 function [newgx, newgy, Delta, JW, interactions, config] = get_input(instance)
-    input        = load(['data/get_excitation_and_inhibition_input_',instance,'.mat']);
+    input        = load(['data/input_to_get_excitation_inhibition_',instance,'.mat']);
     newgx        = addColorDimension(input.newgx_toroidal_x);
     newgy        = addColorDimension(input.restr_newgy_toroidal_y);
     state        = load('data/state_UpdateXY.mat');
@@ -51,6 +51,6 @@ function [newgx, newgy, Delta, JW, interactions, config] = get_input(instance)
     config       = state.config;
 end
 
-function output = get_output(instance)
-    output = load(['data/get_excitation_and_inhibition_output_',instance,'.mat']);
+function expected = get_expected(instance)
+    expected = load(['data/expected_from_get_excitation_inhibition_',instance,'.mat']);
 end
