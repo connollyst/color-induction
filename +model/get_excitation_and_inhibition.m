@@ -53,17 +53,17 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
             % FFT
             if use_fft
                 for s=1:n_scales
+                    cols    = Delta(s)+1:Delta(s)+n_cols;
+                    rows    = Delta(s)+1:Delta(s)+n_rows;
+                    J_fft_s = JW.J_fft{s}(:,:,1,ov,oc);
+                    W_fft_s = JW.W_fft{s}(:,:,1,ov,oc);
+                    s_filter = half_size_filter{s};
                     for c=1:n_channels
-                        cols = Delta(s)+1:Delta(s)+n_cols;
-                        rows = Delta(s)+1:Delta(s)+n_rows;
-                        x_fft = newgx_toroidal_x_fft{scale_distance+s,c}{ov};
-                        J_fft_s = JW.J_fft{s}(:,:,1,ov,oc);
-                        W_fft_s = JW.W_fft{s}(:,:,1,ov,oc);
-                        s_filter = half_size_filter{s};
-                        kk = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
-                        x_ee_conv_tmp(:,:,c,s,ov) = kk(cols, rows);
-                        kk = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
-                        y_ie_conv_tmp(:,:,c,s,ov) = kk(cols, rows);
+                        x_fft   = newgx_toroidal_x_fft{scale_distance+s,c}{ov};
+                        x_fft_J = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
+                        x_fft_W = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
+                        x_ee_conv_tmp(:,:,c,s,ov) = x_fft_J(cols, rows);
+                        y_ie_conv_tmp(:,:,c,s,ov) = x_fft_W(cols, rows);
                     end
                 end
             else
@@ -78,5 +78,4 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     % influence of the neighboring spatial frequencies
     x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
     y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
-    % TODO why not x_ei?
 end
