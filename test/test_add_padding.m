@@ -19,6 +19,22 @@ function test_padded_restr_newgy_toroidal_y_01
     assert_padded_restr_newgy_toroidal_y('01')
 end
 
+function test_padded_newgx_toroidal_x_02
+    assert_padded_newgx_toroidal_x('02');
+end
+
+function test_padded_newgy_toroidal_y_02
+    assert_padded_newgy_toroidal_y('02');
+end
+
+function test_padded_restr_newgx_toroidal_x_02
+    assert_padded_restr_newgx_toroidal_x('02')
+end
+
+function test_padded_restr_newgy_toroidal_y_02
+    assert_padded_restr_newgy_toroidal_y('02')
+end
+
 %% TEST UTILITIES
 
 function [x, y, Delta, interactions, config] = get_input(instance)
@@ -27,8 +43,8 @@ function [x, y, Delta, interactions, config] = get_input(instance)
     y            = addColorDimension(input.y);
     Delta        = input.Delta;
     state        = load('data/UpdateXY_config_interactions.mat');
-    config       = state.config;
     interactions = state.interactions;
+    config       = state.config;
 end
 
 function output = get_output(instance)
