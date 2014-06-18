@@ -15,14 +15,14 @@ end
 
 function assert_x_out(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
-    [x_out, ~]       = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [x_out, ~] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
     assertEqualMatricies(x_out, expected.x);
 end
 
 function assert_y_out(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
-    [~, y_out]       = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [~, y_out] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
     assertEqualMatricies(y_out, expected.y);
 end
@@ -30,18 +30,18 @@ end
 %% TEST UTILITIES
 
 function [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance)
-    input    = load(['data/input_to_normalize_output_',instance,'.mat']);
+    input    = load(['data/input_to_calculate_xy_',instance,'.mat']);
     tIitheta = addColorDimension(input.Iitheta{1}); % TODO get correct frame
     I_norm   = addColorDimension(input.I_norm);
     x        = addColorDimension(input.x);
     y        = addColorDimension(input.y);
     x_ee     = addColorDimension(input.x_ee);
     x_ei     = addColorDimension(input.x_ei);
-    y_ie     = addColorDimension(input.x_ie);
+    y_ie     = addColorDimension(input.y_ie);
     state    = load('data/state_UpdateXY.mat');
     config   = state.config;
 end
 
 function expected = get_expected(instance)
-    expected = load(['data/expected_from_normalize_output_',instance,'.mat']);
+    expected = load(['data/expected_from_calculate_xy_',instance,'.mat']);
 end
