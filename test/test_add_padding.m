@@ -68,7 +68,7 @@ end
 %% TEST UTILITIES
 
 function [x, y, Delta, interactions, config] = get_input(instance)
-    input        = load(['data/add_padding_input_',instance,'.mat']);
+    input        = load(['data/input_to_add_padding_',instance,'.mat']);
     x            = addColorDimension(input.x);
     y            = addColorDimension(input.y);
     Delta        = input.Delta;
@@ -78,5 +78,5 @@ function [x, y, Delta, interactions, config] = get_input(instance)
 end
 
 function output = get_output(instance)
-    output = load(['data/add_padding_output_',instance,'.mat']);
+    output = load(['data/expected_from_add_padding_',instance,'.mat']);
 end
