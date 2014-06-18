@@ -7,6 +7,14 @@ function test_I_norm_01
     assert_I_norm('01')
 end
 
+function test_I_norm_02
+    assert_I_norm('02')
+end
+
+function test_I_norm_09
+    assert_I_norm('09')
+end
+
 %% ASSERTIONS
 
 function assert_I_norm(instance)
