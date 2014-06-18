@@ -40,6 +40,7 @@ function [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance
     y_ie     = addColorDimension(input.y_ie);
     state    = load('data/state_UpdateXY.mat');
     config   = state.config;
+    config.zli.add_neural_noise = 0;
 end
 
 function expected = get_expected(instance)

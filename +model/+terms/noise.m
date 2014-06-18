@@ -5,6 +5,9 @@ function N = noise(config)
     n_channels = config.image.n_channels;
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
-    var_noise  = 0.1 * 2;
-    N          = var_noise * (rand(n_cols, n_rows, n_channels, n_scales, n_orients)) - 0.5;
+    if config.zli.add_neural_noise
+        N = 0.2 * rand(n_cols, n_rows, n_channels, n_scales, n_orients) - 0.5;
+    else
+        N = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    end
 end

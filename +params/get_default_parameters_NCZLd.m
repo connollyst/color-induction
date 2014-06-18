@@ -56,6 +56,7 @@ zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (a
 							% i.e. if =0 then residual will be processed (and its size will be wave.mida_min)
 zli.scale_interaction=1;
 zli.orient_interaction=1;
+zli.add_neural_noise=1;
 														  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% computational setting %%%%%%%%%%%
