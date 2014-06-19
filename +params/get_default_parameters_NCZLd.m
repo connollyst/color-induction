@@ -82,15 +82,17 @@ image.n_frames_promig=zli.n_membr-1;		% number iterations (from the last one) co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% display plot/store    %%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-display_plot.plot_io=1;					% plot input/output
-display_plot.reduce=0;					% 0 all (9)/ 1 reduced ; useless if single_or_multiple=1
-display_plot.plot_wavelet_planes=0;	% plot wavelet planes
-display_plot.store=1;					% 0 don't store/ 1 store
-display_plot.y_video=0.5;
-display_plot.x_video=68/128;
+display.logging=1;                  % display log messages
+display.plot=1;                     % display plots
+display.plot_io=1;					% plot input/output
+display.reduce=0;					% 0 all (9)/ 1 reduced ; useless if single_or_multiple=1
+display.plot_wavelet_planes=0;	    % plot wavelet planes
+display.store=1;					% 0 don't store/ 1 store
+display.y_video=0.5;
+display.x_video=68/128;
 
 
-config = struct('zli',zli,'wave',wave,'image',image,'display',display_plot,'compute',compute);
+config = struct('zli',zli,'wave',wave,'image',image,'display',display,'compute',compute);
 
 
 end

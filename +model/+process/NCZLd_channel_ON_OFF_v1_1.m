@@ -34,12 +34,12 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     end
 
     %% Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
-    disp('Starting ON processing');
+    logger.log('Starting ON processing', config);
     % TODO we should have an iFactor for each dimension!!
     iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
 
     %% Negatius ----------------------------------------------------
-    disp('Starting OFF processing');
+    logger.log('Starting OFF processing', config);
     iFactor_OFF = model.process.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);
 
     %% Prepare output

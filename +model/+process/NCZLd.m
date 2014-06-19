@@ -13,7 +13,7 @@ function O = NCZLd(I, config)
     config.image.width      = size(I{1}, 1);
     config.image.height     = size(I{1}, 2);
     config.image.n_channels = size(I{1}, 3);
-    fprintf('Image size: %ix%ix%i\n', config.image.width, config.image.height, config.image.n_channels);
+    logger.log('Image size: %ix%ix%i\n', config.image.width, config.image.height, config.image.n_channels, config);
     
     %-------------------------------------------------------
     zli     = config.zli;
@@ -25,7 +25,7 @@ function O = NCZLd(I, config)
     if config.wave.n_scales == 0
         config.wave.n_scales = calculate_scales(I, config);    
     end
-    fprintf('Processing at %i scales\n', config.wave.n_scales);
+    logger.log('Processing at %i scales\n', config.wave.n_scales, config);
     
     %-------------------------------------------------------
 
@@ -42,7 +42,7 @@ function O = NCZLd(I, config)
     end
 
     % Print processing time
-    toc(start_time)
+    logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
 
 function I_init = init_input(I_in)
