@@ -22,7 +22,7 @@ function assert_I_norm(instance)
     [norm_mask, newgx_toroidal_x, interactions, config] = get_input(instance);
     I_norm   = model.normalize_output(norm_mask, newgx_toroidal_x, interactions, config);
     expected = get_expected(instance);
-    assertEqualMatricies(I_norm, expected.I_norm);
+    assertEqualMatrices(I_norm, expected.I_norm);
 end
 
 %% TEST UTILITIES

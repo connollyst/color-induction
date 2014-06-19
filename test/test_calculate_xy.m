@@ -17,14 +17,14 @@ function assert_x_out(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
     [x_out, ~] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
-    assertEqualMatricies(x_out, expected.x);
+    assertEqualMatrices(x_out, expected.x);
 end
 
 function assert_y_out(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
     [~, y_out] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
-    assertEqualMatricies(y_out, expected.y);
+    assertEqualMatrices(y_out, expected.y);
 end
 
 %% TEST UTILITIES

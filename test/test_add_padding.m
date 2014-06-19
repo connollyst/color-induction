@@ -55,14 +55,14 @@ function assert_padded_restr_newgx_toroidal_x(instance)
     [x, y, Delta, interactions, config] = get_input(instance);
     [~, ~, restr_newgx_toroidal_x, ~] = model.add_padding(x, y, Delta, interactions, config);
     expected = get_output(instance);
-    assertEqualMatricies(restr_newgx_toroidal_x, expected.restr_newgx_toroidal_x);
+    assertEqualMatrices(restr_newgx_toroidal_x, expected.restr_newgx_toroidal_x);
 end
 
 function assert_padded_restr_newgy_toroidal_y(instance)
     [x, y, Delta, interactions, config] = get_input(instance);
     [~, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, Delta, interactions, config);
     expected = get_output(instance);
-    assertEqualMatricies(restr_newgy_toroidal_y, expected.restr_newgy_toroidal_y);
+    assertEqualMatrices(restr_newgy_toroidal_y, expected.restr_newgy_toroidal_y);
 end
 
 %% TEST UTILITIES

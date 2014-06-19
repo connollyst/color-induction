@@ -21,21 +21,21 @@ function assert_x_ee(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [x_ee, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
     expected = get_expected(instance);
-    assertEqualMatricies(x_ee, expected.x_ee);
+    assertEqualMatrices(x_ee, expected.x_ee);
 end
 
 function assert_x_ei(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [~, x_ei, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
     expected = get_expected(instance);
-    assertEqualMatricies(x_ei, expected.x_ei);
+    assertEqualMatrices(x_ei, expected.x_ei);
 end
 
 function assert_y_ie(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
     [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
     expected = get_expected(instance);
-    assertEqualMatricies(y_ie, expected.y_ie);
+    assertEqualMatrices(y_ie, expected.y_ie);
 end
 
 %% TEST UTILITIES
