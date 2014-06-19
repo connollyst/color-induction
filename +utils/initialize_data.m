@@ -8,7 +8,7 @@ function data = initialize_data(config)
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
     
-    data = cell(n_membr);
+    data = cell(n_membr, 1);
     for t=1:n_membr
         data{t} = zeros(n_cols, n_rows, n_channels, n_scales, n_orients); 
     end
