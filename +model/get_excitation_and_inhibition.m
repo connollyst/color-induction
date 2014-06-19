@@ -63,6 +63,7 @@ function x_ei = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config)
     % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     % Computation Configurations
@@ -71,7 +72,7 @@ function x_ei = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config)
     sum_scale_newgy_toroidal_y = convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
     restr_sum_scale_newgy_toroidal_y = sum_scale_newgy_toroidal_y(:,:,:,scale_distance+1:scale_distance+n_scales,:); % restriction over scales
     w = zeros(1,1,1,1,n_orients); w(1,1,1,1,:) = interactions.PsiDtheta(oc,:);
-    x_ei = sum(restr_sum_scale_newgy_toroidal_y .* repmat(w,[n_cols,n_rows,1,n_scales,1]), 5);
+    x_ei = sum(restr_sum_scale_newgy_toroidal_y .* repmat(w,[n_cols,n_rows,n_channels,n_scales,1]), 5);
 end
 
 function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, Delta, JW, interactions, config)
