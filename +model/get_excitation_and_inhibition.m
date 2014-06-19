@@ -21,8 +21,8 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
         x_ei(:,:,:,:,oc) = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config);
         % TODO returned matrices lack color dimension
         [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, Delta, JW, interactions, config);
-        x_ee(:,:,:,:,oc) = sum(x_ee_conv_tmp, 4);
-        y_ie(:,:,:,:,oc) = sum(y_ie_conv_tmp, 4);
+        x_ee(:,:,:,:,oc) = sum(x_ee_conv_tmp, 5);
+        y_ie(:,:,:,:,oc) = sum(y_ie_conv_tmp, 5);
     end
     
     % influence of the neighboring spatial frequencies
@@ -37,16 +37,18 @@ function newgx_toroidal_x_fft = get_preparatory_term(newgx_toroidal_x, interacti
     scale_distance = interactions.scale_distance;
     % Equaltion Parameters
     n_scales       = config.wave.n_scales;
+    n_channels     = config.image.n_channels;
     n_orients      = config.wave.n_orients;
     % Computation Configurations
     use_fft        = config.compute.use_fft;
     
     if use_fft
-        newgx_toroidal_x_fft = cell(scale_distance+n_scales, 1);
+        newgx_toroidal_x_fft = cell(scale_distance+n_scales, n_channels);
         for s=1:n_scales
-            newgx_toroidal_x_fft{scale_distance+s} = cell(n_orients, 1);
-            for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                newgx_toroidal_x_fft{scale_distance+s}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,ov));
+            for c=1:n_channels
+                for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+                    newgx_toroidal_x_fft{scale_distance+s,c}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,c,ov));
+                end
             end
         end
     else
@@ -86,14 +88,15 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
     % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
+    n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     % Computation Configurations
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    x_ee_conv_tmp = zeros(n_cols, n_rows, n_scales, n_orients);
-    y_ie_conv_tmp = zeros(n_cols, n_rows, n_scales, n_orients);
+    x_ee_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    y_ie_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
         % FFT
         if use_fft
@@ -103,11 +106,13 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
                 J_fft_s  = JW.J_fft{s}(:,:,1,ov,oc);
                 W_fft_s  = JW.W_fft{s}(:,:,1,ov,oc);
                 s_filter = half_size_filter{s};
-                x_fft    = newgx_toroidal_x_fft{scale_distance+s}{ov};
-                x_fft_J  = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
-                x_fft_W  = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
-                x_ee_conv_tmp(:,:,s,ov) = x_fft_J(cols, rows);
-                y_ie_conv_tmp(:,:,s,ov) = x_fft_W(cols, rows);
+                for c=1:n_channels
+                    x_fft    = newgx_toroidal_x_fft{scale_distance+s,c}{ov};
+                    x_fft_J  = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
+                    x_fft_W  = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
+                    x_ee_conv_tmp(:,:,c,s,ov) = x_fft_J(cols, rows);
+                    y_ie_conv_tmp(:,:,c,s,ov) = x_fft_W(cols, rows);
+                end
             end
         else
             error('Non FFT approach is not implemented.');
