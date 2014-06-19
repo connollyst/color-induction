@@ -4,11 +4,26 @@ function test_suite = test_optima
 end
 
 function test_optima_01
+% 4D input & output
     assert_optima('01')
 end
 
 function test_optima_02
+% 4D input & output
     assert_optima('02')
+end
+
+function test_optima_03
+% Test that the 5D input matches the 4D output from the old algorithm
+    [data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft] = get_input('03');
+    actual   = convolutions.optima(data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft);
+    expected = get_expected('01');
+    assertEqualMatrices(actual, expected);
+end
+
+function test_optima_04
+% 5D input & output
+    assert_optima('04')
 end
 
 %% ASSERTIONS
