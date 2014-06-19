@@ -3,8 +3,12 @@ function test_suite = test_NCZLd
   initTestSuite;
 end
 
-function test_NCZLd_01
-    assert_NCZLd('01')
+function test_NCZLd_1D
+    assert_NCZLd('1D')
+end
+
+function test_NCZLd_3D
+    assert_NCZLd('3D')
 end
 
 %% ASSERTIONS
