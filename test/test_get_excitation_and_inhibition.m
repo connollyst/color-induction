@@ -15,6 +15,42 @@ function test_y_ie_01
     assert_y_ie('01');
 end
 
+function test_x_ee_02
+    assert_x_ee('02');
+end
+
+function test_x_ei_02
+    assert_x_ei('02');
+end
+
+function test_y_ie_02
+    assert_y_ie('02');
+end
+
+function test_x_ee_03
+    assert_x_ee('03');
+end
+
+function test_x_ei_03
+    assert_x_ei('03');
+end
+
+function test_y_ie_03
+    assert_y_ie('03');
+end
+
+function test_x_ee_09
+    assert_x_ee('09');
+end
+
+function test_x_ei_09
+    assert_x_ei('09');
+end
+
+function test_y_ie_09
+    assert_y_ie('09');
+end
+
 function test_x_ee_reproducable_01
     assert_x_ee_reproducable('01');
 end
@@ -25,6 +61,42 @@ end
 
 function test_y_ie_reproducable_01
     assert_y_ie_reproducable('01');
+end
+
+function test_x_ee_reproducable_02
+    assert_x_ee_reproducable('02');
+end
+
+function test_x_ei_reproducable_02
+    assert_x_ei_reproducable('02');
+end
+
+function test_y_ie_reproducable_02
+    assert_y_ie_reproducable('02');
+end
+
+function test_x_ee_reproducable_03
+    assert_x_ee_reproducable('03');
+end
+
+function test_x_ei_reproducable_03
+    assert_x_ei_reproducable('03');
+end
+
+function test_y_ie_reproducable_03
+    assert_y_ie_reproducable('03');
+end
+
+function test_x_ee_reproducable_09
+    assert_x_ee_reproducable('09');
+end
+
+function test_x_ei_reproducable_09
+    assert_x_ei_reproducable('09');
+end
+
+function test_y_ie_reproducable_09
+    assert_y_ie_reproducable('09');
 end
 
 %% ASSERTIONS
