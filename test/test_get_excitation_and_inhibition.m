@@ -15,7 +15,21 @@ function test_y_ie_01
     assert_y_ie('01');
 end
 
+function test_x_ee_reproducable_01
+    assert_x_ee_reproducable('01');
+end
+
+function test_x_ei_reproducable_01
+    assert_x_ei_reproducable('01');
+end
+
+function test_y_ie_reproducable_01
+    assert_y_ie_reproducable('01');
+end
+
 %% ASSERTIONS
+
+% Assert that, given known input, the output is as expected
 
 function assert_x_ee(instance)
     [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
@@ -36,6 +50,29 @@ function assert_y_ie(instance)
     [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualMatrices(y_ie, expected.y_ie);
+end
+
+% Assert that, given the same input, the output is always the same..
+
+function assert_x_ee_reproducable(instance)
+    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
+    [x_ee1, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [x_ee2, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    assertEqual(x_ee1, x_ee2);
+end
+
+function assert_x_ei_reproducable(instance)
+    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
+    [~, x_ei1, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [~, x_ei2, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    assertEqual(x_ei1, x_ei2);
+end
+
+function assert_y_ie_reproducable(instance)
+    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
+    [~, ~, y_ie1] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [~, ~, y_ie2] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    assertEqual(y_ie1, y_ie2);
 end
 
 %% TEST UTILITIES
