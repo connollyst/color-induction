@@ -16,9 +16,9 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    x_ee   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    x_ei   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    y_ie   = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    x_ee = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    x_ei = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    y_ie = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
 
     %%%%%%%%%%%%%% preparatory terms %%%%%%%%%%%%%%%%%%%%%%%%%%
     if use_fft
