@@ -35,8 +35,8 @@ function interactions = get_interactions(Delta, config)
 
     % Filter used to apply weights to scale interactions
     weight_scales = [e f e];
-    interactions.scale_filter             = zeros(1, 1, 1+2*scale_distance, 1);
-    interactions.scale_filter(1, 1, :, 1) = weight_scales;
+    interactions.scale_filter             = zeros(1, 1, 1, 1+2*scale_distance, 1);
+    interactions.scale_filter(1, 1, 1, :, 1) = weight_scales;
     
     % TODO what is this??
     interactions.half_size_filter = get_half_size_filter(n_scales, scale_distance, Delta);
