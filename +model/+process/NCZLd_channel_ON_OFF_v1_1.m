@@ -45,10 +45,10 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     %% Prepare output
     iFactor = iFactor_ON;
     for t=1:n_membr
-        Iitheta_ON_final{t}  =  Iitheta_ON{t}     .* iFactor_ON{t}  * config.zli.normal_output;
-        Iitheta_OFF_final{t} = -Iitheta_OFF{t}    .* iFactor_OFF{t} * config.zli.normal_output;
-        iFactor{t}           = iFactor_ON{t}       + iFactor_OFF{t};
-        Iitheta_final{t}     = Iitheta_ON_final{t} + Iitheta_OFF_final{t};
+        Iitheta_ON_final{t}  =  Iitheta_ON{t}      .* iFactor_ON{t}  * config.zli.normal_output;
+        Iitheta_OFF_final{t} = -Iitheta_OFF{t}     .* iFactor_OFF{t} * config.zli.normal_output;
+        iFactor{t}           =  iFactor_ON{t}       + iFactor_OFF{t};
+        Iitheta_final{t}     =  Iitheta_ON_final{t} + Iitheta_OFF_final{t};
     end
 end
 
