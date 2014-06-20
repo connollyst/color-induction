@@ -18,17 +18,18 @@ function I_norm = normalize_output(norm_mask, newgx_toroidal_x, interactions, co
     Delta_ext           = interactions.Delta_ext;
     
     I_norm = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    for c=1:n_channels
-        for s=scale_distance+1:scale_distance+n_scales
-            s2 = s - scale_distance;
-            radi=(size(M_norm_conv{s2})-1)/2;
-            % sum over all the orientations
-            sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 5);
-            despl = radi;
+    for s=scale_distance+1:scale_distance+n_scales
+        s2 = s - scale_distance;
+        radi=(size(M_norm_conv{s2})-1)/2;
+        % sum over all the orientations
+        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 5);
+        despl = radi;
+        for c=1:n_channels
             kk = convolutions.optima( ...
                 sum_newgx_toroidal_x_sc( ...
                     Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
-                    Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2) ...
+                    Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2), ...
+                    c ...
                 ), ...
                 M_norm_conv_fft{s2}, despl, 1, avoid_circshift_fft ...
             ); % Xavier. El filtre diria que ha d'estar normalitzat per tal de calcular el valor mig
