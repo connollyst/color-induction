@@ -26,7 +26,7 @@ function assert_I_norm(instance)
     [norm_mask, newgx_toroidal_x, interactions, config] = get_input(instance);
     I_norm   = model.normalize_output(norm_mask, newgx_toroidal_x, interactions, config);
     expected = get_expected(instance);
-    assertEqual(I_norm, expected.I_norm);
+    assertEqualData(I_norm, expected.I_norm);
 end
 
 %% TEST UTILITIES

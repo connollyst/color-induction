@@ -41,14 +41,14 @@ function assert_x(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
     [x_out, ~] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
-    assertEqual(x_out, expected.x);
+    assertEqualData(x_out, expected.x);
 end
 
 function assert_y(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
     [~, y_out] = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
-    assertEqual(y_out, expected.y);
+    assertEqualData(y_out, expected.y);
 end
 
 %% TEST UTILITIES
