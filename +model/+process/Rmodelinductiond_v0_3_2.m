@@ -40,10 +40,10 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     
     %% Run recurrent network: the loop over time
     for t=1:n_membr  % membrane time
-        logger.log('Membrane time step: %i/%i\n', t, n_membr, config);
+        fprintf('Membrane time step: %i/%i\n', t, n_membr);
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
-            logger.log('Membrane interation: %i/%i\n', t_iter, n_iter, config);
+            fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
             tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
                         tIitheta, x, y, Delta, JW,...
