@@ -12,11 +12,13 @@ email addresses).
 The main routine is general_NCZLd.m
  
 Here is a running example:
+```
 >> img=imread('cameraman.tif');
 >> figure,imagesc(img);colormap('gray');
 >> imgout=general_NCZLd(img,5,0);
 >> figure,imagesc(imgout);colormap('gray');
- 
+```
+
 Please take into account that required memory and execution time rapidly
 increase with image size and number of membrane times. For a 256x256 image
 and 5 membrane times the computation takes about 3-4 minutes using a 3.6GHz
