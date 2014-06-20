@@ -3,7 +3,10 @@ function config = get_default_parameters_NCZLd()
 %%%%%%%% wavelets' parameters %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % decomposition choice
-wave.multires='a_trous';
+wave.multires='DWD_orient_undecimated';
+
+% number of orientations
+wave.n_orients=3;
 
 % number of scales (if 0: code calculates it automatically)
 wave.n_scales=0; 
@@ -53,6 +56,7 @@ zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (a
 							% i.e. if =0 then residual will be processed (and its size will be wave.mida_min)
 zli.scale_interaction=1;
 zli.orient_interaction=1;
+zli.add_neural_noise=1;
 														  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% computational setting %%%%%%%%%%%
@@ -78,15 +82,17 @@ image.n_frames_promig=zli.n_membr-1;		% number iterations (from the last one) co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% display plot/store    %%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-display_plot.plot_io=1;					% plot input/output
-display_plot.reduce=0;					% 0 all (9)/ 1 reduced ; useless if single_or_multiple=1
-display_plot.plot_wavelet_planes=0;	% plot wavelet planes
-display_plot.store=1;					% 0 don't store/ 1 store
-display_plot.y_video=0.5;
-display_plot.x_video=68/128;
+display.logging=1;                  % display log messages
+display.plot=1;                     % display plots
+display.plot_io=1;					% plot input/output
+display.reduce=0;					% 0 all (9)/ 1 reduced ; useless if single_or_multiple=1
+display.plot_wavelet_planes=0;	    % plot wavelet planes
+display.store=1;					% 0 don't store/ 1 store
+display.y_video=0.5;
+display.x_video=68/128;
 
 
-config = struct('zli',zli,'wave',wave,'image',image,'display',display_plot,'compute',compute);
+config = struct('zli',zli,'wave',wave,'image',image,'display',display,'compute',compute);
 
 
 end

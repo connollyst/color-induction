@@ -1,98 +1,93 @@
 function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
-%RMODELINDUCTIOND_V0_3_2 Apply model to input data
+%RMODELINDUCTIOND_V0_3_2 Apply induction model to input data.
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
-%   Li 1999
-%   Iitheta: cell struct of input stimuli at each membrane time step, eg:
-%            Iitheta{1}(:,:,2,3) is the full image decomposed at the
-%            second scale and third orientation.
-%   config:  the model configuration struct
+%   Li 1999.
+%   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
+%            Iitheta{t}(c,r,d,s,o) is the column (c), row (r) and color
+%            dimension (d) of image (t), decomposed at scale (s) and
+%            orientation (o).
+%   config:  The model configuration struct array
 %
 %   gx_final:   the excitation membrane potentials
 
-    %% get the structure and the parameters
-    wave      = config.wave;
-    zli       = config.zli;
-    n_scales  = wave.n_scales;
-    n_membr   = zli.n_membr;
-    n_iter    = zli.n_iter;
-    Delta     = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-
-    %% Initialize parameters
-    [M, N, K]            = MNK(Iitheta);
-    % output membrane potentials
-    [gx_final, gy_final] = initialize_output(M, N, K, n_membr, n_scales);
-
-    %% Normalize input data
-    Iitheta = model.normalize_input(Iitheta, config);
+    validate_input(config)
     
-    %% Prepare normalization mask
-    normalization_masks = model.terms.get_normalization_masks(M, N, config);
+    %% Get the configuration parameters
+    wave       = config.wave;
+    zli        = config.zli;
+    n_scales   = wave.n_scales;
+    n_membr    = zli.n_membr;
+    n_iter     = zli.n_iter;
+    Delta      = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
+    
+    %% Initialize output membrane potentials
+    gx_final = utils.initialize_data(config);
+    gy_final = utils.initialize_data(config);
 
-    %% Prepare orientation/scale interactions for x_ei
+    %% Normalization
+    Iitheta             = model.normalize_input(Iitheta, config);
+    normalization_masks = model.terms.get_normalization_masks(config);
+
+    %% Prepare orientation/scale/color interactions for x_ei
     interactions = model.terms.get_interactions(Delta, config);
     
     %% Prepare J & W: the excitatory and inhibitory masks
-    JW = model.terms.get_JW(M, N, K, Delta, interactions.radius_sc, config);
+    % TODO perhaps J & W don't need the interactions.scale_distance?
+    JW = model.terms.get_JW(Delta, interactions.scale_distance, config);
 
-    %% Preallocate x & y: the excitation and inhibition activity
-    x = Iitheta{1};                 % initialized as the visual stimulus (p.192)
-    y = zeros(M, N, n_scales, K);   % initialized with zero activity
+    %% Set the initial x (excitation) & y (inhibition) activity
+    [x, y] = initialize_input(Iitheta, config);
     
     %% Run recurrent network: the loop over time
-    for t_membr=1:n_membr  % membrane time
-        fprintf('Membrane time step: %i/%i\n', t_membr, n_membr);
+    for t=1:n_membr  % membrane time
+        logger.log('Membrane time step: %i/%i\n', t, n_membr, config);
         tic
         for t_iter=1:n_iter  % from the differential equation (Euler!)
-            fprintf('Membrane interation: %i/%i\n', t_iter, n_iter);
+            logger.log('Membrane interation: %i/%i\n', t_iter, n_iter, config);
+            tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
-                        t_membr, Iitheta, x, y, M, N, K, Delta, JW,...
+                        tIitheta, x, y, Delta, JW,...
                         normalization_masks, interactions, config...
                      );
         end
-        toc
-        gx_final{t_membr} = model.terms.newgx(x);
-        gy_final{t_membr} = model.terms.newgy(y);
-    end
-
-    for i=1:n_membr
-        gx_final_2=gx_final{i}(:,:,:,2);
-        gx_final{i}(:,:,:,2)=gx_final{i}(:,:,:,3);
-        gx_final{i}(:,:,:,3)=gx_final_2;
-    end
-
-end
-
-function [M, N, K] = MNK(Iitheta)
-%MNK Extract M, N, & K properties of the input data
-%   Iitheta:    the input data
-%   
-%   M:          the input data width (cols)
-%   N:          the input data height (rows)
-%   K:          the number of neuron pairs in each hypercolumn
-%                   (i.e. the number of preferred orientations)
-    M = size(Iitheta{1}, 1);
-    N = size(Iitheta{1}, 2);
-    K = size(Iitheta{1}, 4);
-    if M <= 10 || N <= 10
-       disp('Bad stimulus dimensions! The toroidal boundary conditions are ill-defined.')
+        if config.display.logging
+            toc
+        end
+        % TODO we are not using initialization
+        gx_final{t} = model.terms.newgx(x);
+        gy_final{t} = model.terms.newgy(y);
+        % Move the diagonal orientation back to the 3rd position
+        % TODO why..?
+        gx_final{t}(:,:,:,:,[2,3]) = gx_final{t}(:,:,:,:,[3,2]);
     end
 end
 
-function [gx_final, gy_final] = initialize_output(M, N, K, n_membr, n_scales)
-%INITIALIZE_OUTPUT Initialize the output data structures
-%   M:          the input data width
-%   N:          the input data height
-%   K:          the number of preferred orientations
-%   n_membr:    the number of membrane time steps being processed
-%   n_scales:   the number of scale sizes being processed
+function validate_input(config)
+    if config.image.width <= 10 || config.image.height <= 10
+       error('Bad stimulus dimensions: the toroidal boundary conditions are ill-defined.');
+    end
+end
+
+function [x, y] = initialize_input(Iitheta, config)
+%INITIALIZE_INPUT Initialize the initial stimulus to the system.
+%   x and y are two dimensional cell arrays of n-dimensional images. The
+%   first cell dimension is the scale of the wavelet decomposition
+%   (neural frequency preference) and the second cell dimension is the
+%   orientation of the wavelet decomposition (neural orientation
+%   preference).
 %
-%   gx_final:   the excitation membrane potentials
-%   gy_final:   the inhibition membrane potentials
+%   x: Cell array of the initial exitation stimulus
+%   y: Cell array of the initial inhibition stimulus
 
-    gx_final = cell(n_membr, 1);
-    gy_final = cell(n_membr, 1);
-    for i=1:n_membr
-        gx_final{i} = zeros(M, N, n_scales, K); 
-        gy_final{i} = zeros(M, N, n_scales, K);
-    end
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;
+    n_orients  = config.wave.n_orients;
+    n_scales   = config.wave.n_scales;
+    
+    % x is initialized as the visual stimulus (p.192)
+    x = Iitheta{1}; % use first time frame
+    
+    % y is initialized with zero activity
+    y = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
 end

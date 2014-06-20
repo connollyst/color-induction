@@ -1,6 +1,4 @@
-
-function [img_out]=general_NCZLd(image_data,n_membr, dynamic)
-
+function img_out = general_NCZLd(image_data, n_membr, dynamic)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -13,9 +11,9 @@ function [img_out]=general_NCZLd(image_data,n_membr, dynamic)
 % Parameters:
 % 
 % image_data: That it the input image
-%   If it is a still image (static version), it has to be a two dimensional array.
+%   If it is a still image (static version), it has to be a two or three dimensional array.
 % 	If it is a temporal sequence of images with 'n_frames' frames (dynamical version),
-%   it has to be three dimensional with size (:,:,n_frames).
+%   it has to be cell structure of two or three dimensional images with size {n_frames}(:,:,:).
 % 
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
 %
@@ -23,8 +21,6 @@ function [img_out]=general_NCZLd(image_data,n_membr, dynamic)
 % 
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
-
-
 
 %--------------------------------------------------------------------
 % build the structure
@@ -150,17 +146,17 @@ image.n_frames_promig=n_membr-1;	% The number of iterations (starting from the e
 %%%%%%%% display plot/store  %%%%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-display_plot.plot_io=0;  % plot input/output
-display_plot.reduce=0;   % 0 all (9)/ 1 reduced (useless if single_or_multiple=1)
-display_plot.plot_wavelet_planes=0;  % display wavelet coefficients
-display_plot.store=0;    % 0 don't store/ 1 store curv, iFactor and more...
-display_plot.store_img_img_out=0;   % 0/1 don't save/save img and img_out
+display.plot_io=0;  % plot input/output
+display.reduce=0;   % 0 all (9)/ 1 reduced (useless if single_or_multiple=1)
+display.plot_wavelet_planes=0;  % display wavelet coefficients
+display.store=0;    % 0 don't store/ 1 store curv, iFactor and more...
+display.store_img_img_out=0;   % 0/1 don't save/save img and img_out
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%    meta structure     %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-strct=struct('zli',zli,'wave',wave,'image',image,'display_plot',display_plot,'compute',compute);
+strct=struct('zli',zli,'wave',wave,'image',image,'display',display,'compute',compute);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   core of the process -> NCZLd   %%%%%

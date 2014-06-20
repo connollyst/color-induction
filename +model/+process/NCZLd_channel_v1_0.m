@@ -1,43 +1,22 @@
-function [img_out] = NCZLd_channel_v1_0(img, config)
-% from NCZLd_channel_v1_0.m to NCZLd_channel_ON_OFF_v1_1.m
-% perform the wavelet decomposition and its inverse transform
-% img: input image
-
-    %-------------------------------------------------------
-    % make the structure explicit
-    n_membr  = config.zli.n_membr;
-    n_scales = config.wave.n_scales;
-    dynamic  = config.compute.dynamic;
-    %-------------------------------------------------------
-    
-    config.wave.fin_scale = n_scales - config.zli.fin_scale_offset;
-    
-    [img_out, done] = check_for_uniformity(img, n_membr, dynamic);
-    if done == 1
-        return;
-    end
-    
-    [curv, w, c] = utils.wavelet_decomposition(img, n_membr, n_scales, dynamic);
-
-    curv_final   = model.process.NCZLd_channel_ON_OFF_v1_1(curv, config);
-
-    img_out      = utils.wavelet_decomposition_inverse(img, w, c, curv_final, n_membr, n_scales);
-
+function I_out = NCZLd_channel_v1_0(I, config)
+%NCZLD_CHANNEL_V1_0
+%   Perform the wavelet decomposition, process the ON & OFF channels, and
+%   recover the output with an inverse wavelet transformation.
+%
+%   I:      The input image(s) of the format, for example:
+%           I{frame}(:,:,:)
+%           If an image sequence is to be processed, config.compute.dynamic
+%           should be 1, and the number of images passed should match
+%           config.wave.n_scales. If only one image is to be processed, the
+%           length of I should be 1.
+%
+%   I_out: The output data is a 3D cell array of 1) cell orientation
+%          preferences, 2) spatial frequency scales, and 3) membrane time
+%          steps.
+%          Each cell in the array has the dimensions of the original image,
+%          each pixel indicating the excitation at that row, column &
+%          channel.
+    [wavelet, residual] = wavelets.wavelet_decomposition(I, config);
+    wavelet_out         = model.process.NCZLd_channel_ON_OFF_v1_1(wavelet, config);
+    I_out               = wavelets.wavelet_decomposition_inverse(wavelet_out, residual, config);
 end
-
-function [img_out, done] = check_for_uniformity(img, n_membr, dynamic)
-    if dynamic ~= 1
-        img_out = zeros([size(img) n_membr]);
-    else
-        img_out = zeros(size(img));
-    end
-    % trivial case (if the image is uniform we do not process it!)
-    if max(img(:)) == min(img(:))
-        img_out = img_out + min(img(:)); % give the initial value to all the pixels
-        done = 1;
-    else
-        done = 0;
-    end
-end
-
-
