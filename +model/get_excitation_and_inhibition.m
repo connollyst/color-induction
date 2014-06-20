@@ -1,14 +1,12 @@
 function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, Delta, JW, interactions, config)
 %GET_EXCITATION_AND_INHIBITION
 
-    % Orientation/Scale Interactions
-    scale_filter        = interactions.scale_filter;
-    % Equaltion Parameters
-    n_cols              = config.image.width;
-    n_rows              = config.image.height;
-    n_channels          = config.image.n_channels;
-    n_scales            = config.wave.n_scales;
-    n_orients           = config.wave.n_orients;
+    scale_filter = interactions.scale_filter;
+    n_cols       = config.image.width;
+    n_rows       = config.image.height;
+    n_channels   = config.image.n_channels;
+    n_scales     = config.wave.n_scales;
+    n_orients    = config.wave.n_orients;
     
     x_ee = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     x_ei = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
@@ -33,13 +31,10 @@ end
 function newgx_toroidal_x_fft = get_preparatory_term(newgx_toroidal_x, interactions, config)
 % Prepare the input data for processing
 
-    % Orientation/Scale Interactions
     scale_distance = interactions.scale_distance;
-    % Equaltion Parameters
-    n_scales       = config.wave.n_scales;
     n_channels     = config.image.n_channels;
+    n_scales       = config.wave.n_scales;
     n_orients      = config.wave.n_orients;
-    % Computation Configurations
     use_fft        = config.compute.use_fft;
     
     if use_fft
@@ -59,16 +54,13 @@ end
 function x_ei = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config)
 % Excitatory-inhibitory term (no existia): x_ei
 
-    % Orientation/Scale Interactions
     scale_distance      = interactions.scale_distance;
     scale_filter        = interactions.scale_filter;
-    % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    % Computation Configurations
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     sum_scale_newgy_toroidal_y = convolutions.optima(restr_newgy_toroidal_y,scale_filter,0,0,avoid_circshift_fft); % does it give the right dimension? 'same' needed?
@@ -82,23 +74,19 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
 % excitatory-excitatory term:    x_ee
 % excitatory-inhibitory term:    y_ie
         
-    % Orientation/Scale Interactions
     half_size_filter    = interactions.half_size_filter;
     scale_distance      = interactions.scale_distance;
-    % Equaltion Parameters
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    % Computation Configurations
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     x_ee_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     y_ie_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-        % FFT
         if use_fft
             for s=1:n_scales
                 cols     = Delta(s)+1:Delta(s)+n_cols;
