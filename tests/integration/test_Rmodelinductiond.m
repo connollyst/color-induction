@@ -17,7 +17,7 @@ function assert_gx_final(instance)
     [Iitheta, config] = get_input(instance);
     expected = get_expected(instance);
     gx_final = model.process.Rmodelinductiond_v0_3_2(Iitheta, config);
-    assertEqualCells(gx_final, expected.gx_final, config);
+    assertEqualCells(gx_final, expected.gx_final);
 end
 
 %% TEST UTILITIES
