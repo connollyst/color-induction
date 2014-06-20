@@ -3,8 +3,16 @@ function test_suite = test_NCZLd_channel
   initTestSuite;
 end
 
-function test_NCZLd_channel_01
-    assert_NCZLd_channel('01')
+function test_NCZLd_channel_1D_01
+    assert_NCZLd_channel('1D_01')
+end
+
+function test_NCZLd_channel_1D_02
+    assert_NCZLd_channel('1D_02')
+end
+
+function test_NCZLd_channel_1D_03
+    assert_NCZLd_channel('1D_03')
 end
 
 %% ASSERTIONS
