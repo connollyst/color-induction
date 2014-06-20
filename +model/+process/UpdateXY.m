@@ -29,20 +29,20 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interac
         %figure(1);
         %imagesc(I_norm(:,:));
 
-        figure(1);
-        subplot(2,1,1); imagesc(x_out(:,:));
-        subplot(2,1,2); imagesc(y_out(:,:));
-
         %figure(1);
-        %subplot(7,1,1); imagesc(newgy(:,:));
-        %subplot(7,1,2); imagesc(x_ee(:,:));
-        %subplot(7,1,3); imagesc(x_ei(:,:));
-        %subplot(7,1,4); imagesc(y_ie(:,:));
-        %subplot(7,1,5); imagesc(I_norm(:,:));
-        %subplot(7,1,6); imagesc(x_out(:,:));
-        %subplot(7,1,7); imagesc(y_out(:,:));
+        %subplot(2,1,1); imagesc(x_out(:,:));
+        %subplot(2,1,2); imagesc(y_out(:,:));
 
-        %drawnow
+        figure(1);
+        subplot(7,1,1); imagesc(newgy(:,:));
+        subplot(7,1,2); imagesc(x_ee(:,:));
+        subplot(7,1,3); imagesc(x_ei(:,:));
+        subplot(7,1,4); imagesc(y_ie(:,:));
+        subplot(7,1,5); imagesc(I_norm(:,:));
+        subplot(7,1,6); imagesc(x_out(:,:));
+        subplot(7,1,7); imagesc(y_out(:,:));
+
+        drawnow
         %waitforbuttonpress;
     end
 end
