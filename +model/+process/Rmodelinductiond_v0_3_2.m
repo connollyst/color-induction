@@ -46,9 +46,9 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         if config.display.logging
             toc
         end
-        % TODO we are not using initialization
-        gx_final{t} = model.terms.newgx(x);
-        gy_final{t} = model.terms.newgy(y);
+        % TODO we are bypassing initialization, no?
+        gx_final{t} = model.terms.gx(x);
+        gy_final{t} = model.terms.gy(y);
         % Move the diagonal orientation back to the 3rd position
         % TODO why..?
         gx_final{t}(:,:,:,:,[2,3]) = gx_final{t}(:,:,:,:,[3,2]);

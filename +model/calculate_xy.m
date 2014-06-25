@@ -8,20 +8,20 @@ function [x, y] = calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
     % (1) inhibitory neurons
     y = y + prec * (...
             - config.zli.alphay * y...                  % decay
-            + model.terms.newgx(x)...                   % TODO why not x_ee?
+            + model.terms.gx(x)...
             + y_ie...
             + 1.0...                                    % spontaneous firing rate
-            + model.terms.noise(config)...              % neural noise (comment for speed)
+            + model.terms.noise(config)...              % neural noise
         );
     % (2) excitatory neurons
     x = x + prec * (...
             - config.zli.alphax * x...				    % decay
             - x_ei...					                % ei term
-            + config.zli.J0 * model.terms.newgx(x)...   % input
+            + config.zli.J0 * model.terms.gx(x)...      % input
             + x_ee...
-            + tIitheta...                               % Iitheta at time t
+            + tIitheta...                               % visual input at time t
             + I_norm...                                 % normalization
             + 0.85...                                   % spontaneous firing rate
-            + model.terms.noise(config)...              % neural noise (comment for speed)
+            + model.terms.noise(config)...              % neural noise
         );
 end

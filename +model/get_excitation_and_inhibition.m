@@ -8,16 +8,16 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     n_scales     = config.wave.n_scales;
     n_orients    = config.wave.n_orients;
     
-    [x_ee, x_ei, y_ie] = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
+    [x_ee, x_ei, y_ie]   = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
 
     newgx_toroidal_x_fft = get_preparatory_term(newgx_toroidal_x, interactions, config);
 
     % influence of the neighboring scales first
     for oc=1:n_orients  % loop over the central (reference) orientation
-        x_ei(:,:,:,:,oc) = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config);
+        x_ei(:,:,:,:,oc)     = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config);
         [x_ee_tmp, y_ie_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, Delta, JW, interactions, config);
-        x_ee(:,:,:,:,oc) = sum(x_ee_tmp, 5);
-        y_ie(:,:,:,:,oc) = sum(y_ie_tmp, 5);
+        x_ee(:,:,:,:,oc)     = sum(x_ee_tmp, 5);
+        y_ie(:,:,:,:,oc)     = sum(y_ie_tmp, 5);
     end
     
     % influence of the neighboring spatial frequencies
