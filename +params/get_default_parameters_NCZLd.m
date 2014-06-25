@@ -57,9 +57,10 @@ zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (a
 zli.scale_interaction_distance=1; % distance over which scales interact with each other
 
 % configuration
-zli.scale_interaction=1;
-zli.orient_interaction=1;
-zli.add_neural_noise=0;
+zli.scale_interaction   = 1;
+zli.orient_interaction  = 1;
+zli.channel_interaction = 1;
+zli.add_neural_noise    = 0;
 														  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% computational setting %%%%%%%%%%%
