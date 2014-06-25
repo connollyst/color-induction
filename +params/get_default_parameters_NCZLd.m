@@ -54,6 +54,9 @@ zli.shift=1;		% minimum value of input data for Z.Li method
 zli.ini_scale=1;	% initial scale to process: scale=1 is the highest frequency plane
 zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (and its size will be wave.mida_min),
 							% i.e. if =0 then residual will be processed (and its size will be wave.mida_min)
+zli.scale_interaction_distance=1; % distance over which scales interact with each other
+
+% configuration
 zli.scale_interaction=1;
 zli.orient_interaction=1;
 zli.add_neural_noise=0;
