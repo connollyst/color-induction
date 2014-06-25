@@ -8,20 +8,12 @@ function interactions = get_interactions(Delta, config)
     [e, f]                        = get_e_f(scale_interaction);
     
     interactions                  = struct;
-    interactions.PsiDtheta        = getPsiDtheta();
+    interactions.PsiDtheta        = model.terms.get_psi_delta_theta();
     interactions.scale_distance   = scale_interaction; % TODO rename to scale_interaction
     interactions.border_weight    = model.get_border_weights(e, f);
     interactions.Delta_ext        = get_Delta_ext(n_scales, scale_interaction, Delta);
     interactions.scale_filter     = get_scale_filter(e, f, scale_interaction);
     interactions.half_size_filter = get_half_size_filter(n_scales, scale_interaction, Delta);
-end
-
-function PsiDtheta = getPsiDtheta()
-% Orientation interaction limits
-    a      = pi/4;
-    b      = pi/2;
-    Dtheta = [0 a b; a 0 a ; b a 0];
-    PsiDtheta = cos(abs(Dtheta)).^6;
 end
 
 function [e, f] = get_e_f(scale_interaction)
