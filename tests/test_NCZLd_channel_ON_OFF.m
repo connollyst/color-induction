@@ -13,7 +13,7 @@ function assert_NCZLd_channel_ON_OFF(instance)
     [Iitheta, config] = get_input(instance);
     expected = get_expected(instance);
     actual   = model.process.NCZLd_channel_ON_OFF_v1_1(Iitheta, config);
-    assertEqualCells(actual, expected);
+    assertEqualData(actual, expected);
 end
 
 %% TEST UTILITIES
