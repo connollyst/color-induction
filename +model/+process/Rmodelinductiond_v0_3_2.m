@@ -13,12 +13,12 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     validate_input(config)
     
     %% Get the configuration parameters
-    wave       = config.wave;
-    zli        = config.zli;
-    n_scales   = wave.n_scales;
-    n_membr    = zli.n_membr;
-    n_iter     = zli.n_iter;
-    Delta      = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
+    wave         = config.wave;
+    zli          = config.zli;
+    n_scales     = wave.n_scales;
+    n_membr      = zli.n_membr;
+    n_iter       = zli.n_iter;
+    scale_deltas = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     
     %% Initialize output membrane potentials
     gx_final = utils.initialize_data(config);
@@ -46,7 +46,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
             logger.log('Membrane interation: %i/%i\n', t_iter, n_iter, config);
             tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
-                        tIitheta, x, y, Delta, JW,...
+                        tIitheta, x, y, scale_deltas, JW,...
                         normalization_masks, interactions, config...
                      );
         end
