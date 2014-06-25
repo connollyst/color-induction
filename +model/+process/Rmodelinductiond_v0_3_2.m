@@ -28,11 +28,11 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     normalization_masks = model.terms.get_normalization_masks(config);
 
     %% Prepare orientation/scale/color interactions for x_ei
-    interactions = model.terms.get_interactions(Delta, config);
+    interactions = model.terms.get_interactions(scale_deltas, config);
     
     %% Prepare J & W: the excitatory and inhibitory masks
     % TODO perhaps J & W don't need the interactions.scale_distance?
-    JW = model.terms.get_JW(Delta, interactions.scale_distance, config);
+    JW = model.terms.get_JW(scale_deltas, interactions.scale_distance, config);
 
     %% Set the initial x (excitation) & y (inhibition) activity
     [x, y] = initialize_input(Iitheta, config);

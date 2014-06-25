@@ -9,7 +9,7 @@ wave.multires='DWD_orient_undecimated';
 wave.n_orients=3;
 
 % number of scales (if 0: code calculates it automatically)
-wave.n_scales=0; 
+wave.n_scales=3; 
 % wave.n_scales=5;
 % wave.n_scales=4; 
 
