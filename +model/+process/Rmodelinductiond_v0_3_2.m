@@ -12,32 +12,26 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 
     validate_input(config)
     
-    %% Get the configuration parameters
+    % Get the configuration parameters
     wave         = config.wave;
     zli          = config.zli;
     n_scales     = wave.n_scales;
     n_membr      = zli.n_membr;
     n_iter       = zli.n_iter;
     scale_deltas = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-    
-    %% Initialize output membrane potentials
-    [gx_final, gy_final] = deal(utils.initialize_data(config));
-
-    %% Normalization
-    Iitheta             = model.normalize_input(Iitheta, config);
-    normalization_masks = model.terms.get_normalization_masks(config);
-
-    %% Prepare orientation/scale/color interactions for x_ei
+    % Initialize output membrane potentials
+    gx_final     = utils.initialize_data(config);
+    gy_final     = utils.initialize_data(config);
+    % Normalization
+    Iitheta      = model.normalize_input(Iitheta, config);
+    norm_masks   = model.terms.get_normalization_masks(config);
+    % Prepare orientation/scale/color interactions for x_ei
     interactions = model.terms.get_interactions(scale_deltas, config);
-    
-    %% Prepare J & W: the excitatory and inhibitory masks
-    % TODO perhaps J & W don't need the interactions.scale_distance?
-    JW = model.terms.get_JW(scale_deltas, interactions.scale_distance, config);
-
-    %% Set the initial x (excitation) & y (inhibition) activity
-    [x, y] = initialize_input(Iitheta, config);
-    
-    %% Run recurrent network: the loop over time
+    % Prepare J & W: the excitatory and inhibitory masks
+    JW           = model.terms.get_JW(scale_deltas, interactions.scale_distance, config);
+    % Set the initial x (excitation) & y (inhibition) activity
+    [x, y]       = initialize_input(Iitheta, config);
+    % Run recurrent network: the loop over time
     for t=1:n_membr  % membrane time
         logger.log('Membrane time step: %i/%i\n', t, n_membr, config);
         tic
@@ -46,7 +40,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
             tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
                         tIitheta, x, y, scale_deltas, JW,...
-                        normalization_masks, interactions, config...
+                        norm_masks, interactions, config...
                      );
         end
         if config.display.logging

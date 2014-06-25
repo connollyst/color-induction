@@ -1,6 +1,7 @@
 function JW = get_JW(Delta, scale_distance, config)
 %GET_JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
 
+% TODO perhaps J & W don't need the interactions.scale_distance?
     zli        = config.zli;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
