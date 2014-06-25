@@ -21,8 +21,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     scale_deltas = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
     
     %% Initialize output membrane potentials
-    gx_final = utils.initialize_data(config);
-    gy_final = utils.initialize_data(config);
+    [gx_final, gy_final] = deal(utils.initialize_data(config));
 
     %% Normalization
     Iitheta             = model.normalize_input(Iitheta, config);
