@@ -161,7 +161,7 @@ strct=struct('zli',zli,'wave',wave,'image',image,'display',display,'compute',com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   core of the process -> NCZLd   %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-img_out=model.process.NCZLd(image_data,strct);
+img_out = model.process.NCZLd(image_data,strct);
 	
 end
    
