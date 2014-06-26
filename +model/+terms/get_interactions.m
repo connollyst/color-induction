@@ -2,18 +2,19 @@ function interactions = get_interactions(Delta, config)
 %INTERACTION_MAP Define the interaction maps used to define incluences
 %   Detailed explanation goes here
     
-    n_scales                      = config.wave.n_scales;
-    scale_interaction_distance    = config.zli.scale_interaction_distance;
+    n_scales                          = config.wave.n_scales;
+    scale_interaction_distance        = config.zli.scale_interaction_distance;
     
-    [e, f]                        = get_e_f(scale_interaction_distance);
+    [e, f]                            = get_e_f(scale_interaction_distance);
     
-    interactions                  = struct;
-    interactions.PsiDtheta        = model.terms.get_psi_delta_theta();
-    interactions.scale_distance   = scale_interaction_distance; % TODO rename to scale_interaction_distance
-    interactions.border_weight    = model.get_border_weights(e, f);
-    interactions.Delta_ext        = get_Delta_ext(n_scales, scale_interaction_distance, Delta);
-    interactions.scale_filter     = get_scale_filter(e, f, scale_interaction_distance);
-    interactions.half_size_filter = get_half_size_filter(n_scales, scale_interaction_distance, Delta);
+    interactions                      = struct;
+    interactions.PsiDtheta            = model.terms.get_psi_delta_theta();
+    interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
+    interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
+    interactions.border_weight        = model.get_border_weights(e, f);
+    interactions.Delta_ext            = get_Delta_ext(n_scales, scale_interaction_distance, Delta);
+    interactions.scale_filter         = get_scale_filter(e, f, scale_interaction_distance);
+    interactions.half_size_filter     = get_half_size_filter(n_scales, scale_interaction_distance, Delta);
 end
 
 function [e, f] = get_e_f(scale_interaction)
@@ -29,6 +30,12 @@ function [e, f] = get_e_f(scale_interaction)
         e = 0;
         f = 1;
     end
+end
+
+function n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance)
+% The number of interactions: each scale and it's interactions on either
+% side, up to the scale interactions distance
+    n_scale_interactions = n_scales + 2 * scale_interaction_distance;
 end
 
 function Delta_ext = get_Delta_ext(n_scales, scale_interaction_distance, Delta)

@@ -9,11 +9,9 @@ function [toroidal_x, toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y
     scale_distance       = interactions.scale_distance;
     Delta_ext            = interactions.Delta_ext;
     border_weight        = interactions.border_weight;
-    % The number of interactions: each scale and it's interactions on
-    % either side, up to the scale interactions distance
-    n_scale_interactions = n_scales + 2 * scale_distance;
+    n_scale_interactions = interactions.n_scale_interactions;
     
-    [toroidal_x, toroidal_y] = mirror_edges(x, y);
+    [toroidal_x, toroidal_y] = mirror_edges(x, y, Delta, interactions, config);
 
     kk_tmp1_x              = zeros(size(toroidal_x{scale_distance+1})); 
     kk_tmp2_x              = zeros(size(toroidal_x{n_scales+scale_distance}));
@@ -52,7 +50,11 @@ function [toroidal_x, toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y
     end
 end
 
-function [toroidal_x, toroidal_y] = mirror_edges(x, y)
+function [toroidal_x, toroidal_y] = mirror_edges(x, y, Delta, interactions, config)
+    n_scales             = config.wave.n_scales;
+    scale_distance       = interactions.scale_distance;
+    n_scale_interactions = interactions.n_scale_interactions;
+    
     toroidal_x = cell(n_scale_interactions, 1);
     toroidal_y = cell(n_scale_interactions, 1);
     for s=1:n_scales
