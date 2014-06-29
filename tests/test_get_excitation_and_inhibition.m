@@ -90,7 +90,6 @@ function [newgx, newgy, JW, interactions] = get_input(instance)
     input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
     newgx        = input.newgx_toroidal_x;
     newgy        = input.restr_newgy_toroidal_y;
-    Delta        = input.Delta;
     JW           = input.JW;
     interactions = input.interactions;
 end
