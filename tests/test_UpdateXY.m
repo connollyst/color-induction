@@ -54,22 +54,22 @@ end
 %% ASSERTIONS
 
 function assert_x_out(instance)
-    [tIitheta, x, y, Delta, JW, norm_mask, interactions, config] = get_input(instance);
-    [x_out, ~] = model.process.UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, config);
+    [tIitheta, x, y, JW, norm_mask, interactions, config] = get_input(instance);
+    [x_out, ~] = model.process.UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, config);
     expected = get_expected(instance);
     assertEqual(x_out, expected.x_out);
 end
 
 function assert_y_out(instance)
-    [tIitheta, x, y, Delta, JW, norm_mask, interactions, config] = get_input(instance);
-    [~, y_out] = model.process.UpdateXY(tIitheta, x, y, Delta, JW, norm_mask, interactions, config);
+    [tIitheta, x, y, JW, norm_mask, interactions, config] = get_input(instance);
+    [~, y_out] = model.process.UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, config);
     expected = get_expected(instance);
     assertEqual(y_out, expected.y_out);
 end
 
 %% TEST UTILITIES
 
-function [tIitheta, x, y, Delta, JW, norm_mask, interactions, config] = get_input(instance)
+function [tIitheta, x, y, JW, norm_mask, interactions, config] = get_input(instance)
     input        = load(['data/input/UpdateXY_',instance,'.mat']);
     tIitheta     = input.tIitheta;
     x            = input.x;
@@ -79,6 +79,8 @@ function [tIitheta, x, y, Delta, JW, norm_mask, interactions, config] = get_inpu
     norm_mask    = input.norm_mask;
     interactions = input.interactions;
     config       = input.config;
+    interactions.n_scale_interactions = 4; % TODO update config
+    config.wave.scale_deltas = Delta;      % TODO use common config
 end
 
 function expected = get_expected(instance)
