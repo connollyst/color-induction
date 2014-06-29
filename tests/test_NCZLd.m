@@ -24,8 +24,7 @@ end
 %% ASSERTIONS
 
 function assert_NCZLd(instance)
-    config   = get_config();
-    I        = get_input(instance);
+    [I, config] = get_input(instance);
     actual   = model.process.NCZLd(I, config);
     expected = get_expected(instance);
     assertDimensionsEqual(actual, expected)
@@ -46,9 +45,11 @@ function config = get_config()
     config = saved.config;
 end
 
-function I = get_input(instance)
+function [I, config] = get_input(instance)
     input   = load(['data/input/NCZLd_',instance,'.mat']);
     I       = input.I;
+    config  = input.config;
+    config.zli.scale_interaction_distance = 1;
 end
 
 function expected = get_expected(instance)

@@ -34,6 +34,8 @@ function [I, config] = get_input(instance)
     input   = load(['data/input/NCZLd_channel_',instance,'.mat']);
     I       = input.I;
     config  = input.config;
+    config.wave.scale_deltas = [45, 105];   % TODO update config
+    config.zli.scale_interaction_distance = 1;
 end
 
 function expected = get_expected(instance)
