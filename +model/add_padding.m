@@ -1,24 +1,24 @@
 function [toroidal_x, toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
 
-    n_cols               = config.image.width;
-    n_rows               = config.image.height;
-    n_channels           = config.image.n_channels;
-    n_scales             = config.wave.n_scales;
-    n_orients            = config.wave.n_orients;
-    scale_distance       = interactions.scale_distance;
-    Delta_ext            = interactions.Delta_ext;
-    border_weight        = interactions.border_weight;
-    n_scale_interactions = interactions.n_scale_interactions;
+    n_cols                   = config.image.width;
+    n_rows                   = config.image.height;
+    n_channels               = config.image.n_channels;
+    n_scales                 = config.wave.n_scales;
+    n_orients                = config.wave.n_orients;
+    scale_distance           = interactions.scale_distance;
+    Delta_ext                = interactions.Delta_ext;
+    border_weight            = interactions.border_weight;
+    n_scale_interactions     = interactions.n_scale_interactions;
     
     [toroidal_x, toroidal_y] = mirror_edges(x, y, Delta, interactions, config);
 
-    kk_tmp1_x              = zeros(size(toroidal_x{scale_distance+1})); 
-    kk_tmp2_x              = zeros(size(toroidal_x{n_scales+scale_distance}));
-    kk_tmp1_y              = zeros(size(toroidal_y{scale_distance+1})); 
-    kk_tmp2_y              = zeros(size(toroidal_y{n_scales+scale_distance}));
-    restr_newgx_toroidal_x = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
-    restr_newgy_toroidal_y = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    kk_tmp1_x                = zeros(size(toroidal_x{scale_distance+1})); 
+    kk_tmp2_x                = zeros(size(toroidal_x{n_scales+scale_distance}));
+    kk_tmp1_y                = zeros(size(toroidal_y{scale_distance+1})); 
+    kk_tmp2_y                = zeros(size(toroidal_y{n_scales+scale_distance}));
+    restr_newgx_toroidal_x   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    restr_newgy_toroidal_y   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
     % .. what sorcery is this?
     for i=1:scale_distance+1
         cols      = Delta(1)+1:Delta(1)+n_cols;
