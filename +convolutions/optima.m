@@ -18,7 +18,7 @@ function result = optima(data, filter, shift_size, fft_flag, avoid_circshift_fft
     if fft_flag == 1
         % Apply the Fourier filter to the normal data
         data_fft = fftn(data);
-        result   = optima_fft(data_fft, filter, shift_size, avoid_circshift_fft);
+        result   = convolutions.optima_fft(data_fft, filter, shift_size, avoid_circshift_fft);
     else
         % Apply the normal filter to the normal data
         result = convn(data, filter, 'same');
