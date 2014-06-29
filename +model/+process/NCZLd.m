@@ -16,7 +16,7 @@ function O = NCZLd(I, config)
         O = get_initial_I(I, n_membr, dynamic);
     else
         O = model.process.NCZLd_channel_v1_0(I, config);
-        O = average_output(O, config, n_membr, dynamic);
+        O = model.average_output(O, config, n_membr, dynamic);
     end
 
     % Print processing time
@@ -65,17 +65,4 @@ function O = get_initial_I(I, n_membr, dynamic)
         O = zeros(size(I{1}));
     end
     O = O + min(I{1}(:)); % give the initial value to all the pixels
-end
-
-function O = average_output(I, config, n_membr, dynamic)
-    % Static case
-    if dynamic == 0
-        % We take the mean as the output, as in Li, 1999
-        n_frames_promig = config.image.n_frames_promig;
-        t_start         = n_membr - n_frames_promig + 1;
-        t_end           = n_membr;
-        I_dims = ndims(I{1});
-        I_flat = cat(I_dims+1, I{t_start:t_end});
-        O = mean(I_flat, I_dims+1);
-    end
 end
