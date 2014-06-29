@@ -69,42 +69,44 @@ end
 %% ASSERTIONS
 
 function assert_padded_newgx_toroidal_x(instance)
-    [x, y, Delta, interactions, config] = get_input(instance);
-    [newgx_toroidal_x, ~, ~, ~] = model.add_padding(x, y, Delta, interactions, config);
+    [x, y, interactions, config] = get_input(instance);
+    [newgx_toroidal_x, ~, ~, ~] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(newgx_toroidal_x, expected.newgx_toroidal_x);
 end
 
 function assert_padded_newgy_toroidal_y(instance)
-    [x, y, Delta, interactions, config] = get_input(instance);
-    [~, newgy_toroidal_y, ~, ~] = model.add_padding(x, y, Delta, interactions, config);
+    [x, y, interactions, config] = get_input(instance);
+    [~, newgy_toroidal_y, ~, ~] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(newgy_toroidal_y, expected.newgy_toroidal_y);
 end
 
 function assert_padded_restr_newgx_toroidal_x(instance)
-    [x, y, Delta, interactions, config] = get_input(instance);
-    [~, ~, restr_newgx_toroidal_x, ~] = model.add_padding(x, y, Delta, interactions, config);
+    [x, y, interactions, config] = get_input(instance);
+    [~, ~, restr_newgx_toroidal_x, ~] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(restr_newgx_toroidal_x, expected.restr_newgx_toroidal_x);
 end
 
 function assert_padded_restr_newgy_toroidal_y(instance)
-    [x, y, Delta, interactions, config] = get_input(instance);
-    [~, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, Delta, interactions, config);
+    [x, y, interactions, config] = get_input(instance);
+    [~, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(restr_newgy_toroidal_y, expected.restr_newgy_toroidal_y);
 end
 
 %% TEST UTILITIES
 
-function [x, y, Delta, interactions, config] = get_input(instance)
+function [x, y, interactions, config] = get_input(instance)
     input        = load(['data/input/add_padding_',instance,'.mat']);
     x            = input.x;
     y            = input.y;
     Delta        = input.Delta;
     interactions = input.interactions;
     config       = input.config;
+    interactions.n_scale_interactions = 4; % TODO update config
+    config.wave.scale_deltas = Delta;      % TODO use common config
 end
 
 function output = get_output(instance)
