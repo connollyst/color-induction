@@ -8,6 +8,7 @@ function result = optima_fft(data_fft, filter_fft, shift_size, avoid_circshift_f
 %       shift_size: the shift size filter if avoiding FFT circshift
 %       avoid_circshift_fft: 0/1 if we should compensate for FFT circhift
 
+    % TODO validate that both data & filter are complex data (implies FFT)
     conv_fft = data_fft.*filter_fft;
     result = ifftn(conv_fft, 'symmetric');
     if avoid_circshift_fft ~= 1
