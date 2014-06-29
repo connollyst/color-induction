@@ -15,7 +15,7 @@ function interactions = get_interactions(config)
     interactions.border_weight        = model.get_border_weights(e, f);
     interactions.Delta_ext            = get_Delta_ext(scale_interaction_distance, scale_deltas, config);
     interactions.scale_filter         = get_scale_filter(e, f, scale_interaction_distance);
-    interactions.half_size_filter     = get_half_size_filter(n_scales, scale_interaction_distance, scale_deltas);
+    interactions.half_size_filter     = get_half_size_filter(scale_interaction_distance, scale_deltas, config);
 end
 
 function [e, f] = get_e_f(scale_interaction)
@@ -53,7 +53,8 @@ function scale_filter = get_scale_filter(e, f, scale_interaction_distance)
     scale_filter(1, 1, 1, :, 1) = [e f e];
 end
 
-function half_size_filter = get_half_size_filter(n_scales, scale_interaction_distance, scale_deltas)
+function half_size_filter = get_half_size_filter(scale_interaction_distance, scale_deltas, config)
+    n_scales         = config.wave.n_scales;
     half_size_filter = cell(n_scales,1);
     for s=1:n_scales
         if scale_interaction_distance > 0
