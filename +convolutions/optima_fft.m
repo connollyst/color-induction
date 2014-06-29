@@ -10,7 +10,7 @@ function result = optima_fft(data_fft, filter_fft, shift_size, avoid_circshift_f
 
     % TODO validate that both data & filter are complex data (implies FFT)
     conv_fft = data_fft.*filter_fft;
-    result = ifft(conv_fft, 'symmetric');
+    result = ifftn(conv_fft, 'symmetric');
     if avoid_circshift_fft ~= 1
         result = circshift(result, -shift_size);
     end
