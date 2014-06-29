@@ -50,26 +50,12 @@ function config = init_config(I, config)
     
     % Calculate number of scales automatically
     if config.wave.n_scales == 0
-        config.wave.n_scales = calculate_scales(I, config);    
+        config.wave.n_scales = wavelets.calculate_scale_count(I, config);    
     end
     logger.log('Processing at %i scales\n', config.wave.n_scales, config);
     
     % Calculate the scale deltas
-    zli = config.zli;
-    config.wave.scale_deltas = zli.Delta * utils.scale2size(1:config.wave.n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-end
-
-function n_scales = calculate_scales(I, config)
-    if config.zli.fin_scale_offset == 0
-        % parameter to adjust the correct number of the last wavelet plane (obsolete)
-        % TODO if this is obsolete, can it be removed?
-        extra = 1;
-    else
-        extra = 2;
-    end
-    mida_min = config.wave.mida_min;
-    % TODO scales should be calculated using all colors/frames
-    n_scales = floor(log(max(size(I{1}(:,:,1))-1)/mida_min)/log(2)) + extra;
+    config.wave.scale_deltas = wavelets.calculate_scale_deltas(config);
 end
 
 function O = get_initial_I(I, n_membr, dynamic)
