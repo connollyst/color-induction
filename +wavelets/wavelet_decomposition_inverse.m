@@ -7,7 +7,6 @@ function I_out = wavelet_decomposition_inverse(wavelet, residual, config)
     I_out   = cell(n_membr,1);
     for t=1:n_membr
         w = wavelet{t};
-        % c = curv_final(1:n_scales-1, n_scales, t);
         c = residual{t};
         I_out{t} = wavelets.IDWD_orient_undecimated(w, c);
     end

@@ -36,7 +36,7 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
     iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
-
+    
     % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
     iFactor_OFF = model.process.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);

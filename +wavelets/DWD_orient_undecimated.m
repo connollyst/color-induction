@@ -26,10 +26,10 @@ function [w, c] = DWD_orient_undecimated(image, scales)
         % Decimate image along horizontal direction
         prod         = wavelets.symmetric_filtering(image, h)  * inv_sum;	% blur
         HF           = prod;
-        GF           = image - prod;                                      % horizontal frequency info
+        GF           = image - prod;                                        % horizontal frequency info
         % Decimate image along vertical direction   
         prod         = wavelets.symmetric_filtering(image, h') * inv_sum;	% blur
-        GHF          = image - prod;                                      % vertical wavelet plane
+        GHF          = image - prod;                                        % vertical wavelet plane
         % Decimate GF along vertical direction
         HGF          = wavelets.symmetric_filtering(HF, h')    * inv_sum;	% blur
         % Save horizontal and vertical wavelet planes
@@ -45,6 +45,10 @@ function [w, c] = DWD_orient_undecimated(image, scales)
         image        = C;
         % Upsample filter
         h            = [0 upsample(h,2)];
+        
+        
     end
+    % TODO initialize the orientations in their correct positions
+    w(:,:,:,:,[2,3]) = w(:,:,:,:,[3,2]);
 end
 

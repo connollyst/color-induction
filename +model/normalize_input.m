@@ -5,12 +5,6 @@ function Iitheta = normalize_input(Iitheta, config)
 %            for example, Iitheta{3,2,1}(:,:,:) is the entire input signal
 %            at the first time step, second scale, and third orientation.
     
-    for t=1:config.zli.n_membr
-        % Move the diagonal orientation to the middle orientation position
-        % TODO move this up to the wavelet decomposition step!
-        Iitheta{t}(:,:,:,:,[2,3]) = Iitheta{t}(:,:,:,:,[3,2]);
-    end
-    
     %DEBUGGING
     config.zli.normal_type = 'color';
     

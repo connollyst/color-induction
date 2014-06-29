@@ -9,7 +9,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %   config:  The model configuration struct array
 %
 %   gx_final:   the excitation membrane potentials
-
+    
     validate_input(config)
 
     % Initialize output membrane potentials
@@ -38,10 +38,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         end
         % TODO we are bypassing initialization, no?
         gx_final{t} = model.terms.gx(x);
-        gy_final{t} = model.terms.gy(y);
-        % Move the diagonal orientation back to the 3rd position
-        % TODO why..?
-        gx_final{t}(:,:,:,:,[2,3]) = gx_final{t}(:,:,:,:,[3,2]);
+        gy_final{t} = model.terms.gy(y);    
     end
 end
 
