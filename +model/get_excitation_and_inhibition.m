@@ -93,8 +93,8 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
                 s_filter = half_size_filter{s};
                 for c=1:n_channels
                     x_fft    = newgx_toroidal_x_fft{scale_distance+s,c}{ov};
-                    x_fft_J  = convolutions.optima_fft(x_fft, J_fft_s, s_filter, 1, avoid_circshift_fft);
-                    x_fft_W  = convolutions.optima_fft(x_fft, W_fft_s, s_filter, 1, avoid_circshift_fft);
+                    x_fft_J  = convolutions.optima_fft(x_fft, J_fft_s, s_filter, avoid_circshift_fft);
+                    x_fft_W  = convolutions.optima_fft(x_fft, W_fft_s, s_filter, avoid_circshift_fft);
                     x_ee_conv_tmp(:,:,c,s,ov) = x_fft_J(cols, rows);
                     y_ie_conv_tmp(:,:,c,s,ov) = x_fft_W(cols, rows);
                 end

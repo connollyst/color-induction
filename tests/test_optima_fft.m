@@ -14,20 +14,19 @@ end
 %% ASSERTIONS
 
 function assert_optima_fft(instance)
-    [data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft] = get_input(instance);
-    actual   = convolutions.optima_fft(data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft);
+    [data, filter_fft, half_size_filter, avoid_circshift_fft] = get_input(instance);
+    actual   = convolutions.optima_fft(data, filter_fft, half_size_filter, avoid_circshift_fft);
     expected = get_expected(instance);
     assertEqual(actual, expected);
 end
 
 %% TEST UTILITIES
 
-function [data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft] = get_input(instance)
+function [data, filter_fft, half_size_filter, avoid_circshift_fft] = get_input(instance)
     input               = load(['data/input/optima_fft_',instance,'.mat']);
     data                = input.data;
     filter_fft          = input.filter_fft;
     half_size_filter    = input.half_size_filter;
-    fft_flag            = input.fft_flag;
     avoid_circshift_fft = input.avoid_circshift_fft;
 end
 
