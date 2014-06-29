@@ -3,37 +3,13 @@ function O = NCZLd(I, config)
 %      I{frames}(cols, rows, colors)
 %   config: the algorithm configuration structure
 
-
-    % Track processing time
     start_time = tic;
     
-    I = init_input(I);
+    I      = init_input(I);
+    config = init_config(I, config);
     
-    % Display input image dimensions
-    config.image.width      = size(I{1}, 1);
-    config.image.height     = size(I{1}, 2);
-    config.image.n_channels = size(I{1}, 3);
-    logger.log('Image size: %ix%ix%i\n', config.image.width, config.image.height, config.image.n_channels, config);
-    
-    %-------------------------------------------------------
-    zli     = config.zli;
-    n_membr = zli.n_membr;
+    n_membr = config.zli.n_membr;
     dynamic = config.compute.dynamic;
-    %-------------------------------------------------------
-    
-    % Calculate number of scales automatically
-    if config.wave.n_scales == 0
-        config.wave.n_scales = calculate_scales(I, config);    
-    end
-    logger.log('Processing at %i scales\n', config.wave.n_scales, config);
-    
-    config.wave.scale_deltas = zli.Delta * utils.scale2size(1:config.wave.n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-    
-    %-------------------------------------------------------
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%% NCZLd for every channel %%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if is_uniform(I)
         % If the image is uniform we do not process it
@@ -45,6 +21,24 @@ function O = NCZLd(I, config)
 
     % Print processing time
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
+end
+
+function config = init_config(I, config)
+    % Record input image dimensions
+    config.image.width      = size(I{1}, 1);
+    config.image.height     = size(I{1}, 2);
+    config.image.n_channels = size(I{1}, 3);
+    logger.log('Image size: %ix%ix%i\n', config.image.width, config.image.height, config.image.n_channels, config);
+    
+    % Calculate number of scales automatically
+    if config.wave.n_scales == 0
+        config.wave.n_scales = calculate_scales(I, config);    
+    end
+    logger.log('Processing at %i scales\n', config.wave.n_scales, config);
+    
+    % Calculate the scale deltas
+    zli = config.zli;
+    config.wave.scale_deltas = zli.Delta * utils.scale2size(1:config.wave.n_scales, zli.scale2size_type, zli.scale2size_epsilon);
 end
 
 function I_init = init_input(I_in)
