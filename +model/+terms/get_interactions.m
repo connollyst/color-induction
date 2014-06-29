@@ -13,7 +13,7 @@ function interactions = get_interactions(config)
     interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
     interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
     interactions.border_weight        = model.get_border_weights(e, f);
-    interactions.Delta_ext            = get_Delta_ext(n_scales, scale_interaction_distance, scale_deltas);
+    interactions.Delta_ext            = get_Delta_ext(scale_interaction_distance, scale_deltas, config);
     interactions.scale_filter         = get_scale_filter(e, f, scale_interaction_distance);
     interactions.half_size_filter     = get_half_size_filter(n_scales, scale_interaction_distance, scale_deltas);
 end
@@ -39,14 +39,12 @@ function n_scale_interactions = get_n_scale_interactions(n_scales, scale_interac
     n_scale_interactions = n_scales + 2 * scale_interaction_distance;
 end
 
-function Delta_ext = get_Delta_ext(n_scales, scale_interaction_distance, scale_deltas)
-    n_scale_interactions = n_scales+scale_interaction_distance*2;
-    a = 1:scale_interaction_distance;
-    b = n_scales+scale_interaction_distance;
-    Delta_ext = zeros(1, n_scale_interactions);
-    Delta_ext(scale_interaction_distance+1:b) = scale_deltas;
-    Delta_ext(a)                              = scale_deltas(1);
-    Delta_ext(b+1:scale_interaction_distance) = scale_deltas(n_scales);
+function Delta_ext = get_Delta_ext(scale_distance, scale_deltas, config)
+    n_scales      = config.wave.n_scales;
+    Delta_ext     = zeros(1, n_scales+scale_distance*2);
+    Delta_ext(scale_distance+1:n_scales+scale_distance)            = scale_deltas;
+    Delta_ext(1:scale_distance)                                    = scale_deltas(1);
+    Delta_ext(n_scales+scale_distance+1:n_scales+scale_distance*2) = scale_deltas(n_scales);
 end
 
 function scale_filter = get_scale_filter(e, f, scale_interaction_distance)
