@@ -48,8 +48,7 @@ end
 function [I, config] = get_input(instance)
     input   = load(['data/input/NCZLd_',instance,'.mat']);
     I       = input.I;
-    config  = input.config;
-    config.zli.scale_interaction_distance = 1;
+    config  = get_config();
 end
 
 function expected = get_expected(instance)
