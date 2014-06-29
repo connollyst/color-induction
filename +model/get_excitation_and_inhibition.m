@@ -7,15 +7,18 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     n_channels   = config.image.n_channels;
     n_scales     = config.wave.n_scales;
     n_orients    = config.wave.n_orients;
+    use_fft      = config.compute.use_fft;
     
     [x_ee, x_ei, y_ie]   = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
 
-    newgx_toroidal_x_fft = get_preparatory_term(newgx_toroidal_x, interactions, config);
+    if use_fft
+        newgx_toroidal_x = to_fft(newgx_toroidal_x, interactions, config);
+    end
 
     % influence of the neighboring scales first
     for oc=1:n_orients  % loop over the central (reference) orientation
         x_ei(:,:,:,:,oc)   = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config);
-        [x_ee_oc, y_ie_oc] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, Delta, JW, interactions, config);
+        [x_ee_oc, y_ie_oc] = get_x_ee_y_ie(oc, newgx_toroidal_x, Delta, JW, interactions, config);
         x_ee(:,:,:,:,oc)   = sum(x_ee_oc, 5);
         y_ie(:,:,:,:,oc)   = sum(y_ie_oc, 5);
     end
@@ -25,26 +28,21 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
 end
 
-function newgx_toroidal_x_fft = get_preparatory_term(newgx_toroidal_x, interactions, config)
-% Prepare the input data for processing
+function newgx_toroidal_x_fft = to_fft(newgx_toroidal_x, interactions, config)
+% Preprocess the input data to Fourier space for faster processing.
 
     scale_distance = interactions.scale_distance;
     n_channels     = config.image.n_channels;
     n_scales       = config.wave.n_scales;
     n_orients      = config.wave.n_orients;
-    use_fft        = config.compute.use_fft;
     
-    if use_fft
-        newgx_toroidal_x_fft = cell(scale_distance+n_scales, n_channels);
-        for s=1:n_scales
-            for c=1:n_channels
-                for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                    newgx_toroidal_x_fft{scale_distance+s,c}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,c,ov));
-                end
+    newgx_toroidal_x_fft = cell(scale_distance+n_scales, n_channels);
+    for s=1:n_scales
+        for c=1:n_channels
+            for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+                newgx_toroidal_x_fft{scale_distance+s,c}{ov} = fftn(newgx_toroidal_x{scale_distance+s}(:,:,c,ov));
             end
         end
-    else
-        error('Non FFT approach is not implemented.');
     end
 end
 
