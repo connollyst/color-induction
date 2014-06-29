@@ -24,9 +24,10 @@ end
 %% ASSERTIONS
 
 function assert_NCZLd(instance)
-    [I, config] = get_input(instance);
-    actual      = model.process.NCZLd(I, config);
-    expected    = get_expected(instance);
+    config   = get_config();
+    I        = get_input(instance);
+    actual   = model.process.NCZLd(I, config);
+    expected = get_expected(instance);
     assertDimensionsEqual(actual, expected)
 end
 
@@ -40,10 +41,14 @@ end
 
 %% TEST UTILITIES
 
-function [I, config] = get_input(instance)
+function config = get_config()
+    saved  = load('data/input/NCZLd_config.mat');
+    config = saved.config;
+end
+
+function I = get_input(instance)
     input   = load(['data/input/NCZLd_',instance,'.mat']);
     I       = input.I;
-    config  = input.config;
 end
 
 function expected = get_expected(instance)
