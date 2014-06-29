@@ -62,7 +62,12 @@ function [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance
     x_ee     = input.x_ee;
     x_ei     = input.x_ei;
     y_ie     = input.y_ie;
-    config   = input.config;
+    config   = get_config();
+end
+
+function config = get_config()
+    saved = load('data/input/config_40x40x3.mat');
+    config = saved.config;
 end
 
 function expected = get_expected(instance)
