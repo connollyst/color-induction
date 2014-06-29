@@ -27,6 +27,8 @@ function O = NCZLd(I, config)
     end
     logger.log('Processing at %i scales\n', config.wave.n_scales, config);
     
+    config.wave.scale_deltas = zli.Delta * utils.scale2size(1:config.wave.n_scales, zli.scale2size_type, zli.scale2size_epsilon);
+    
     %-------------------------------------------------------
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

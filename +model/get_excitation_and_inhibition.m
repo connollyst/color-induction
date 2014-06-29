@@ -1,4 +1,4 @@
-function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, Delta, JW, interactions, config)
+function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, restr_newgy_toroidal_y, JW, interactions, config)
 %GET_EXCITATION_AND_INHIBITION
 
     scale_filter = interactions.scale_filter;
@@ -18,7 +18,7 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(newgx_toroidal_x, re
     % influence of the neighboring scales first
     for oc=1:n_orients  % loop over the central (reference) orientation
         x_ei(:,:,:,:,oc)   = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config);
-        [x_ee_oc, y_ie_oc] = get_x_ee_y_ie(oc, newgx_toroidal_x, Delta, JW, interactions, config);
+        [x_ee_oc, y_ie_oc] = get_x_ee_y_ie(oc, newgx_toroidal_x, JW, interactions, config);
         x_ee(:,:,:,:,oc)   = sum(x_ee_oc, 5);
         y_ie(:,:,:,:,oc)   = sum(y_ie_oc, 5);
     end
@@ -64,7 +64,7 @@ function x_ei = get_x_ei(oc, restr_newgy_toroidal_y, interactions, config)
     x_ei = sum(restr_sum_scale_newgy_toroidal_y .* repmat(w,[n_cols,n_rows,n_channels,n_scales,1]), 5);
 end
 
-function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, Delta, JW, interactions, config)
+function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft, JW, interactions, config)
 % Excitatory and inhibitory terms (the big sums)
 % excitatory-excitatory term:    x_ee
 % excitatory-inhibitory term:    y_ie
@@ -76,6 +76,7 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
+    scale_deltas        = config.wave.scale_deltas;
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
@@ -84,8 +85,8 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = get_x_ee_y_ie(oc, newgx_toroidal_x_fft
     for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
         if use_fft
             for s=1:n_scales
-                cols     = Delta(s)+1:Delta(s)+n_cols;
-                rows     = Delta(s)+1:Delta(s)+n_rows;
+                cols     = scale_deltas(s)+1:scale_deltas(s)+n_cols;
+                rows     = scale_deltas(s)+1:scale_deltas(s)+n_rows;
                 J_fft_s  = JW.J_fft{s}(:,:,1,ov,oc);
                 W_fft_s  = JW.W_fft{s}(:,:,1,ov,oc);
                 s_filter = half_size_filter{s};

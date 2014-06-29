@@ -13,12 +13,10 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     validate_input(config)
     
     % Get the configuration parameters
-    wave         = config.wave;
     zli          = config.zli;
-    n_scales     = wave.n_scales;
     n_membr      = zli.n_membr;
     n_iter       = zli.n_iter;
-    scale_deltas = zli.Delta * utils.scale2size(1:n_scales, zli.scale2size_type, zli.scale2size_epsilon);
+
     % Initialize output membrane potentials
     gx_final     = utils.initialize_data(config);
     gy_final     = utils.initialize_data(config);
@@ -26,9 +24,9 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     Iitheta      = model.normalize_input(Iitheta, config);
     norm_masks   = model.terms.get_normalization_masks(config);
     % Prepare orientation/scale/color interactions for x_ei
-    interactions = model.terms.get_interactions(scale_deltas, config);
+    interactions = model.terms.get_interactions(config);
     % Prepare J & W: the excitatory and inhibitory masks
-    JW           = model.terms.get_JW(scale_deltas, interactions.scale_distance, config);
+    JW           = model.terms.get_JW(interactions.scale_distance, config);
     % Set the initial x (excitation) & y (inhibition) activity
     [x, y]       = initialize_input(Iitheta, config);
     % Run recurrent network: the loop over time
@@ -39,8 +37,8 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
             logger.log('Membrane interation: %i/%i\n', t_iter, n_iter, config);
             tIitheta = Iitheta{t};
             [x, y] = model.process.UpdateXY(...
-                        tIitheta, x, y, scale_deltas, JW,...
-                        norm_masks, interactions, config...
+                        tIitheta, x, y, ...
+                        JW, norm_masks, interactions, config...
                      );
         end
         if config.display.logging
