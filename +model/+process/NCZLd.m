@@ -23,7 +23,25 @@ function O = NCZLd(I, config)
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
 
+function I_init = init_input(I_in)
+%INIT_INPUT Initialize the input image(s)
+%   If it is a single image, return a 1x1 cell containg just that image.
+%   If it is a cell array of images, return the cell array.
+    if ~iscell(I_in)
+        I_in = double(I_in);
+        I_init = cell(1, 1);
+        I_init{1} = I_in;
+    else
+        % TODO validate input images: same dimensions
+        I_init = I_in;
+    end
+end
+
 function config = init_config(I, config)
+%INIT_CONFIG Initialize the configuration
+%   Some values about the input data are recorded, some values may need to
+%   be inferred or calculated.
+
     % Record input image dimensions
     config.image.width      = size(I{1}, 1);
     config.image.height     = size(I{1}, 2);
@@ -39,20 +57,6 @@ function config = init_config(I, config)
     % Calculate the scale deltas
     zli = config.zli;
     config.wave.scale_deltas = zli.Delta * utils.scale2size(1:config.wave.n_scales, zli.scale2size_type, zli.scale2size_epsilon);
-end
-
-function I_init = init_input(I_in)
-%INIT_INPUT initialize the input image(s)
-%   If it is a single image, return a 1x1 cell containg just that image.
-%   If it is a cell array of images, return the cell array.
-    if ~iscell(I_in)
-        I_in = double(I_in);
-        I_init = cell(1, 1);
-        I_init{1} = I_in;
-    else
-        % TODO validate input images: same dimensions
-        I_init = I_in;
-    end
 end
 
 function n_scales = calculate_scales(I, config)
