@@ -23,7 +23,8 @@ end
 
 function assert_I_norm(instance)
     % TODO get input
-    [norm_mask, newgx_toroidal_x, interactions, config] = get_input(instance);
+    config = get_config();
+    [norm_mask, newgx_toroidal_x, interactions] = get_input(instance);
     I_norm   = model.normalize_output(norm_mask, newgx_toroidal_x, interactions, config);
     expected = get_expected(instance);
     assertEqualData(I_norm, expected.I_norm);
@@ -31,12 +32,16 @@ end
 
 %% TEST UTILITIES
 
-function [norm_mask, newgx_toroidal_x, interactions, config] = get_input(instance)
+function config = get_config()
+    saved = load('data/input/config_40x40x3.mat');
+    config = saved.config;
+end
+
+function [norm_mask, newgx_toroidal_x, interactions] = get_input(instance)
     input            = load(['data/input/normalize_output_',instance,'.mat']);
     newgx_toroidal_x = input.newgx_toroidal_x;
     norm_mask        = input.norm_mask;
     interactions     = input.interactions;
-    config           = input.config;
 end
 
 function expected = get_expected(instance)
