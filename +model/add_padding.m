@@ -1,14 +1,19 @@
 function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newgy_toroidal_y] = add_padding(x, y, Delta, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
 
-    n_cols                   = config.image.width;
-    n_rows                   = config.image.height;
-    n_channels               = config.image.n_channels;
+    [toroidal_x, toroidal_y] = mirror_boundry(x, y, Delta, interactions, config);
+    
+    [newgx_toroidal_x, newgy_toroidal_y] = ...
+        do_something(toroidal_x, toroidal_y, Delta, interactions, config);
+
+    [restr_newgx_toroidal_x, restr_newgy_toroidal_y] = ...
+        restructure_output(newgx_toroidal_x, newgy_toroidal_y, interactions, config);
+end
+
+function [toroidal_x, toroidal_y] = mirror_boundry(x, y, Delta, interactions, config)
+
     n_scales                 = config.wave.n_scales;
-    n_orients                = config.wave.n_orients;
     scale_distance           = interactions.scale_distance;
-    Delta_ext                = interactions.Delta_ext;
-    border_weight            = interactions.border_weight;
     n_scale_interactions     = interactions.n_scale_interactions;
     
     toroidal_x = cell(n_scale_interactions, 1);
@@ -18,6 +23,16 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
         toroidal_x{s+scale_distance} = padarray(x(:,:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
         toroidal_y{s+scale_distance} = padarray(y(:,:,:,s,:), [Delta(s),Delta(s),0], 'symmetric');
     end
+end
+
+function [newgx_toroidal_x, newgy_toroidal_y] = do_something(toroidal_x, toroidal_y, Delta, interactions, config)
+    n_cols                   = config.image.width;
+    n_rows                   = config.image.height;
+    n_scales                 = config.wave.n_scales;
+    scale_distance           = interactions.scale_distance;
+    border_weight            = interactions.border_weight;
+    n_scale_interactions     = interactions.n_scale_interactions;
+    
     newgx_toroidal_x       = cell(n_scale_interactions, 1);
     newgy_toroidal_y       = cell(n_scale_interactions, 1);
     for s=1:n_scale_interactions
@@ -29,8 +44,6 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     kk_tmp2_x                = zeros(size(toroidal_x{n_scales+scale_distance}));
     kk_tmp1_y                = zeros(size(toroidal_y{scale_distance+1})); 
     kk_tmp2_y                = zeros(size(toroidal_y{n_scales+scale_distance}));
-    restr_newgx_toroidal_x   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
-    restr_newgy_toroidal_y   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
     % .. what sorcery is this?
     for i=1:scale_distance+1
         cols      = Delta(1)+1:Delta(1)+n_cols;
@@ -53,7 +66,17 @@ function [newgx_toroidal_x, newgy_toroidal_y, restr_newgx_toroidal_x, restr_newg
     newgy_toroidal_y{1:scale_distance} = kk_tmp1_y;
     newgx_toroidal_x{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_x;
     newgy_toroidal_y{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_y;
+end
 
+function [restr_newgx_toroidal_x, restr_newgy_toroidal_y] = restructure_output(newgx_toroidal_x, newgy_toroidal_y, interactions, config)
+    n_cols                   = config.image.width;
+    n_rows                   = config.image.height;
+    n_channels               = config.image.n_channels;
+    n_orients                = config.wave.n_orients;
+    Delta_ext                = interactions.Delta_ext;
+    n_scale_interactions     = interactions.n_scale_interactions;
+    restr_newgx_toroidal_x   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    restr_newgy_toroidal_y   = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
     for s=1:n_scale_interactions
         cols = Delta_ext(s)+1 : Delta_ext(s)+n_cols;
         rows = Delta_ext(s)+1 : Delta_ext(s)+n_rows;
