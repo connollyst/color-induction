@@ -11,11 +11,6 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
 %   gx_final:   the excitation membrane potentials
 
     validate_input(config)
-    
-    % Get the configuration parameters
-    zli          = config.zli;
-    n_membr      = zli.n_membr;
-    n_iter       = zli.n_iter;
 
     % Initialize output membrane potentials
     gx_final     = utils.initialize_data(config);
@@ -30,16 +25,13 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % Set the initial x (excitation) & y (inhibition) activity
     [x, y]       = initialize_input(Iitheta, config);
     % Run recurrent network: the loop over time
-    for t=1:n_membr  % membrane time
-        logger.log('Membrane time step: %i/%i\n', t, n_membr, config);
+    for t=1:config.zli.n_membr  % membrane time
+        logger.log('Membrane time step: %i/%i\n', t, config.zli.n_membr, config);
         tic
-        for t_iter=1:n_iter  % from the differential equation (Euler!)
-            logger.log('Membrane interation: %i/%i\n', t_iter, n_iter, config);
+        for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
+            logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
             tIitheta = Iitheta{t};
-            [x, y] = model.process.UpdateXY(...
-                        tIitheta, x, y, ...
-                        JW, norm_masks, interactions, config...
-                     );
+            [x, y] = model.process.UpdateXY(tIitheta, x, y, JW, norm_masks, interactions, config);
         end
         if config.display.logging
             toc
