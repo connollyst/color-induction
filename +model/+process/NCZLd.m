@@ -11,7 +11,7 @@ function O = NCZLd(I, config)
     n_membr = config.zli.n_membr;
     dynamic = config.compute.dynamic;
 
-    if is_uniform(I)
+    if utils.is_uniform(I)
         % If the image is uniform we do not process it
         O = get_initial_I(I, n_membr, dynamic);
     else
@@ -70,11 +70,6 @@ function n_scales = calculate_scales(I, config)
     mida_min = config.wave.mida_min;
     % TODO scales should be calculated using all colors/frames
     n_scales = floor(log(max(size(I{1}(:,:,1))-1)/mida_min)/log(2)) + extra;
-end
-
-function uniform = is_uniform(I)
-    % TODO how should this behave for colored images and movies?
-    uniform = max(I{1}(:)) == min(I{1}(:));
 end
 
 function O = get_initial_I(I, n_membr, dynamic)
