@@ -16,14 +16,14 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     n_membr  = config.zli.n_membr;
     
-    %% Initialize data structures
+    % Initialize data structures
     Iitheta_ON        = Iitheta;
     Iitheta_OFF       = Iitheta;
     Iitheta_ON_final  = Iitheta;
     Iitheta_OFF_final = Iitheta;
     Iitheta_final     = cell(size(Iitheta));
 
-    %% Calculate the ON/OFF signals
+    % Calculate the ON/OFF signals
     for t=1:n_membr
         index_OFF                = Iitheta{t} <= 0;
         index_ON                 = Iitheta{t} >= 0;
@@ -33,16 +33,15 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
         Iitheta_OFF{t}(index_ON) = 0;
     end
 
-    %% Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
+    % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
-    % TODO we should have an iFactor for each dimension!!
     iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
 
-    %% Negatius ----------------------------------------------------
+    % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
     iFactor_OFF = model.process.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);
 
-    %% Prepare output
+    % Prepare output
     iFactor = iFactor_ON;
     for t=1:n_membr
         Iitheta_ON_final{t}  =  Iitheta_ON{t}      .* iFactor_ON{t}  * config.zli.normal_output;
@@ -52,7 +51,7 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     end
 end
 
-function [Iitheta_final] = process_ON_OFF_abs(Iitheta, config)
+function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
 %PROCESS_ON_OFF_ABS Process the ON and OFF channels using absolute values.
 %   Note: This has not been updated since Sean's refactoring of the data
 %         structure. Anyway, from looking at the code, it never worked in
@@ -69,7 +68,7 @@ function [Iitheta_final] = process_ON_OFF_abs(Iitheta, config)
     end
 end
 
-function [Iitheta_final] = process_ON_OFF_square(Iitheta, config)
+function Iitheta_final = process_ON_OFF_square(Iitheta, config)
 %PROCESS_ON_OFF_SQUARE Process the ON and OFF channels using square
 %   Note: This has not been updated since Sean's refactoring of the data
 %         structure. Anyway, from looking at the code, it never worked in
