@@ -56,29 +56,29 @@ end
 % Assert that, given known input, the output is as expected
 
 function assert_x_ee(instance)
-    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
-    [x_ee, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [newgx, newgy, JW, interactions, config] = get_input(instance);
+    [x_ee, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ee, expected.x_ee);
 end
 
 function assert_x_ei(instance)
-    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
-    [~, x_ei, ~] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [newgx, newgy, JW, interactions, config] = get_input(instance);
+    [~, x_ei, ~] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
 end
 
 function assert_y_ie(instance)
-    [newgx, newgy, Delta, JW, interactions, config] = get_input(instance);
-    [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, Delta, JW, interactions, config);
+    [newgx, newgy, JW, interactions, config] = get_input(instance);
+    [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(y_ie, expected.y_ie);
 end
 
 %% TEST UTILITIES
 
-function [newgx, newgy, Delta, JW, interactions, config] = get_input(instance)
+function [newgx, newgy, JW, interactions, config] = get_input(instance)
     input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
     newgx        = input.newgx_toroidal_x;
     newgy        = input.restr_newgy_toroidal_y;
@@ -86,6 +86,7 @@ function [newgx, newgy, Delta, JW, interactions, config] = get_input(instance)
     JW           = input.JW;
     interactions = input.interactions;
     config       = input.config;
+    config.wave.scale_deltas = Delta;   % TODO use common config
 end
 
 function expected = get_expected(instance)
