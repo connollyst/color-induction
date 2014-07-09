@@ -1,10 +1,9 @@
-function [gx_padded, gy_padded, gx, gy] = add_padding(x, y, interactions, config)
+function [gx_padded, gy_padded] = add_padding(x, y, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
 %   TODO Move intermediate interaction scales to another function
 
     [ x_padded,  y_padded] = mirror_boundary(x, y, interactions, config);
     [gx_padded, gy_padded] = do_something(x_padded, y_padded, interactions, config);
-    [gx,        gy]        = get_toroidal_centers(gx_padded, gy_padded, interactions, config);
 end
 
 function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
@@ -69,34 +68,4 @@ function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, inter
     gy_toroidal{1:scale_distance} = kk_tmp1_y;
     gx_toroidal{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_x;
     gy_toroidal{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_y;
-end
-
-function [gx, gy] = get_toroidal_centers(gx_toroidal, gy_toroidal, interactions, config)
-%GET_TOROIDAL_CENTERS Extract the centers of the padded image
-%   TODO: How is this different than just calling model.terms.gx on the
-%         original input?
-
-    n_cols               = config.image.width;
-    n_rows               = config.image.height;
-    n_channels           = config.image.n_channels;
-    n_orients            = config.wave.n_orients;
-    n_scale_interactions = interactions.n_scale_interactions;
-    
-    gx = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
-    gy = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
-    for s=1:n_scale_interactions
-        gx(:,:,:,s,:) = extract_center(gx_toroidal, s, interactions, config);
-        gy(:,:,:,s,:) = extract_center(gy_toroidal, s, interactions, config);
-    end
-end
-
-function center = extract_center(toroidal, i, interactions, config)
-%EXTRACT_CENTER Recovers the original from the center of the padded image.
-
-    n_cols    = config.image.width;
-    n_rows    = config.image.height;
-    Delta_ext = interactions.Delta_ext;
-    cols      = Delta_ext(i)+1 : Delta_ext(i)+n_cols;
-    rows      = Delta_ext(i)+1 : Delta_ext(i)+n_rows;
-    center    = toroidal{i}(cols, rows, :, :);
 end
