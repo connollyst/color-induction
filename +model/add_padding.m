@@ -1,10 +1,10 @@
-function [gx_toroidal, gy_toroidal, gx, gy] = add_padding(x, y, interactions, config)
+function [gx_padded, gy_padded, gx, gy] = add_padding(x, y, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
 %   TODO Move intermediate interaction scales to another function
 
-    [ x_toroidal,  y_toroidal] = mirror_boundary(x, y, interactions, config);
-    [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, interactions, config);
-    [gx,          gy]          = get_toroidal_centers(gx_toroidal, gy_toroidal, interactions, config);
+    [ x_padded,  y_padded] = mirror_boundary(x, y, interactions, config);
+    [gx_padded, gy_padded] = do_something(x_padded, y_padded, interactions, config);
+    [gx,        gy]        = get_toroidal_centers(gx_padded, gy_padded, interactions, config);
 end
 
 function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
