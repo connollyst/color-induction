@@ -17,21 +17,6 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, 
     [x_out, y_out]       = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot
-        %figure(1);
-        %imagesc(newgy(:,:));
-
-        %figure(1);
-        %subplot(3,1,1); imagesc(x_ee(:,:));
-        %subplot(3,1,2); imagesc(x_ei(:,:));
-        %subplot(3,1,3); imagesc(y_ie(:,:));
-
-        %figure(1);
-        %imagesc(I_norm(:,:));
-
-        %figure(1);
-        %subplot(2,1,1); imagesc(x_out(:,:));
-        %subplot(2,1,2); imagesc(y_out(:,:));
-
         figure(1);
         subplot(7,1,1); imagesc(newgy(:,:));
         subplot(7,1,2); imagesc(x_ee(:,:));
@@ -40,7 +25,6 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, 
         subplot(7,1,5); imagesc(I_norm(:,:));
         subplot(7,1,6); imagesc(x_out(:,:));
         subplot(7,1,7); imagesc(y_out(:,:));
-
         drawnow
         %waitforbuttonpress;
     end
