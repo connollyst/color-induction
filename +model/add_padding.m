@@ -1,8 +1,8 @@
-function [gx_toroidal, gy_toroidal, gx_toroidal_center, gy_toroidal_center] = add_padding(x, y, interactions, config)
+function [gx_toroidal, gy_toroidal, gx, gy] = add_padding(x, y, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
-    [ x_toroidal,         y_toroidal]        = mirror_boundary(x, y, interactions, config);
-    [gx_toroidal,        gy_toroidal]        = do_something(x_toroidal, y_toroidal, interactions, config);
-    [gx_toroidal_center, gy_toroidal_center] = restructure_output(gx_toroidal, gy_toroidal, interactions, config);
+    [ x_toroidal,  y_toroidal] = mirror_boundary(x, y, interactions, config);
+    [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, interactions, config);
+    [gx,          gy]          = get_toroidal_centers(gx_toroidal, gy_toroidal, interactions, config);
 end
 
 function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
@@ -69,9 +69,10 @@ function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, inter
     gy_toroidal{n_scales+scale_distance+1:n_scale_interactions} = kk_tmp2_y;
 end
 
-function [gx_toroidal_center, gy_toroidal_center] = restructure_output(gx_toroidal, gy_toroidal, interactions, config)
-%RESTRUCTURE_OUTPUT Restructures the cell array data to a matrix.
-%   TODO: why do we switch to a cell array in the first place?
+function [gx, gy] = get_toroidal_centers(gx_toroidal, gy_toroidal, interactions, config)
+%GET_TOROIDAL_CENTERS Extract the centers of the padded image
+%   TODO: How is this different than just calling model.terms.gx on the
+%         original input?
 
     n_cols               = config.image.width;
     n_rows               = config.image.height;
@@ -79,11 +80,11 @@ function [gx_toroidal_center, gy_toroidal_center] = restructure_output(gx_toroid
     n_orients            = config.wave.n_orients;
     n_scale_interactions = interactions.n_scale_interactions;
     
-    gx_toroidal_center = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
-    gy_toroidal_center = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    gx = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    gy = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
     for s=1:n_scale_interactions
-        gx_toroidal_center(:,:,:,s,:) = extract_center(gx_toroidal, s, interactions, config);
-        gy_toroidal_center(:,:,:,s,:) = extract_center(gy_toroidal, s, interactions, config);
+        gx(:,:,:,s,:) = extract_center(gx_toroidal, s, interactions, config);
+        gy(:,:,:,s,:) = extract_center(gy_toroidal, s, interactions, config);
     end
 end
 
@@ -92,7 +93,7 @@ function center = extract_center(toroidal, i, interactions, config)
     n_cols    = config.image.width;
     n_rows    = config.image.height;
     Delta_ext = interactions.Delta_ext;
-    cols = Delta_ext(i)+1 : Delta_ext(i)+n_cols;
-    rows = Delta_ext(i)+1 : Delta_ext(i)+n_rows;
-    center = toroidal{i}(cols, rows, :, :);
+    cols      = Delta_ext(i)+1 : Delta_ext(i)+n_cols;
+    rows      = Delta_ext(i)+1 : Delta_ext(i)+n_rows;
+    center    = toroidal{i}(cols, rows, :, :);
 end
