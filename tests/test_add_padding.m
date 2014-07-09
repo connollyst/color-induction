@@ -3,97 +3,52 @@ function test_suite = test_add_padding
   initTestSuite;
 end
 
-function test_padded_newgx_toroidal_x_3D_t01_i01
-    assert_padded_newgx_toroidal_x('3D_t01_i01');
+function test_gx_padded_3D_t01_i01
+    assert_gx_padded_x('3D_t01_i01');
 end
 
-function test_padded_newgy_toroidal_y_3D_t01_i01
-    assert_padded_newgy_toroidal_y('3D_t01_i01');
+function test_gy_padded_3D_t01_i01
+    assert_gy_padded('3D_t01_i01');
 end
 
-function test_padded_restr_newgx_toroidal_x_3D_t01_i01
-    assert_padded_restr_newgx_toroidal_x('3D_t01_i01')
+function test_gx_padded_3D_t01_i02
+    assert_gx_padded_x('3D_t01_i02');
 end
 
-function test_padded_restr_newgy_toroidal_y_3D_t01_i01
-    assert_padded_restr_newgy_toroidal_y('3D_t01_i01')
+function test_gy_padded_3D_t01_i02
+    assert_gy_padded('3D_t01_i02');
 end
 
-function test_padded_newgx_toroidal_x_3D_t01_i02
-    assert_padded_newgx_toroidal_x('3D_t01_i02');
+function test_gx_padded_3D_t01_i03
+    assert_gx_padded_x('3D_t01_i03');
 end
 
-function test_padded_newgy_toroidal_y_3D_t01_i02
-    assert_padded_newgy_toroidal_y('3D_t01_i02');
+function test_gy_padded_3D_t01_i03
+    assert_gy_padded('3D_t01_i03');
 end
 
-function test_padded_restr_newgx_toroidal_x_3D_t01_i02
-    assert_padded_restr_newgx_toroidal_x('3D_t01_i02')
+function test_gx_padded_3D_t04_i01
+    assert_gx_padded_x('3D_t04_i01');
 end
 
-function test_padded_restr_newgy_toroidal_y_3D_t01_i02
-    assert_padded_restr_newgy_toroidal_y('3D_t01_i02')
+function test_gy_padded_3D_t04_i01
+    assert_gy_padded('3D_t04_i01');
 end
 
-function test_padded_newgx_toroidal_x_3D_t01_i03
-    assert_padded_newgx_toroidal_x('3D_t01_i03');
-end
-
-function test_padded_newgy_toroidal_y_3D_t01_i03
-    assert_padded_newgy_toroidal_y('3D_t01_i03');
-end
-
-function test_padded_restr_newgx_toroidal_x_3D_t01_i03
-    assert_padded_restr_newgx_toroidal_x('3D_t01_i03')
-end
-
-function test_padded_restr_newgy_toroidal_y_3D_t01_i03
-    assert_padded_restr_newgy_toroidal_y('3D_t01_i03')
-end
-
-function test_padded_newgx_toroidal_x_3D_t04_i01
-    assert_padded_newgx_toroidal_x('3D_t04_i01');
-end
-
-function test_padded_newgy_toroidal_y_3D_t04_i01
-    assert_padded_newgy_toroidal_y('3D_t04_i01');
-end
-
-function test_padded_restr_newgx_toroidal_x_3D_t04_i01
-    assert_padded_restr_newgx_toroidal_x('3D_t04_i01')
-end
-
-function test_padded_restr_newgy_toroidal_y_3D_t04_i01
-    assert_padded_restr_newgy_toroidal_y('3D_t04_i01')
-end
 %% ASSERTIONS
 
-function assert_padded_newgx_toroidal_x(instance)
+function assert_gx_padded_x(instance)
     [x, y, interactions, config] = get_input(instance);
-    [newgx_toroidal_x, ~, ~, ~] = model.add_padding(x, y, interactions, config);
+    [gx_padded, ~] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
-    assertEqualData(newgx_toroidal_x, expected.newgx_toroidal_x);
+    assertEqualData(gx_padded, expected.newgx_toroidal_x);
 end
 
-function assert_padded_newgy_toroidal_y(instance)
+function assert_gy_padded(instance)
     [x, y, interactions, config] = get_input(instance);
-    [~, newgy_toroidal_y, ~, ~] = model.add_padding(x, y, interactions, config);
+    [~, gy_padded] = model.add_padding(x, y, interactions, config);
     expected = get_output(instance);
-    assertEqualData(newgy_toroidal_y, expected.newgy_toroidal_y);
-end
-
-function assert_padded_restr_newgx_toroidal_x(instance)
-    [x, y, interactions, config] = get_input(instance);
-    [~, ~, restr_newgx_toroidal_x, ~] = model.add_padding(x, y, interactions, config);
-    expected = get_output(instance);
-    assertEqualData(restr_newgx_toroidal_x, expected.restr_newgx_toroidal_x);
-end
-
-function assert_padded_restr_newgy_toroidal_y(instance)
-    [x, y, interactions, config] = get_input(instance);
-    [~, ~, ~, restr_newgy_toroidal_y] = model.add_padding(x, y, interactions, config);
-    expected = get_output(instance);
-    assertEqualData(restr_newgy_toroidal_y, expected.restr_newgy_toroidal_y);
+    assertEqualData(gy_padded, expected.newgy_toroidal_y);
 end
 
 %% TEST UTILITIES
