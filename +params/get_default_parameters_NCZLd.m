@@ -86,7 +86,7 @@ image.n_frames_promig=zli.n_membr-1;		% number iterations (from the last one) co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% display plot/store    %%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-display.logging=0;                  % display log messages
+display.logging=1;                  % display log messages
 display.plot=0;                     % display plots
 display.plot_io=1;					% plot input/output
 display.reduce=0;					% 0 all (9)/ 1 reduced ; useless if single_or_multiple=1
