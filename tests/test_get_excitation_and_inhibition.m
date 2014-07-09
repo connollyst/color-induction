@@ -57,24 +57,24 @@ end
 
 function assert_x_ee(instance)
     config = get_config();
-    [newgx, newgy, JW, interactions] = get_input(instance);
-    [x_ee, ~, ~] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [x_ee, ~, ~] = model.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ee, expected.x_ee);
 end
 
 function assert_x_ei(instance)
     config = get_config();
-    [newgx, newgy, JW, interactions] = get_input(instance);
-    [~, x_ei, ~] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [~, x_ei, ~] = model.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
 end
 
 function assert_y_ie(instance)
     config = get_config();
-    [newgx, newgy, JW, interactions] = get_input(instance);
-    [~, ~, y_ie] = model.get_excitation_and_inhibition(newgx, newgy, JW, interactions, config);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [~, ~, y_ie] = model.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(y_ie, expected.y_ie);
 end
@@ -86,10 +86,10 @@ function config = get_config()
     config = saved.config;
 end
 
-function [newgx, newgy, JW, interactions] = get_input(instance)
+function [gx_padded, gy_padded, JW, interactions] = get_input(instance)
     input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
-    newgx        = input.newgx_toroidal_x;
-    newgy        = input.restr_newgy_toroidal_y;
+    gx_padded    = input.gx_padded;
+    gy_padded    = input.gy_padded;
     JW           = input.JW;
     interactions = input.interactions;
 end
