@@ -33,7 +33,7 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
 end
 
 function gx_padded_fft = to_fft(gx_padded, interactions, config)
-% Preprocess the input data to Fourier space for faster processing.
+%TO_FFT Preprocess the input data to Fourier space for faster processing.
 
     scale_distance = interactions.scale_distance;
     n_channels     = config.image.n_channels;
