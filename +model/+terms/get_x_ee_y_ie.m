@@ -24,8 +24,8 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
     [x_ee, y_ie] = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
     
     for oc=1:n_orients  % loop over the central (reference) orientation
-        x_ee(:,:,:,:,oc) = apply_filter(oc, gx_padded, JW.J_fft, interactions, config);
-        y_ie(:,:,:,:,oc) = apply_filter(oc, gx_padded, JW.W_fft, interactions, config);
+        x_ee(:,:,:,:,oc) = get_orientation_interactions(oc, gx_padded, JW.J_fft, interactions, config);
+        y_ie(:,:,:,:,oc) = get_orientation_interactions(oc, gx_padded, JW.W_fft, interactions, config);
     end
     
     x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
@@ -51,8 +51,8 @@ function gx_padded_fft = to_fft(gx_padded, interactions, config)
     end
 end
 
-function gx_filtered = apply_filter(oc, gx_padded, filter_fft, interactions, config)
-%APPLY_FILTER Apply filter to get excitatory-excitatory/inhibitory output.
+function gx_filtered = get_orientation_interactions(oc, gx_padded, filter_fft, interactions, config)
+%GET_ORIENTATION_INTERACTIONS Apply orientation filter to get interactions.
 %   The filter is expected to be the J or W struct array in Fourier space.
 %   It is applied to the gx input (padded to avoid edge effects) with
 %   respect to the central orientation (oc).
@@ -76,13 +76,13 @@ function gx_filtered = apply_filter(oc, gx_padded, filter_fft, interactions, con
             shift_size   = half_size_filter{s};
             if use_fft
                 for c=1:n_channels
-                    gx_fft    = gx_padded{scale_distance+s,c}{ov};
-                    gx_fft_J  = convolutions.optima_fft(gx_fft, filter_fft_s, shift_size, avoid_circshift_fft);
-                    gx_filtered(:,:,c,s,ov) = extract_center(gx_fft_J, s, config);
+                    gx_fft = gx_padded{scale_distance+s,c}{ov};
+                    gx_J   = convolutions.optima_fft(gx_fft, filter_fft_s, shift_size, avoid_circshift_fft);
+                    gx_filtered(:,:,c,s,ov) = extract_center(gx_J, s, config);
                 end
             else
                 for c=1:n_channels
-                    % TODO why is gx_padded size not the same in FFT?
+                    % TODO why is gx_padded structure not the same in FFT?
                     gx    = gx_padded{scale_distance+s}(:,:,c,ov);
                     gx_J  = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
                     gx_filtered(:,:,c,s,ov) = extract_center(gx_J, s, config);
