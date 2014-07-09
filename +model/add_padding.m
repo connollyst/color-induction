@@ -1,7 +1,7 @@
 function [gx_toroidal, gy_toroidal, gx_toroidal_center, gy_toroidal_center] = add_padding(x, y, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
-    [x_toroidal, y_toroidal]                 = mirror_boundary(x, y, interactions, config);
-    [gx_toroidal, gy_toroidal]               = do_something(x_toroidal, y_toroidal, interactions, config);
+    [ x_toroidal,         y_toroidal]        = mirror_boundary(x, y, interactions, config);
+    [gx_toroidal,        gy_toroidal]        = do_something(x_toroidal, y_toroidal, interactions, config);
     [gx_toroidal_center, gy_toroidal_center] = restructure_output(gx_toroidal, gy_toroidal, interactions, config);
 end
 
