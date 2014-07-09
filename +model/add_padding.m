@@ -1,5 +1,7 @@
 function [gx_toroidal, gy_toroidal, gx, gy] = add_padding(x, y, interactions, config)
 %ADD_PADDING Add padding to prevent edge effects.
+%   TODO Move intermediate interaction scales to another function
+
     [ x_toroidal,  y_toroidal] = mirror_boundary(x, y, interactions, config);
     [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, interactions, config);
     [gx,          gy]          = get_toroidal_centers(gx_toroidal, gy_toroidal, interactions, config);
@@ -90,6 +92,7 @@ end
 
 function center = extract_center(toroidal, i, interactions, config)
 %EXTRACT_CENTER Recovers the original from the center of the padded image.
+
     n_cols    = config.image.width;
     n_rows    = config.image.height;
     Delta_ext = interactions.Delta_ext;
