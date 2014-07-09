@@ -38,6 +38,7 @@ function gx_padded_fft = to_fft(gx_padded, interactions, config)
     for s=1:n_scales
         for c=1:n_channels
             for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+                % TODO the cell arrays have different sizes
                 gx_padded_fft{scale_distance+s,c}{ov} = fftn(gx_padded{scale_distance+s}(:,:,c,ov));
             end
         end
