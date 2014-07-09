@@ -39,20 +39,19 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     orient_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for oc=1:n_orients  % for each central (reference) orientation
         oc_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
         for ov=1:n_orients  % for all orientations
             for s=1:n_scales
-                filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
                 shift_size   = half_size_filter{s};
-                for c=1:n_channels % for all color channels
-                    gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                    gx_filtered = apply_filter(gx, filter_fft_s, shift_size, avoid_circshift_fft);
-                    oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, s, config);
-                end
+                filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
+                % TODO filters can be initialized in n-dimensions
+                filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
+                gx = gx_padded{scale_distance+s}(:,:,:,ov);
+                gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
+                oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, s, config);
             end
         end
         orient_interactions(:,:,:,:,oc) = sum(oc_interactions, 5);
@@ -83,9 +82,10 @@ function gx_padded_fft = apply_fft(gx_padded)
     end
 end
 
-function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, avoid_circshift_fft)
+function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
 %Apply the FFT filter (J or W) to gx to get it's interactions.
-    if use_fft
+    avoid_circshift_fft = config.compute.avoid_circshift_fft;
+    if config.compute.use_fft
         % gx is already in Fourier space
         gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
     else
@@ -103,5 +103,5 @@ function center = extract_center(padded, s, config)
     
     cols   = scale_deltas(s)+1 : scale_deltas(s)+n_cols;
     rows   = scale_deltas(s)+1 : scale_deltas(s)+n_rows;
-    center = padded(cols, rows);
+    center = padded(cols, rows, :);
 end
