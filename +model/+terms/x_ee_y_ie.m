@@ -33,7 +33,20 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = x_ee_y_ie(oc, gx_padded, JW, interacti
                 end
             end
         else
-            error('Non FFT approach is not implemented.');
+            for s=1:n_scales
+                cols     = scale_deltas(s)+1:scale_deltas(s)+n_cols;
+                rows     = scale_deltas(s)+1:scale_deltas(s)+n_rows;
+                J_fft_s  = JW.J_fft{s}(:,:,1,ov,oc);
+                W_fft_s  = JW.W_fft{s}(:,:,1,ov,oc);
+                s_filter = half_size_filter{s};
+                for c=1:n_channels
+                    x    = gx_padded{scale_distance+s}(:,:,c,ov);
+                    x_J  = convolutions.optima(x, J_fft_s, s_filter, 1, avoid_circshift_fft);
+                    x_W  = convolutions.optima(x, W_fft_s, s_filter, 1, avoid_circshift_fft);
+                    x_ee_conv_tmp(:,:,c,s,ov) = x_J(cols, rows);
+                    y_ie_conv_tmp(:,:,c,s,ov) = x_W(cols, rows);
+                end
+            end
         end
     end
     x_ee_conv_tmp = sum(x_ee_conv_tmp, 5);
