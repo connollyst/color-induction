@@ -1,5 +1,11 @@
 function x_ei = get_x_ei(gy_padded, interactions, config)
-% Excitatory-inhibitory term (no existia): x_ei
+%GET_X_EI Calculate the excitatory-inhibitory term.
+%   Input
+%       gy_padded:      the gy input data, padded to avoid edge effects
+%       interactions:   the struct of interaction parameters
+%       config:         the struct of algorithm configuration parameters
+%   Output
+%       x_ei: excitatory-inhibitory term
 
     n_cols       = config.image.width;
     n_rows       = config.image.height;

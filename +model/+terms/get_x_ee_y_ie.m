@@ -1,7 +1,13 @@
 function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
-% Excitatory and inhibitory terms (the big sums)
-% excitatory-excitatory term:    x_ee
-% excitatory-inhibitory term:    y_ie
+%GET_X_EE_Y_IE Calculate the excitatory and inhibitory terms.
+%   Input
+%       gx_padded:      the gx input data, padded to avoid edge effects
+%       JW:             the struct of J and W interaction data
+%       interactions:   the struct of interaction parameters
+%       config:         the struct of algorithm configuration parameters
+%   Output
+%       x_ee: excitatory-excitatory term
+%       y_ie: excitatory-inhibitory term
 
     scale_filter = interactions.scale_filter;
     n_cols       = config.image.width;
