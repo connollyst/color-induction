@@ -18,7 +18,7 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
     
     % TODO if use_fft is false, gx_padded is the wrong structure
     if config.compute.use_fft
-        gx_padded = to_fft(gx_padded, interactions, config);
+        gx_padded = to_fft(gx_padded);
     end
     
     [x_ee, y_ie] = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
@@ -51,7 +51,7 @@ function gx_orient = get_orientation_interactions(oc, gx_padded, filter_fft, int
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     gx_orient = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
+    for ov=1:n_orients  % loop over all orientations
         for s=1:n_scales
             filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
             shift_size   = half_size_filter{s};
@@ -71,20 +71,17 @@ function gx_orient = get_orientation_interactions(oc, gx_padded, filter_fft, int
     gx_orient = sum(gx_orient, 5);
 end
 
-function gx_padded_fft = to_fft(gx_padded, interactions, config)
+function gx_padded_fft = to_fft(gx_padded)
 %TO_FFT Preprocess the input data to Fourier space for faster processing.
 
-    scale_distance = interactions.scale_distance;
-    n_channels     = config.image.n_channels;
-    n_scales       = config.wave.n_scales;
-    n_orients      = config.wave.n_orients;
-    
-    gx_padded_fft = cell(scale_distance+n_scales);
-    for s=1:n_scales
+    gx_padded_fft = cell(size(gx_padded));
+    for s=1:length(gx_padded)
+        gx_padded_fft{s} = zeros(size(gx_padded{s}));
+        n_channels       = size(gx_padded{s}, 3);
+        n_orients        = size(gx_padded{s}, 5);
         for c=1:n_channels
-            for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
-                % TODO the cell arrays have different sizes
-                gx_padded_fft{scale_distance+s}(:,:,c,ov) = fftn(gx_padded{scale_distance+s}(:,:,c,ov));
+            for o=1:n_orients
+                gx_padded_fft{s}(:,:,c,1,o) = fftn(gx_padded{s}(:,:,c,1,o));
             end
         end
     end
