@@ -9,31 +9,23 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
 %       x_ee: excitatory-excitatory term
 %       y_ie: excitatory-inhibitory term
 
-    scale_filter = interactions.scale_filter;
-    n_cols       = config.image.width;
-    n_rows       = config.image.height;
-    n_channels   = config.image.n_channels;
-    n_scales     = config.wave.n_scales;
-    n_orients    = config.wave.n_orients;
-    
-    % TODO if use_fft is false, gx_padded is the wrong structure
     if config.compute.use_fft
         gx_padded = to_fft(gx_padded);
     end
     
-    [x_ee, y_ie] = deal(zeros(n_cols, n_rows, n_channels, n_scales, n_orients));
+    % First apply orientation interactions
+    x_ee = get_orientation_interactions(gx_padded, JW.J_fft, interactions, config);
+    y_ie = get_orientation_interactions(gx_padded, JW.W_fft, interactions, config);
     
-    for oc=1:n_orients  % loop over the central (reference) orientation
-        x_ee(:,:,:,:,oc) = get_orientation_interactions(oc, gx_padded, JW.J_fft, interactions, config);
-        y_ie(:,:,:,:,oc) = get_orientation_interactions(oc, gx_padded, JW.W_fft, interactions, config);
-    end
-    
-    x_ee = convolutions.optima(x_ee, scale_filter, 0, 0);
-    y_ie = convolutions.optima(y_ie, scale_filter, 0, 0);
+    % Then apply scale interactions
+    x_ee = get_scale_interactions(x_ee, interactions);
+    y_ie = get_scale_interactions(y_ie, interactions);
 end
 
-function gx_orient = get_orientation_interactions(oc, gx_padded, filter_fft, interactions, config)
-%GET_ORIENTATION_INTERACTIONS Apply orientation filter to get interactions.
+function orient_interactions = get_orientation_interactions(gx_padded, filter_fft, interactions, config)
+%Apply orientation filter (J or W) to get excitation-excitation/inhibition
+%interactions between orientations.
+%
 %   The filter is expected to be the J or W struct array in Fourier space.
 %   It is applied to the gx input (padded to avoid edge effects) with
 %   respect to the central orientation (oc).
@@ -50,29 +42,40 @@ function gx_orient = get_orientation_interactions(oc, gx_padded, filter_fft, int
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    gx_orient = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    for ov=1:n_orients  % loop over all orientations
-        for s=1:n_scales
-            filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
-            shift_size   = half_size_filter{s};
-            for c=1:n_channels
-                gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                if use_fft
-                    % gx is already in Fourier space
-                    gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
-                else
-                    % gx is in the real data space
-                    gx_filtered = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
+    orient_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    for oc=1:n_orients  % for each central (reference) orientation
+        oc_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+        for ov=1:n_orients  % for all orientations
+            for s=1:n_scales
+                filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
+                shift_size   = half_size_filter{s};
+                for c=1:n_channels % for all color channels
+                    gx = gx_padded{scale_distance+s}(:,:,c,ov);
+                    if use_fft
+                        % gx is already in Fourier space
+                        gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
+                    else
+                        % gx is in the real data space
+                        gx_filtered = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
+                    end
+                    oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, s, config);
                 end
-                gx_orient(:,:,c,s,ov) = extract_center(gx_filtered, s, config);
             end
         end
+        orient_interactions(:,:,:,:,oc) = sum(oc_interactions, 5);
     end
-    gx_orient = sum(gx_orient, 5);
+end
+
+function scale_interactions = get_scale_interactions(data, interactions)
+%Apply scale filter to get excitation-excitation/inhibition interactions
+%between scales.
+
+    scale_filter       = interactions.scale_filter;
+    scale_interactions = convolutions.optima(data, scale_filter, 0, 0);
 end
 
 function gx_padded_fft = to_fft(gx_padded)
-%TO_FFT Preprocess the input data to Fourier space for faster processing.
+%Preprocess the input data to Fourier space for faster processing.
 
     gx_padded_fft = cell(size(gx_padded));
     for s=1:length(gx_padded)
@@ -88,7 +91,7 @@ function gx_padded_fft = to_fft(gx_padded)
 end
 
 function center = extract_center(padded, s, config)
-%EXTRACT_CENTER Removes the padding added to the outside of each image.
+%Remove the padding added to the outside of each image.
 
     n_cols       = config.image.width;
     n_rows       = config.image.height;
