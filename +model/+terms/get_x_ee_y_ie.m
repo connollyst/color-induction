@@ -66,32 +66,41 @@ function gx_filtered = apply_filter(oc, gx_padded, filter_fft, interactions, con
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    scale_deltas        = config.wave.scale_deltas;
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     gx_filtered = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
         for s=1:n_scales
-            cols         = scale_deltas(s)+1:scale_deltas(s)+n_cols;
-            rows         = scale_deltas(s)+1:scale_deltas(s)+n_rows;
             filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
             shift_size   = half_size_filter{s};
             if use_fft
                 for c=1:n_channels
                     gx_fft    = gx_padded{scale_distance+s,c}{ov};
                     gx_fft_J  = convolutions.optima_fft(gx_fft, filter_fft_s, shift_size, avoid_circshift_fft);
-                    gx_filtered(:,:,c,s,ov) = gx_fft_J(cols, rows);
+                    gx_filtered(:,:,c,s,ov) = extract_center(gx_fft_J, s, config);
                 end
             else
                 for c=1:n_channels
                     % TODO why is gx_padded size not the same in FFT?
                     gx    = gx_padded{scale_distance+s}(:,:,c,ov);
                     gx_J  = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
-                    gx_filtered(:,:,c,s,ov) = gx_J(cols, rows);
+                    gx_filtered(:,:,c,s,ov) = extract_center(gx_J, s, config);
                 end
             end
         end
     end
     gx_filtered = sum(gx_filtered, 5);
+end
+
+function center = extract_center(padded, s, config)
+%EXTRACT_CENTER Removes the padding added to the outside of each image.
+
+    n_cols       = config.image.width;
+    n_rows       = config.image.height;
+    scale_deltas = config.wave.scale_deltas;
+    
+    cols   = scale_deltas(s)+1 : scale_deltas(s)+n_cols;
+    rows   = scale_deltas(s)+1 : scale_deltas(s)+n_rows;
+    center = padded(cols, rows);
 end
