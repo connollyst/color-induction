@@ -15,6 +15,9 @@ function [x_ee, x_ei, y_ie] = get_excitation_and_inhibition(gx_padded, gy_padded
         gx_padded = to_fft(gx_padded, interactions, config);
     end
     
+    % TODO if use_fft is false, gx_padded is the wrong structure
+    % TODO x_ei is scale then orientation, x_ee and y_ie are the opposite
+    
     for oc=1:n_orients  % loop over the central (reference) orientation
         x_ei(:,:,:,:,oc)   = model.terms.x_ei(oc, gy_padded, interactions, config);
         [x_ee_oc, y_ie_oc] = model.terms.x_ee_y_ie(oc, gx_padded, JW, interactions, config);
