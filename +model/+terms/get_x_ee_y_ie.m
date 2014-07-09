@@ -52,6 +52,13 @@ function gx_padded_fft = to_fft(gx_padded, interactions, config)
 end
 
 function gx_filtered = apply_filter(oc, gx_padded, filter_fft, interactions, config)
+%APPLY_FILTER Apply filter to get excitatory-excitatory/inhibitory output.
+%   The filter is expected to be the J or W struct array in Fourier space.
+%   It is applied to the gx input (padded to avoid edge effects) with
+%   respect to the central orientation (oc).
+%   If config.compute.use_fft is true, gx_padded is expected to be in
+%   Fourier space also. This reduces computation time.
+
     half_size_filter    = interactions.half_size_filter;
     scale_distance      = interactions.scale_distance;
     n_cols              = config.image.width;
@@ -72,16 +79,16 @@ function gx_filtered = apply_filter(oc, gx_padded, filter_fft, interactions, con
             shift_size   = half_size_filter{s};
             if use_fft
                 for c=1:n_channels
-                    x_fft    = gx_padded{scale_distance+s,c}{ov};
-                    x_fft_J  = convolutions.optima_fft(x_fft, filter_fft_s, shift_size, avoid_circshift_fft);
-                    gx_filtered(:,:,c,s,ov) = x_fft_J(cols, rows);
+                    gx_fft    = gx_padded{scale_distance+s,c}{ov};
+                    gx_fft_J  = convolutions.optima_fft(gx_fft, filter_fft_s, shift_size, avoid_circshift_fft);
+                    gx_filtered(:,:,c,s,ov) = gx_fft_J(cols, rows);
                 end
             else
                 for c=1:n_channels
                     % TODO why is gx_padded size not the same in FFT?
-                    x    = gx_padded{scale_distance+s}(:,:,c,ov);
-                    x_J  = convolutions.optima(x, filter_fft_s, shift_size, 1, avoid_circshift_fft);
-                    gx_filtered(:,:,c,s,ov) = x_J(cols, rows);
+                    gx    = gx_padded{scale_distance+s}(:,:,c,ov);
+                    gx_J  = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
+                    gx_filtered(:,:,c,s,ov) = gx_J(cols, rows);
                 end
             end
         end
