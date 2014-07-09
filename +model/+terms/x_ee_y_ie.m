@@ -1,4 +1,4 @@
-function [x_ee_conv_tmp, y_ie_conv_tmp] = x_ee_y_ie(oc, gx_padded, JW, interactions, config)
+function [x_ee_oc, y_ie_oc] = x_ee_y_ie(oc, gx_padded, JW, interactions, config)
 % Excitatory and inhibitory terms (the big sums)
 % excitatory-excitatory term:    x_ee
 % excitatory-inhibitory term:    y_ie
@@ -14,8 +14,8 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = x_ee_y_ie(oc, gx_padded, JW, interacti
     use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    x_ee_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
-    y_ie_conv_tmp = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    x_ee_oc = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    y_ie_oc = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for ov=1:n_orients  % loop over all the orientations given the central (reference orientation)
         for s=1:n_scales
             cols       = scale_deltas(s)+1:scale_deltas(s)+n_cols;
@@ -28,8 +28,8 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = x_ee_y_ie(oc, gx_padded, JW, interacti
                     x_fft    = gx_padded{scale_distance+s,c}{ov};
                     x_fft_J  = convolutions.optima_fft(x_fft, J_fft_s, shift_size, avoid_circshift_fft);
                     x_fft_W  = convolutions.optima_fft(x_fft, W_fft_s, shift_size, avoid_circshift_fft);
-                    x_ee_conv_tmp(:,:,c,s,ov) = x_fft_J(cols, rows);
-                    y_ie_conv_tmp(:,:,c,s,ov) = x_fft_W(cols, rows);
+                    x_ee_oc(:,:,c,s,ov) = x_fft_J(cols, rows);
+                    y_ie_oc(:,:,c,s,ov) = x_fft_W(cols, rows);
                 end
             else
                 for c=1:n_channels
@@ -37,12 +37,12 @@ function [x_ee_conv_tmp, y_ie_conv_tmp] = x_ee_y_ie(oc, gx_padded, JW, interacti
                     x    = gx_padded{scale_distance+s}(:,:,c,ov);
                     x_J  = convolutions.optima(x, J_fft_s, shift_size, 1, avoid_circshift_fft);
                     x_W  = convolutions.optima(x, W_fft_s, shift_size, 1, avoid_circshift_fft);
-                    x_ee_conv_tmp(:,:,c,s,ov) = x_J(cols, rows);
-                    y_ie_conv_tmp(:,:,c,s,ov) = x_W(cols, rows);
+                    x_ee_oc(:,:,c,s,ov) = x_J(cols, rows);
+                    y_ie_oc(:,:,c,s,ov) = x_W(cols, rows);
                 end
             end
         end
     end
-    x_ee_conv_tmp = sum(x_ee_conv_tmp, 5);
-    y_ie_conv_tmp = sum(y_ie_conv_tmp, 5);
+    x_ee_oc = sum(x_ee_oc, 5);
+    y_ie_oc = sum(y_ie_oc, 5);
 end
