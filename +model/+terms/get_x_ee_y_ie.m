@@ -10,7 +10,7 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
 %       y_ie: excitatory-inhibitory term
 
     if config.compute.use_fft
-        gx_padded = to_fft(gx_padded);
+        gx_padded = apply_fft(gx_padded);
     end
     
     % First apply orientation interactions
@@ -39,7 +39,6 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
-    use_fft             = config.compute.use_fft;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     orient_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
@@ -51,13 +50,7 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
                 shift_size   = half_size_filter{s};
                 for c=1:n_channels % for all color channels
                     gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                    if use_fft
-                        % gx is already in Fourier space
-                        gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
-                    else
-                        % gx is in the real data space
-                        gx_filtered = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
-                    end
+                    gx_filtered = apply_filter(gx, filter_fft_s, shift_size, avoid_circshift_fft);
                     oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, s, config);
                 end
             end
@@ -74,7 +67,7 @@ function scale_interactions = get_scale_interactions(data, interactions)
     scale_interactions = convolutions.optima(data, scale_filter, 0, 0);
 end
 
-function gx_padded_fft = to_fft(gx_padded)
+function gx_padded_fft = apply_fft(gx_padded)
 %Preprocess the input data to Fourier space for faster processing.
 
     gx_padded_fft = cell(size(gx_padded));
@@ -87,6 +80,17 @@ function gx_padded_fft = to_fft(gx_padded)
                 gx_padded_fft{s}(:,:,c,1,o) = fftn(gx_padded{s}(:,:,c,1,o));
             end
         end
+    end
+end
+
+function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, avoid_circshift_fft)
+%Apply the FFT filter (J or W) to gx to get it's interactions.
+    if use_fft
+        % gx is already in Fourier space
+        gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
+    else
+        % gx is in the real data space
+        gx_filtered = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
     end
 end
 
