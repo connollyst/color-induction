@@ -1,7 +1,19 @@
-function x_ei_scales_orients = x_ei(center_orient, gy_padded, interactions, config)
+function x_ei = get_x_ei(gy_padded, interactions, config)
 % Excitatory-inhibitory term (no existia): x_ei
-    x_ei_scales         = x_ei_scale_interactions(gy_padded, interactions, config);
-    x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, center_orient, interactions, config);
+
+    n_cols       = config.image.width;
+    n_rows       = config.image.height;
+    n_channels   = config.image.n_channels;
+    n_scales     = config.wave.n_scales;
+    n_orients    = config.wave.n_orients;
+    
+    x_ei = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    
+    for oc=1:n_orients  % loop over the central (reference) orientation
+        x_ei_scales         = x_ei_scale_interactions(gy_padded, interactions, config);
+        x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, oc, interactions, config);    
+        x_ei(:,:,:,:,oc)    = x_ei_scales_orients;
+    end
 end
 
 function x_ei_scales = x_ei_scale_interactions(gy_padded, interactions, config)
