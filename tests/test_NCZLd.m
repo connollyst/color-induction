@@ -3,23 +3,40 @@ function test_suite = test_NCZLd
   initTestSuite;
 end
 
-function test_NCZLd_1D_1
+% 1D TESTS: channel interactions should not affect the output
+
+function test_NCZLd_1D_1_without_channel_interactions
     assert_NCZLd('1D_1', 0)
 end
 
-function test_NCZLd_1D_2
+function test_NCZLd_1D_2_without_channel_interactions
     assert_NCZLd('1D_2', 0)
 end
 
-function test_NCZLd_1D_3
+function test_NCZLd_1D_3_without_channel_interactions
     assert_NCZLd('1D_3', 0)
 end
+
+function test_NCZLd_1D_1_with_channel_interactions
+    assert_NCZLd('1D_1', 1)
+end
+
+function test_NCZLd_1D_2_with_channel_interactions
+    assert_NCZLd('1D_2', 1)
+end
+
+function test_NCZLd_1D_3_with_channel_interactions
+    assert_NCZLd('1D_3', 1)
+end
+
+% 3D TESTS
 
 function test_NCZLd_3D_1
 % Note: the 3 1D channels processed in other tests are combined here. If
 %       those tests pass, this should also.
     assert_NCZLd('3D_1', 0)
 end
+
 
 %% ASSERTIONS
 
@@ -37,6 +54,7 @@ function assertDimensionsEqual(actual, expected)
             ['Results differ in dimension ',num2str(i),' (at least)']);
     end
 end
+
 
 %% TEST UTILITIES
 
