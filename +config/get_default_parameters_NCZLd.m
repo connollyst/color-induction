@@ -1,4 +1,5 @@
 function config = get_default_parameters_NCZLd()
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% wavelets' parameters %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,6 +17,7 @@ wave.n_scales=0;
 % size of the last wavelet plane to process (Should be a power of 2 and >= 32)
 % (see below zli.fin_scale_offset parameter in order to include or not residual plane)
 wave.mida_min=32;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Z.Li's model parameters %%%%%%%%%
@@ -66,7 +68,8 @@ zli.scale_interaction   = 1;
 zli.orient_interaction  = 1;
 zli.channel_interaction = 0;
 zli.add_neural_noise    = 0;
-														  
+							
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% computational setting %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,11 +87,14 @@ compute.use_fft=1;
 compute.avoid_circshift_fft=1;
 % compute.output_type='image';
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%  stimulus (image, name...) %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 image.n_frames_promig=zli.n_membr-1;		% number iterations (from the last one) considered for the ouput (mean)
 % image.updown=[1];							% up/downsample ([1,2])
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% display plot/store    %%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
