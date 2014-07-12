@@ -5,4 +5,3 @@ function config = get_defaults()
     config.display = configurations.defaults.get_display();
     config.image   = configurations.defaults.get_image(config.zli);
 end
-
