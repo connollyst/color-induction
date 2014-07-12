@@ -59,7 +59,7 @@ zli.scale_interaction_distance=1; % distance over which scales interact with eac
 % configuration
 zli.scale_interaction   = 1;
 zli.orient_interaction  = 1;
-zli.channel_interaction = 1;
+zli.channel_interaction = 0;
 zli.add_neural_noise    = 0;
 														  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
