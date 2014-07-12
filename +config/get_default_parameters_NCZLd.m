@@ -13,7 +13,7 @@ wave.n_scales=0;
 % wave.n_scales=5;
 % wave.n_scales=4; 
 
-% size of the last wavelet plane to process
+% size of the last wavelet plane to process (Should be a power of 2 and >= 32)
 % (see below zli.fin_scale_offset parameter in order to include or not residual plane)
 wave.mida_min=32;
 
@@ -30,7 +30,8 @@ zli.J0= 0.8;        % self-excitation coefficient (Li 1999) p209
 zli.dist_type='eucl';
 % zli.dist_type='manh';
 % zli.scale2size_type=0;
-zli.scale2size_type=1;
+zli.scale2size_type=-1;
+zli.scale2size_epsilon=1.3; % 1 gives 2.^(s-1), 0.5 gives 1.^(s)
 zli.reduccio_JW=1;
 % zli.normal_type='scale';
 zli.normal_type='all';
@@ -39,7 +40,7 @@ zli.normal_type='all';
 zli.alphax=1.0; % 1.6 !!!
 zli.alphay=1.0; % 1.6 !!!
 zli.kappax=1.0; % 1.6 !!!
-zli.kappay=1.0; % 1.6 !!!
+zli.kappay=1.35; % 1.6 !!!
 
 % normalization
 zli.normal_input=4;			% rescaled maximum value of input data for Z.Li method

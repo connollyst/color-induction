@@ -47,19 +47,6 @@ image.n_frames_promig = zli.n_membr-1;    % The number of iterations (starting f
 %%%% The following parameters overwrite the previous ones %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Parameters for the last experiments
-
-    % min frequency processed (size of the last wavelet plane. Should be a power of 2 and >= 32)
-    wave.mida_min=32;
-    zli.scale2size_type=-1;
-	% epsilon=1 gives 2.^(s-1)
-    % epsilon=0.5 gives 1.^(s)
-    zli.scale2size_epsilon=1.3;
-    % kappa y
-    zli.kappay=1.35;
-    % rescaled maximum value of output data for Z.Li method
-    zli.normal_output=2;
-
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%% parameters for wavelets %%%%%%%%%%
