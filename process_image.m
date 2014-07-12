@@ -1,4 +1,4 @@
-function img_out = general_NCZLd(image_data, varargin)
+function img_out = process_image(image_data, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
