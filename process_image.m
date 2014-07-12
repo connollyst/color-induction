@@ -39,5 +39,5 @@ function img_out = process_image(image_data, varargin)
     cfg.display.store               = 0;  % 0 don't store/ 1 store curv, iFactor and more...
     cfg.display.store_img_img_out   = 0;  % 0/1 don't save/save img and img_out
 
-    img_out = model.NCZLd(image_data, cfg);
+    img_out = model.do_process(image_data, cfg);
 end

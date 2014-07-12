@@ -1,4 +1,4 @@
-function O = NCZLd(I, config)
+function O = do_process(I, config)
 %   I: the input images, either in the form I(cols, rows, colors) or
 %      I{frames}(cols, rows, colors)
 %   config: the algorithm configuration structure
