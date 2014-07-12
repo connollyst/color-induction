@@ -76,7 +76,6 @@ compute.dynamic=0;						% 0 stable/1 dynamic stimulus
 compute.use_fft=1;
 compute.avoid_circshift_fft=1;
 % compute.output_type='image';
-compute.XOP_DEBUG=0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%  stimulus (image, name...) %%%%%%%

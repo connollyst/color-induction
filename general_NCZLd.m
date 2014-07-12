@@ -122,8 +122,6 @@ zli.normal_input=4;
 compute.use_fft=1;
 % avoid circshift for speed
 compute.avoid_circshift_fft=1;
-% debug (display control values)
-compute.XOP_DEBUG=0;
 % debug (display scale interaction information)
 compute.scale_interaction_debug=0;
 % dynamic
