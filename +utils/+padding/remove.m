@@ -1,5 +1,5 @@
-function center = remove_padding(padded, interactions, config)
-%GET_TOROIDAL_CENTERS Extract the centers of the padded image.
+function center = remove(padded, interactions, config)
+%PADDING.REMOVE Extract the centers of the padded image.
 
     n_cols               = config.image.width;
     n_rows               = config.image.height;

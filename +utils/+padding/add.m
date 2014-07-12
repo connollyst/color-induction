@@ -1,5 +1,5 @@
-function [gx_padded, gy_padded] = add_padding(x, y, interactions, config)
-%ADD_PADDING Add padding to prevent edge effects.
+function [gx_padded, gy_padded] = add(x, y, interactions, config)
+%PADDING.ADD Add padding to prevent edge effects.
 %   TODO Move intermediate interaction scales to another function
 
     [ x_padded,  y_padded] = mirror_boundary(x, y, interactions, config);
