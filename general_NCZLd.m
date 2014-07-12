@@ -59,11 +59,6 @@ image.n_frames_promig = zli.n_membr-1;    % The number of iterations (starting f
     zli.kappay=1.35;
     % rescaled maximum value of output data for Z.Li method
     zli.normal_output=2;
-    % prepare the name
-    nmida_min=num2str(wave.mida_min);
-    nepsilon=num2str( zli.scale2size_epsilon);
-    nkappay=num2str(zli.kappay);
-    nnormal_output=num2str(zli.normal_output);
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
