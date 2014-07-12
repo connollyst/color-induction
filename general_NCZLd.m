@@ -20,7 +20,7 @@ function img_out = general_NCZLd(image_data, varargin)
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
     
-    cfg = config.get_default_parameters_NCZLd();
+    cfg = configurations.get_defaults();
 
     % Is the image_data dynamic or static?
     cfg.compute.dynamic = iscell(image_data);
