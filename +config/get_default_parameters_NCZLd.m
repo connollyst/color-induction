@@ -73,7 +73,9 @@ zli.add_neural_noise    = 0;
 % compute.parallel_orient=0;				% concurrent for every wavelet orientation 
 compute.dynamic=0;						% 0 stable/1 dynamic stimulus
 % compute.multiparameters=0;				% 0 for the first parameter of the list/ 1 for all the parameters
+% use fft for speed
 compute.use_fft=1;
+% avoid circshift for speed
 compute.avoid_circshift_fft=1;
 % compute.output_type='image';
 
