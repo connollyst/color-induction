@@ -4,27 +4,27 @@ function test_suite = test_NCZLd
 end
 
 function test_NCZLd_1D_1
-    assert_NCZLd('1D_1')
+    assert_NCZLd('1D_1', 0)
 end
 
 function test_NCZLd_1D_2
-    assert_NCZLd('1D_2')
+    assert_NCZLd('1D_2', 0)
 end
 
 function test_NCZLd_1D_3
-    assert_NCZLd('1D_3')
+    assert_NCZLd('1D_3', 0)
 end
 
 function test_NCZLd_3D_1
 % Note: the 3 1D channels processed in other tests are combined here. If
 %       those tests pass, this should also.
-    assert_NCZLd('3D_1')
+    assert_NCZLd('3D_1', 0)
 end
 
 %% ASSERTIONS
 
-function assert_NCZLd(instance)
-    [I, config] = get_input(instance);
+function assert_NCZLd(instance, channel_interaction)
+    [I, config] = get_input(instance, channel_interaction);
     actual   = model.process.NCZLd(I, config);
     expected = get_expected(instance);
     assertDimensionsEqual(actual, expected)
@@ -40,15 +40,16 @@ end
 
 %% TEST UTILITIES
 
-function config = get_config()
+function config = get_config(channel_interaction)
     saved  = load('data/input/NCZLd_config.mat');
     config = saved.config;
+    config.zli.channel_interaction = channel_interaction;
 end
 
-function [I, config] = get_input(instance)
+function [I, config] = get_input(instance, channel_interaction)
     input   = load(['data/input/NCZLd_',instance,'.mat']);
     I       = input.I;
-    config  = get_config();
+    config  = get_config(channel_interaction);
 end
 
 function expected = get_expected(instance)
