@@ -46,16 +46,6 @@ image.n_frames_promig = zli.n_membr-1;    % The number of iterations (starting f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% The following parameters overwrite the previous ones %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%% parameters for wavelets %%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% choice for a wavelet decomposition
-wave.multires='a_trous';
-zli.normal_min_absolute=0;
-zli.normal_max_absolute=0.25;
  
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%% Z.Li's model parameters %%%%%%%%%

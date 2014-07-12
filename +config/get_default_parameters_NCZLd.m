@@ -36,6 +36,8 @@ zli.reduccio_JW=1;
 % zli.normal_type='scale';
 zli.normal_type='all';
 % zli.normal_type='absolute'; zli.normal_min_absolute=0; zli.normal_max_absolute=255;
+zli.normal_min_absolute=0;
+zli.normal_max_absolute=0.25;
 
 zli.alphax=1.0; % 1.6 !!!
 zli.alphay=1.0; % 1.6 !!!
