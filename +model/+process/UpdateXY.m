@@ -17,15 +17,28 @@ function [x_out, y_out] = UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, 
     [x_out, y_out]         = model.calculate_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot
-        figure(1);
-        subplot(7,1,1); imagesc(gy(:,:));
-        subplot(7,1,2); imagesc(x_ee(:,:));
-        subplot(7,1,3); imagesc(x_ei(:,:));
-        subplot(7,1,4); imagesc(y_ie(:,:));
-        subplot(7,1,5); imagesc(I_norm(:,:));
-        subplot(7,1,6); imagesc(x_out(:,:));
-        subplot(7,1,7); imagesc(y_out(:,:));
-        drawnow
-        %waitforbuttonpress;
+        do_plot(gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_out, y_out);
     end
+end
+
+function do_plot(gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
+    figure(1);
+    subplot(8,1,1); imagesc(gx_padded{2}(:,:));
+    title('gx padded');
+    subplot(8,1,2); imagesc(gy_padded{2}(:,:));
+    title('gy padded');
+    subplot(8,1,3); imagesc(x_ee(:,:));
+    title('x ee');
+    subplot(8,1,4); imagesc(x_ei(:,:));
+    title('x ei');
+    subplot(8,1,5); imagesc(y_ie(:,:));
+    title('y ie');
+    subplot(8,1,6); imagesc(I_norm(:,:));
+    title('I norm');
+    subplot(8,1,7); imagesc(x_out(:,:));
+    title('x out');
+    subplot(8,1,8); imagesc(y_out(:,:));
+    title('y out');
+    drawnow
+    %waitforbuttonpress;
 end
