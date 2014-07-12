@@ -50,12 +50,12 @@ function config = init_config(I, config)
     
     % Calculate number of scales automatically
     if config.wave.n_scales == 0
-        config.wave.n_scales = wavelets.calculate_scale_count(I, config);    
+        config.wave.n_scales = utils.calculate_n_scales(I, config);    
     end
     logger.log('Processing at %i scales\n', config.wave.n_scales, config);
     
     % Calculate the scale deltas
-    config.wave.scale_deltas = wavelets.calculate_scale_deltas(config);
+    config.wave.scale_deltas = utils.calculate_scale_deltas(config);
 end
 
 function O = get_initial_I(I, n_membr, dynamic)

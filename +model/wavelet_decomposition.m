@@ -20,7 +20,7 @@ function [wavelet, residual] = wavelet_decomposition(I, config)
     wavelet  = cell(n_membr, 1);
     residual = cell(n_membr, 1);
     for i=1:n_iters
-        % TODO provide wavelet funciton dynamically
+        % TODO provide wavelet function based on configuration
         [wavelet{i}, residual{i}] = wavelets.DWD_orient_undecimated(I{i}, n_scales);
     end
     

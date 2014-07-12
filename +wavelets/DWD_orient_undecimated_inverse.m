@@ -1,4 +1,4 @@
-function rec = IDWD_orient_undecimated(w, c)
+function rec = DWD_orient_undecimated_inverse(w, c)
     n_scales = size(c, 4);
     rec      = c(:,:,:,n_scales);
     for s = n_scales:-1:1

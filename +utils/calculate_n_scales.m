@@ -1,4 +1,4 @@
-function n_scales = calculate_scale_count(I, config)
+function n_scales = calculate_n_scales(I, config)
     if config.zli.fin_scale_offset == 0
         % parameter to adjust the correct number of the last wavelet plane (obsolete)
         % TODO if this is obsolete, can it be removed?
