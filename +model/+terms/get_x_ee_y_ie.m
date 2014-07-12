@@ -71,7 +71,7 @@ function scale_interactions = get_scale_interactions(data, interactions)
 %between scales.
 
     scale_filter       = interactions.scale_filter;
-    scale_interactions = convolutions.optima(data, scale_filter, 0, 0);
+    scale_interactions = utils.convolutions.optima(data, scale_filter, 0, 0);
 end
 
 function gx_padded_fft = apply_fft(gx_padded)
@@ -95,10 +95,10 @@ function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     if config.compute.use_fft
         % gx is already in Fourier space
-        gx_filtered = convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
+        gx_filtered = utils.convolutions.optima_fft(gx, filter_fft_s, shift_size, avoid_circshift_fft);
     else
         % gx is in the real data space
-        gx_filtered = convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
+        gx_filtered = utils.convolutions.optima(gx, filter_fft_s, shift_size, 1, avoid_circshift_fft);
     end
 end
 

@@ -31,7 +31,7 @@ function x_ei_scales = x_ei_scale_interactions(gy_padded, interactions, config)
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
     gy               = model.remove_padding(gy_padded, interactions, config);
-    gy_filtered      = convolutions.optima(gy, scale_filter, 0, 0, avoid_circshift_fft);
+    gy_filtered      = utils.convolutions.optima(gy, scale_filter, 0, 0, avoid_circshift_fft);
     real_scale_range = scale_distance+1:scale_distance+n_scales;
     x_ei_scales      = gy_filtered(:,:,:,real_scale_range,:); % remove 'interaction scales'
 end
