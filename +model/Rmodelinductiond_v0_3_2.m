@@ -31,7 +31,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
             tIitheta = Iitheta{t};
-            [x, y] = model.process.UpdateXY(tIitheta, x, y, JW, norm_masks, interactions, config);
+            [x, y] = model.UpdateXY(tIitheta, x, y, JW, norm_masks, interactions, config);
         end
         if config.display.logging
             toc

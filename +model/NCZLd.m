@@ -15,7 +15,7 @@ function O = NCZLd(I, config)
         % If the image is uniform we do not process it
         O = get_initial_I(I, n_membr, dynamic);
     else
-        O = model.process.NCZLd_channel_v1_0(I, config);
+        O = model.NCZLd_channel_v1_0(I, config);
         O = model.utils.average_output(O, config, n_membr, dynamic);
     end
 

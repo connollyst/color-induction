@@ -35,11 +35,11 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
-    iFactor_ON  = model.process.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
+    iFactor_ON  = model.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
     
     % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
-    iFactor_OFF = model.process.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);
+    iFactor_OFF = model.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);
 
     % Prepare output
     iFactor = iFactor_ON;
@@ -61,7 +61,7 @@ function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
         dades{t} = abs(Iitheta{t});
     end
 
-    iFactor = Rmodelinductiond_v0_3_2(dades, config);
+    iFactor = model.Rmodelinductiond_v0_3_2(dades, config);
 
     for t=1:n_membr
         Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
@@ -77,7 +77,7 @@ function Iitheta_final = process_ON_OFF_square(Iitheta, config)
     for t=1:n_membr
         dades{t} = Iitheta{t}.*Iitheta{t};
     end
-    iFactor = Rmodelinductiond_v0_3_2(dades, config);
+    iFactor = model.Rmodelinductiond_v0_3_2(dades, config);
     for t=1:n_membr
         Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
     end

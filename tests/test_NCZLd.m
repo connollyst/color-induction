@@ -42,7 +42,7 @@ end
 
 function assert_NCZLd(instance, channel_interaction)
     [I, config] = get_input(instance, channel_interaction);
-    actual   = model.process.NCZLd(I, config);
+    actual   = model.NCZLd(I, config);
     expected = get_expected(instance);
     assertDimensionsEqual(actual, expected)
 end
