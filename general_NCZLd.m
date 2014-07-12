@@ -24,23 +24,23 @@ function img_out = general_NCZLd(image_data, n_membr, dynamic)
 
 %--------------------------------------------------------------------
 % build the structure
-clear struct wave zli display_plot compute 
+clear cfg wave zli display_plot compute 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Default parameters %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-strct=params.get_default_parameters_NCZLd();
+cfg = config.get_default_parameters_NCZLd();
 
 % Prepare structures 
-zli=strct.zli;
-wave=strct.wave;
-image=strct.image;
-display=strct.display;
-compute=strct.compute;
+zli     = cfg.zli;
+wave    = cfg.wave;
+image   = cfg.image;
+display = cfg.display;
+compute = cfg.compute;
 
-image.n_frames_promig=zli.n_membr-1;    % The number of iterations (starting from the end) used
-                                        % to compute the output of the model (by taking the mean)
+image.n_frames_promig = zli.n_membr-1;    % The number of iterations (starting from the end) used
+                                          % to compute the output of the model (by taking the mean)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
