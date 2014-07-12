@@ -1,4 +1,4 @@
-function img_out = general_NCZLd(image_data, dynamic, varargin)
+function img_out = general_NCZLd(image_data, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -16,8 +16,6 @@ function img_out = general_NCZLd(image_data, dynamic, varargin)
 %   it has to be cell structure of two or three dimensional images with size {n_frames}(:,:,:).
 % 
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
-%
-% dynamic: 0 (static setting)/1 (dynamical setting) 
 % 
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
@@ -25,7 +23,7 @@ function img_out = general_NCZLd(image_data, dynamic, varargin)
     cfg = config.get_default_parameters_NCZLd();
 
     % Is the image_data dynamic or static?
-    cfg.compute.dynamic = dynamic;
+    cfg.compute.dynamic = iscell(image_data);
 
     if length(varargin) == 1
         % parameters for the differential equation (Euler integration scheme)
