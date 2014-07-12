@@ -5,12 +5,15 @@ function  theta = angle_orient(orient, transform)
         case('wav')
             thetas = [pi/2 -pi/4 0];
         case('a_trous')
-            % TODO does this work for DWD_orient_undecimated also?
             thetas = [pi/2 -pi/4 0 pi/4];
         case('a_trous_contrast')
             thetas = [pi/2 -pi/4 0 pi/4];
         case('gabor_HMAX')
             thetas = [pi/2 -pi/4 0 pi/4];
+        case('DWD_orient_undecimated')
+            thetas = [pi/2 -pi/4 0 pi/4];
+        otherwise
+            error('Invalid tranform: %s', transform);
     end
     theta = thetas(orient);
 end
