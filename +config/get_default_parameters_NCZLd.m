@@ -27,20 +27,22 @@ zli.n_iter=10;		% number of iterations; in the case of a dynamical stimulus, it 
 zli.J0= 0.8;        % self-excitation coefficient (Li 1999) p209
     
 % zli.total_iter=zli.n_iter/zli.prec;
-zli.dist_type='eucl';
+zli.dist_type='eucl';   % distance for I_norm
 % zli.dist_type='manh';
 % zli.scale2size_type=0;
 zli.scale2size_type=-1;
 zli.scale2size_epsilon=1.3; % 1 gives 2.^(s-1), 0.5 gives 1.^(s)
-zli.reduccio_JW=1;
+zli.reduccio_JW=1;  % reduce J and W
 % zli.normal_type='scale';
 zli.normal_type='all';
 % zli.normal_type='absolute'; zli.normal_min_absolute=0; zli.normal_max_absolute=255;
 zli.normal_min_absolute=0;
 zli.normal_max_absolute=0.25;
 
+% decay in the e/i recurrent equations
 zli.alphax=1.0; % 1.6 !!!
 zli.alphay=1.0; % 1.6 !!!
+% multiplicative factor
 zli.kappax=1.0; % 1.6 !!!
 zli.kappay=1.35; % 1.6 !!!
 
@@ -59,7 +61,7 @@ zli.fin_scale_offset=1;		% last plane to process will be n_scales - fin_scale (a
 							% i.e. if =0 then residual will be processed (and its size will be wave.mida_min)
 zli.scale_interaction_distance=1; % distance over which scales interact with each other
 
-% configuration
+% Interaction configurations: yes/no
 zli.scale_interaction   = 1;
 zli.orient_interaction  = 1;
 zli.channel_interaction = 0;

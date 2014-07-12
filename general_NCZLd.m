@@ -53,43 +53,6 @@ image.n_frames_promig = zli.n_membr-1;    % The number of iterations (starting f
 
 % parameters for the differential equation (Euler integration scheme)
 zli.n_membr=n_membr;  % number of membrane time constant
-zli.n_iter=10;   % integration steps in the Euler integration scheme
-
-% distance for I_norm
-zli.dist_type='eucl';
-% zli.dist_type='manh';
-
-% type of normalization
-% zli.normal_type='scale';
-zli.normal_type='all';
-% zli.normal_type='absolute';
-
-% reduce J and W
-zli.reduccio_JW=1;
-
-% decay in the e/i recurrent equations
-zli.alphax=1.0;
-zli.alphay=1.0;
-
-% multiplicative factor
-zli.kappax=1.0; %  !!!
-
-% power of the denominator in the normalization step 
-zli.normalization_power=2; 
-
-% scale interaction yes/no
-zli.scale_interaction=1;
-
-% orientation interaction yes/no
-zli.orient_interaction=1;
-
-% 0: ON and OFF are separated; 1: absolute value; 2: quadratic
-zli.ON_OFF=0;								
-% minimum value of input data for Li's method
-zli.shift=1;	
-
-% rescaled maximum value of input data for Z.Li method
-zli.normal_input=4;						
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%% computational setting %%%%%%%%%%%
