@@ -16,7 +16,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     gx_final     = utils.initialize_data(config);
     gy_final     = utils.initialize_data(config);
     % Normalization
-    Iitheta      = model.normalize_input(Iitheta, config);
+    Iitheta      = model.utils.normalize_input(Iitheta, config);
     norm_masks   = model.terms.get_normalization_masks(config);
     % Prepare orientation/scale/color interactions for x_ei
     interactions = model.terms.get_interactions(config);

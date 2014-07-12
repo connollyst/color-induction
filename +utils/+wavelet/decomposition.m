@@ -1,5 +1,5 @@
-function [wavelet, residual] = wavelet_decomposition(I, config)
-%WAVELET_DECOMPOSITION Decompose the given image(s) with a wavelet.
+function [wavelet, residual] = decomposition(I, config)
+%WAVELET.DECOMPOSITION Decompose the given image(s) with a wavelet.
 %   I:      The input image data, a cell array where each element is a 2 or 3
 %           dimensional image.
 %   config: The configuration data struct.

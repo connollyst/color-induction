@@ -24,7 +24,7 @@ function JW = get_JW(scale_distance, config)
         %      If the cell is not oriented, J & W should be... circular?
         for o=1:n_orients
             [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
-                model.get_Jithetajtheta_v0_4(s, n_orients, o, scale_deltas(s), multires, zli);
+                model.utils.get_Jithetajtheta_v0_4(s, n_orients, o, scale_deltas(s), multires, zli);
         end
     end
 

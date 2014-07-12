@@ -12,7 +12,7 @@ function interactions = get_interactions(config)
     interactions.PsiDtheta            = model.terms.get_psi_delta_theta();
     interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
     interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
-    interactions.border_weight        = model.get_border_weights(e, f);
+    interactions.border_weight        = get_border_weights(e, f);
     interactions.Delta_ext            = get_Delta_ext(scale_interaction_distance, scale_deltas, config);
     interactions.scale_filter         = get_scale_filter(e, f, scale_interaction_distance);
     interactions.half_size_filter     = get_half_size_filter(scale_interaction_distance, scale_deltas, config);
@@ -63,3 +63,12 @@ function half_size_filter = get_half_size_filter(scale_interaction_distance, sca
     end
 end
 
+function weights = get_border_weights(a,b)
+%Compute the weights of the vectors used to complete the padding
+    if a > 0.001
+        alpha   = (4*a-b)./(3*a);
+        weights = [alpha  1-alpha];
+    else
+        weights = [0 0];
+    end
+end

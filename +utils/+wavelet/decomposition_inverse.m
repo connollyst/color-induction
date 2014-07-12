@@ -1,5 +1,5 @@
-function I_out = wavelet_decomposition_inverse(wavelet, residual, config)
-%WAVELET_DECOMPOSITION_INVERSE Perform the inverse wavelet transform
+function I_out = decomposition_inverse(wavelet, residual, config)
+%WAVELET.DECOMPOSITION_INVERSE Perform the inverse wavelet transform
 % N.B.: we only perform the inverse wavelet transform of the frames used for computing the
 % mean, and NOT of all the sequence!
     % number of frames (among the last ones) we use when we consider the mean

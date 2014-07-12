@@ -16,7 +16,7 @@ function O = NCZLd(I, config)
         O = get_initial_I(I, n_membr, dynamic);
     else
         O = model.process.NCZLd_channel_v1_0(I, config);
-        O = model.average_output(O, config, n_membr, dynamic);
+        O = model.utils.average_output(O, config, n_membr, dynamic);
     end
 
     % Print processing time
