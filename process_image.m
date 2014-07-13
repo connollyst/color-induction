@@ -21,7 +21,7 @@ function img_out = process_image(img_data, img_type, varargin)
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
     
-    cfg = configurations.get_defaults();
+    cfg = configurations.single_opponent();
 
     cfg.image.type = img_type;
 
