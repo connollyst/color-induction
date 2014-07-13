@@ -13,10 +13,11 @@ The main routine is general_NCZLd.m
  
 Here is a running example:
 ```
->> img=imread('cameraman.tif');
->> figure,imagesc(img);colormap('gray');
->> imgout=general_NCZLd(img,5,0);
->> figure,imagesc(imgout);colormap('gray');
+>> img    = imread('cameraman.tif');
+>> steps  = 5;
+>> figure, imagesc(img);    colormap('gray');
+>> imgout = process_image(img, steps);
+>> figure, imagesc(imgout); colormap('gray');
 ```
 
 Please take into account that required memory and execution time rapidly
