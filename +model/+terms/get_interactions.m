@@ -9,7 +9,7 @@ function interactions = get_interactions(config)
     
     interactions                      = struct;
     interactions.scale_deltas         = model.utils.calculate_scale_deltas(config);
-    interactions.PsiDtheta            = model.terms.get_psi_delta_theta();
+    interactions.PsiDtheta            = model.terms.get_psi_delta_theta(config);
     interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
     interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
     interactions.border_weight        = get_border_weights(e, f);
