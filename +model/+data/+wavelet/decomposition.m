@@ -14,7 +14,7 @@ function [wavelets, residuals] = decomposition(I, config)
     
     [wavelets, residuals] = deal(cell(n_membr, 1));
     
-    transform = str2func(['model.wavelet.functions.', config.wave.transform]);
+    transform = str2func(['model.data.wavelet.functions.', config.wave.transform]);
     for i=1:n_images
         [wavelets{i}, residuals{i}] = transform(I{i}, n_scales);
     end

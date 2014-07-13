@@ -1,3 +1,10 @@
+function I_out = prepare_output(wavelet_out, residuals, config)
+%PREPARE_OUTPUT Summary of this function goes here
+%   Detailed explanation goes here
+    O     = model.data.wavelet.decomposition_inverse(wavelet_out, residuals, config);
+    I_out = average_output(O, config);
+end
+
 function O = average_output(I, config)
     % We take the mean as the output, as in Li, 1999
     n_membr         = config.zli.n_membr;
