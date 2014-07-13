@@ -1,4 +1,4 @@
-function [wavelet, residual] = decomposition(I, config)
+function [wavelets, residuals] = decomposition(I, config)
 %WAVELET.DECOMPOSITION Decompose the given image(s) with a wavelet.
 %   I:      The input image data, a cell array where each element is a 2 or 3
 %           dimensional image.
@@ -12,17 +12,17 @@ function [wavelet, residual] = decomposition(I, config)
         error('There are more images than time steps.')
     end
     
-    wavelet  = cell(n_membr, 1);
-    residual = cell(n_membr, 1);
+    [wavelets, residuals] = deal(cell(n_membr, 1));
+    
     for i=1:n_images
         % TODO provide wavelet function based on configuration
-        [wavelet{i}, residual{i}] = model.wavelet.functions.DWD_orient_undecimated(I{i}, n_scales);
+        [wavelets{i}, residuals{i}] = model.wavelet.functions.DWD_orient_undecimated(I{i}, n_scales);
     end
     
     % If necessary, replicate wavelet planes if static stimulus
     for a=n_images:n_membr-1
         b = mod(a, n_images)+1;
-        wavelet{a+1}  = wavelet{b};
-        residual{a+1} = residual{b};
+        wavelets{a+1}  = wavelets{b};
+        residuals{a+1} = residuals{b};
     end
 end

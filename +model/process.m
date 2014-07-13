@@ -7,17 +7,9 @@ function O = process(I, config)
     
     I      = init_input(I, config);
     config = init_config(I, config);
-    
-    n_membr = config.zli.n_membr;
-    dynamic = config.image.dynamic;
 
-    if model.utils.is_uniform(I)
-        % If the image is uniform we do not process it
-        O = get_initial_I(I, n_membr, dynamic);
-    else
-        O = model.process_channel(I, config);
-        O = model.utils.average_output(O, config, n_membr, dynamic);
-    end
+    O = model.process_channel(I, config);
+    O = model.utils.average_output(O, config);
 
     % Print processing time
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
@@ -75,13 +67,4 @@ function config = init_config(I, config)
     
     % Calculate the scale deltas
     config.wave.scale_deltas = model.utils.calculate_scale_deltas(config);
-end
-
-function O = get_initial_I(I, n_membr, dynamic)
-    if dynamic ~= 1
-        O = zeros([size(I{1}) n_membr]);
-    else
-        O = zeros(size(I{1}));
-    end
-    O = O + min(I{1}(:)); % give the initial value to all the pixels
 end
