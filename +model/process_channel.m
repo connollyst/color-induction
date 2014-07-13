@@ -5,7 +5,7 @@ function I_out = process_channel(I, config)
 %
 %   I:      The input image(s) of the format, for example:
 %           I{frame}(:,:,:)
-%           If an image sequence is to be processed, config.compute.dynamic
+%           If an image sequence is to be processed, config.image.dynamic
 %           should be 1, and the number of images passed should match
 %           config.wave.n_scales. If only one image is to be processed, the
 %           length of I should be 1.

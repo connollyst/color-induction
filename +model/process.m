@@ -9,7 +9,7 @@ function O = process(I, config)
     config = init_config(I, config);
     
     n_membr = config.zli.n_membr;
-    dynamic = config.compute.dynamic;
+    dynamic = config.image.dynamic;
 
     if model.utils.is_uniform(I)
         % If the image is uniform we do not process it

@@ -9,7 +9,6 @@ function compute = get_compute()
     % compute.parallel_scale    = 0;     % concurrent for every wavelet plane
     % compute.parallel_orient   = 0;     % concurrent for every wavelet orientation  
     % compute.parallel_ON_OFF   = 0;     % concurrent for ON & OFF processing
-    compute.dynamic             = 0;     % 0 stable/1 dynamic stimulus
     % compute.multiparameters   = 0;     % 0 for the first parameter of the list/ 1 for all the parameters
     compute.use_fft             = 1;     % use fft for speed
     compute.avoid_circshift_fft = 1;    % avoid circshift for speed

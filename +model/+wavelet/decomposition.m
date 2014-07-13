@@ -6,7 +6,7 @@ function [wavelet, residual] = decomposition(I, config)
 
     n_membr  = config.zli.n_membr;
     n_scales = config.wave.n_scales;
-    dynamic  = config.compute.dynamic;
+    dynamic  = config.image.dynamic;
 
     % Number of wavelet decompositions to perform.
     % If this is not dynamic, we decompose the first frame and duplicate.
@@ -25,6 +25,7 @@ function [wavelet, residual] = decomposition(I, config)
     end
     
     % replicate wavelet planes if static stimulus
+    % TODO we can do this without relying on config.image.dynamic
     if dynamic ~= 1
         for i=2:n_membr
             wavelet{i}  = wavelet{1};

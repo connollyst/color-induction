@@ -23,7 +23,7 @@ function img_out = process_image(image_data, varargin)
     cfg = configurations.get_defaults();
 
     % Is the image_data dynamic or static?
-    cfg.compute.dynamic = iscell(image_data);
+    cfg.image.dynamic = iscell(image_data);
 
     if length(varargin) == 1
         % parameters for the differential equation (Euler integration scheme)
