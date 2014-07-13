@@ -8,7 +8,7 @@ function JW = get_JW(scale_distance, config)
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     scale_deltas = config.wave.scale_deltas;
-    multires   = config.wave.multires;
+    transform   = config.wave.transform;
     % maximum diameter of the area of influence
     diameter   = 2*scale_deltas+1;
     all_J      = cell(n_scales, 1);
@@ -24,7 +24,7 @@ function JW = get_JW(scale_distance, config)
         %      If the cell is not oriented, J & W should be... circular?
         for o=1:n_orients
             [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
-                model.utils.get_Jithetajtheta_v0_4(s, n_orients, o, scale_deltas(s), multires, zli);
+                model.utils.get_Jithetajtheta_v0_4(s, n_orients, o, scale_deltas(s), transform, zli);
         end
     end
 

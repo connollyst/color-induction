@@ -1,17 +1,17 @@
-function [J_exc_out,W_inh_out]=get_Jithetajtheta_v0_4(scale,K,orient,Delta,multires, zli)
+function [J_exc_out,W_inh_out]=get_Jithetajtheta_v0_4(scale,K,orient,Delta,transform, zli)
 
 
 
 
     K=4;
         
-    [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,multires, zli);
+    [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,transform, zli);
     
     
     pes_diag=0.5;
     
     if orient==2
-        [J_diag,W_diag]=get_Jithetajtheta_v0_4_sub(scale,K,4,Delta,multires, zli);
+        [J_diag,W_diag]=get_Jithetajtheta_v0_4_sub(scale,K,4,Delta,transform, zli);
         J_exc(:,:,[1 3])=(J_exc(:,:,[1 3])+J_diag(:,:,[1 3]))*pes_diag;
         W_inh(:,:,[1 3])=(W_inh(:,:,[1 3])+W_diag(:,:,[1 3]))*pes_diag;
         J_exc(:,:,2)=(J_exc(:,:,2)+J_diag(:,:,4))*pes_diag;
@@ -31,7 +31,7 @@ function [J_exc_out,W_inh_out]=get_Jithetajtheta_v0_4(scale,K,orient,Delta,multi
 
 end
 
-function [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,multires, zli)
+function [J_exc,W_inh]=get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,transform, zli)
 
 
 
@@ -54,7 +54,7 @@ d=model.utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.re
 
 
 
-theta=model.utils.angle_orient(orient,multires);
+theta=model.utils.angle_orient(orient,transform);
 
 
 for o=1:K
@@ -69,7 +69,7 @@ for o=1:K
         W_inh(:,:,o)=0;
     else
         
-        thetap=model.utils.angle_orient(o,multires);
+        thetap=model.utils.angle_orient(o,transform);
         
         Dtheta=model.utils.send_in_the_right_interval_pi_2(theta-thetap);
         

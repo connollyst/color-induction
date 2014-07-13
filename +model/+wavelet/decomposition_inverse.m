@@ -5,9 +5,10 @@ function I_out = decomposition_inverse(wavelet, residual, config)
     % number of frames (among the last ones) we use when we consider the mean
     n_membr = config.zli.n_membr;
     I_out   = cell(n_membr,1);
+    inverse_transform = str2func(['model.wavelet.functions.', config.wave.transform, '_inverse']);
     for t=1:n_membr
         w = wavelet{t};
         c = residual{t};
-        I_out{t} = model.wavelet.functions.DWD_orient_undecimated_inverse(w, c);
+        I_out{t} = inverse_transform(w, c);
     end
 end
