@@ -23,7 +23,7 @@ function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
     end
     iFactor = model.process_induction(data, config);
     for t=1:n_membr
-        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
+        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * config.zli.normal_output;
     end
 end
 
@@ -37,7 +37,7 @@ function Iitheta_final = process_ON_OFF_square(Iitheta, config)
     end
     iFactor = model.process_induction(data, config);
     for t=1:n_membr
-        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
+        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * config.zli.normal_output;
     end
 end
 
