@@ -27,10 +27,8 @@ function img_out = process_image(img_data, img_type, varargin)
 
     if length(varargin) == 1
         % parameters for the differential equation (Euler integration scheme)
-        n_membr                   = varargin{1};
-        cfg.zli.n_membr           = n_membr;	% number of membrane time constant    
-        cfg.image.n_frames_promig = n_membr-1;	% The number of iterations (starting from the end) used
-                                                % to compute the output of the model (by taking the mean)
+        n_membr         = varargin{1};
+        cfg.zli.n_membr = n_membr;	% number of membrane time constant    
     end
 
     img_out = model.process(img_data, cfg);

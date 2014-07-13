@@ -69,12 +69,11 @@ function [I, config] = get_input(instance, channel_interaction)
     config.wave.n_scales = 0;
     % Use the orientation wavelet decompositon
     config.wave.transform = 'DWD_orient_undecimated';
+    % 
+    config.image.type = 'lab';
     % Disable all data display
     config.display.logging = 0;
     config.display.plot    = 0;
-    % 
-    config.image.type = 'lab';
-    config.image.n_frames_promig = 2;
 end
 
 function expected = get_expected(instance)
