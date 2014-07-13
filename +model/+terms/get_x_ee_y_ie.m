@@ -48,6 +48,9 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
             for s=1:n_scales
                 shift_size   = half_size_filter{s};
                 filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
+                % TODO last filter seems to always be 0???
+                %max_filter_fft_s = max(real(filter_fft_s(:)))
+                %min_filter_fft_s = min(real(filter_fft_s(:)))
                 if config.zli.channel_interaction
                     % TODO filters can be initialized in n-dimensions
                     filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);

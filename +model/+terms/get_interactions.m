@@ -9,6 +9,7 @@ function interactions = get_interactions(config)
     
     interactions                      = struct;
     interactions.scale_deltas         = model.utils.calculate_scale_deltas(config);
+    interactions.scale_diameters      = 2 * interactions.scale_deltas + 1;   % maximum diameter of the area of influence
     interactions.PsiDtheta            = model.terms.get_psi_delta_theta(config);
     interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
     interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
