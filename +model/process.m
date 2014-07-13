@@ -5,7 +5,7 @@ function O = process(I, config)
 
     start_time = tic;
     
-    I      = init_input(I);
+    I      = init_input(I, config);
     config = init_config(I, config);
     
     n_membr = config.zli.n_membr;
@@ -23,17 +23,36 @@ function O = process(I, config)
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
 
-function I_init = init_input(I_in)
+function I = init_input(I_in, config)
 %INIT_INPUT Initialize the input image(s)
 %   If it is a single image, return a 1x1 cell containg just that image.
 %   If it is a cell array of images, return the cell array.
     if ~iscell(I_in)
         I_in = double(I_in);
-        I_init = cell(1, 1);
-        I_init{1} = I_in;
+        I = cell(1, 1);
+        I{1} = I_in;
     else
         % TODO validate input images: same dimensions
-        I_init = I_in;
+        I = I_in;
+    end
+    
+    % Transform the original image data to the color space for processing
+    switch config.image.type
+        case 'bw'
+            % Just process intensity..
+            for i=1:length(I)
+                I{i} = im2double(I{i});
+            end
+        case 'rgb'
+            % Transform from RGB to L*a*b
+            cform = makecform('srgb2lab');
+            for i=1:length(I)
+                I{i} = lab2double(applycform(I{i}, cform));
+            end
+        case 'lab'
+            % Trust that the input data is already in L*a*b..
+        otherwise
+            error('Invalid input image type: %s', config.image.type)
     end
 end
 

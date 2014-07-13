@@ -1,4 +1,4 @@
-function img_out = process_image(image_data, varargin)
+function img_out = process_image(img_data, img_type, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -10,11 +10,12 @@ function img_out = process_image(image_data, varargin)
 % ---------------------------------------------------------------
 % Parameters:
 % 
-% image_data: That it the input image
+% img_data: the input image(s)
 %   If it is a still image (static version), it has to be a two or three dimensional array.
 % 	If it is a temporal sequence of images with 'n_frames' frames (dynamical version),
 %   it has to be cell structure of two or three dimensional images with size {n_frames}(:,:,:).
 % 
+% img_type: the type of input images: 'bw', 'rgb'
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
 % 
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
@@ -22,8 +23,8 @@ function img_out = process_image(image_data, varargin)
     
     cfg = configurations.get_defaults();
 
-    % Is the image_data dynamic or static?
-    cfg.image.dynamic = iscell(image_data);
+    cfg.image.type    = img_type;           % TODO validate
+    cfg.image.dynamic = iscell(img_data);   % Is the image_data dynamic or static?
 
     if length(varargin) == 1
         % parameters for the differential equation (Euler integration scheme)
@@ -33,5 +34,5 @@ function img_out = process_image(image_data, varargin)
                                                 % to compute the output of the model (by taking the mean)
     end
 
-    img_out = model.process(image_data, cfg);
+    img_out = model.process(img_data, cfg);
 end

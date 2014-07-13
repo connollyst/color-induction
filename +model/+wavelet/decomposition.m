@@ -4,32 +4,25 @@ function [wavelet, residual] = decomposition(I, config)
 %           dimensional image.
 %   config: The configuration data struct.
 
+    n_images = length(I);
     n_membr  = config.zli.n_membr;
     n_scales = config.wave.n_scales;
-    dynamic  = config.image.dynamic;
 
-    % Number of wavelet decompositions to perform.
-    % If this is not dynamic, we decompose the first frame and duplicate.
-    % Otherwise, we expect an frame for each membrane time step.
-    if dynamic == 1
-        n_iters = n_membr;
-    else
-        n_iters = 1;
+    if n_images > n_membr
+        error('There are more images than time steps.')
     end
     
     wavelet  = cell(n_membr, 1);
     residual = cell(n_membr, 1);
-    for i=1:n_iters
+    for i=1:n_images
         % TODO provide wavelet function based on configuration
         [wavelet{i}, residual{i}] = model.wavelet.functions.DWD_orient_undecimated(I{i}, n_scales);
     end
     
-    % replicate wavelet planes if static stimulus
-    % TODO we can do this without relying on config.image.dynamic
-    if dynamic ~= 1
-        for i=2:n_membr
-            wavelet{i}  = wavelet{1};
-            residual{i} = residual{1};
-        end
+    % If necessary, replicate wavelet planes if static stimulus
+    for a=n_images:n_membr-1
+        b = mod(a, n_images)+1;
+        wavelet{a+1}  = wavelet{b};
+        residual{a+1} = residual{b};
     end
 end
