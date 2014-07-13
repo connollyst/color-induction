@@ -1,13 +1,41 @@
-function Iitheta_final = process_channel_on_off(Iitheta, config)
+function Iitheta_final = process_on_off(Iitheta, config)
 %PROCESS_CHANNEL_ON_OFF Separate ON and OFF channels and start
 %   recovering the response at the level of the wavelet/Gabor responses.
     switch config.zli.ON_OFF
-        case 0 % Separated
-            Iitheta_final = process_ON_OFF_separately(Iitheta, config);
-        case 1 % ABS
+        case 'abs'
             Iitheta_final = process_ON_OFF_abs(Iitheta, config);
-        case 2 % Square (quadratic)
+        case 'square'
             Iitheta_final = process_ON_OFF_square(Iitheta, config);
+        case 'separate'
+            Iitheta_final = process_ON_OFF_separately(Iitheta, config);
+    end
+end
+
+function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
+%PROCESS_ON_OFF_ABS Process the ON and OFF channels using absolute values.
+    n_membr       = config.zli.n_membr;
+    Iitheta_final = cell(n_membr, 1);
+    data          = Iitheta;
+    for t=1:n_membr
+        data{t} = abs(Iitheta{t});
+    end
+    iFactor = model.process_induction_model(data, config);
+    for t=1:n_membr
+        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
+    end
+end
+
+function Iitheta_final = process_ON_OFF_square(Iitheta, config)
+%PROCESS_ON_OFF_SQUARE Process the ON and OFF channels using square
+    n_membr       = config.zli.n_membr;
+    Iitheta_final = cell(n_membr, 1);
+    data          = Iitheta;
+    for t=1:n_membr
+        data{t} = Iitheta{t}.*Iitheta{t};
+    end
+    iFactor = model.process_induction_model(data, config);
+    for t=1:n_membr
+        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
     end
 end
 
@@ -48,37 +76,5 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
         Iitheta_OFF_final{t} = -Iitheta_OFF{t}     .* iFactor_OFF{t} * config.zli.normal_output;
         iFactor{t}           =  iFactor_ON{t}       + iFactor_OFF{t};
         Iitheta_final{t}     =  Iitheta_ON_final{t} + Iitheta_OFF_final{t};
-    end
-end
-
-function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
-%PROCESS_ON_OFF_ABS Process the ON and OFF channels using absolute values.
-%   Note: This has not been updated since Sean's refactoring of the data
-%         structure. Anyway, from looking at the code, it never worked in
-%         the first place; it doesn't return the ON/OFF data.
-    dades = Iitheta;
-    for t=1:n_membr
-        dades{t} = abs(Iitheta{t});
-    end
-
-    iFactor = model.Rmodelinductiond_v0_3_2(dades, config);
-
-    for t=1:n_membr
-        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
-    end
-end
-
-function Iitheta_final = process_ON_OFF_square(Iitheta, config)
-%PROCESS_ON_OFF_SQUARE Process the ON and OFF channels using square
-%   Note: This has not been updated since Sean's refactoring of the data
-%         structure. Anyway, from looking at the code, it never worked in
-%         the first place; it doesn't return the ON/OFF data.
-    dades = Iitheta;
-    for t=1:n_membr
-        dades{t} = Iitheta{t}.*Iitheta{t};
-    end
-    iFactor = model.Rmodelinductiond_v0_3_2(dades, config);
-    for t=1:n_membr
-        Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
     end
 end
