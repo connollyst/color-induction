@@ -58,16 +58,23 @@ end
 
 %% TEST UTILITIES
 
-function config = get_config(channel_interaction)
-    saved  = load('data/input/do_process_config.mat');
-    config = saved.config;
-    config.zli.channel_interaction = channel_interaction;
-end
-
 function [I, config] = get_input(instance, channel_interaction)
-    input   = load(['data/input/do_process_',instance,'.mat']);
-    I       = input.I;
-    config  = get_config(channel_interaction);
+    input  = load(['data/input/do_process_',instance,'.mat']);
+    I      = input.I;
+    config = configurations.get_defaults();
+    config.zli.n_membr = 3;
+    config.zli.config.zli.add_neural_noise = 0;
+    config.zli.channel_interaction = channel_interaction;
+    % Infer number of scales
+    config.wave.n_scales = 0;
+    % Use the orientation wavelet decompositon
+    config.wave.transform = 'DWD_orient_undecimated';
+    % Disable all data display
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % 
+    config.image.type = 'lab';
+    config.image.n_frames_promig = 2;
 end
 
 function expected = get_expected(instance)

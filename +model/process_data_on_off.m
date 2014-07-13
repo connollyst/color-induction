@@ -55,8 +55,8 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     % Calculate the ON/OFF signals
     for t=1:n_membr
-        index_OFF                = Iitheta{t} <= 0;
-        index_ON                 = Iitheta{t} >= 0;
+        index_OFF                =  Iitheta{t} <= 0;
+        index_ON                 =  Iitheta{t} >= 0;
         Iitheta_ON{t}            =  Iitheta{t};
         Iitheta_OFF{t}           = -Iitheta{t};
         Iitheta_ON{t}(index_OFF) = 0;

@@ -12,7 +12,7 @@ function  theta = angle_orient(orient, transform)
             thetas = [pi/2 -pi/4 0 pi/4];
         case('DWD_orient_undecimated')
             thetas = [pi/2 -pi/4 0 pi/4];
-        case('DWD_and_atrous')
+        case('DWD_and_a_trous')
             thetas = [pi/2 -pi/4 0 pi/4];
         otherwise
             error('Invalid tranform: %s', transform);
