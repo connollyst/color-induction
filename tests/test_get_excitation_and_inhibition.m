@@ -93,7 +93,7 @@ end
 
 function assert_x_ee(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
     [x_ee, ~, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ee, expected.x_ee);
@@ -101,7 +101,7 @@ end
 
 function assert_x_ei(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
     [~, x_ei, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
@@ -109,7 +109,7 @@ end
 
 function assert_y_ie(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance);
+    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
     [~, ~, y_ie] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
     expected = get_expected(instance);
     assertEqualData(y_ie, expected.y_ie);
@@ -118,18 +118,17 @@ end
 %% TEST UTILITIES
 
 function config = get_config(use_fft, channel_interaction)
-    saved = load('data/input/config_40x40x3.mat');
-    config = saved.config;
+    config = get_test_config(40, 40, 3, 2);
     config.compute.use_fft = use_fft;
     config.zli.channel_interaction = channel_interaction;
 end
 
-function [gx_padded, gy_padded, JW, interactions] = get_input(instance)
+function [gx_padded, gy_padded, JW, interactions] = get_input(instance, config)
     input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
     gx_padded    = input.gx_padded;
     gy_padded    = input.gy_padded;
-    JW           = input.JW;
-    interactions = input.interactions;
+    interactions = model.terms.get_interactions(config);
+    JW           = model.terms.get_JW(interactions, config);
 end
 
 function expected = get_expected(instance)

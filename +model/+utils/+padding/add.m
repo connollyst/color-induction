@@ -10,7 +10,7 @@ function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
 %MIRROR_BOUNDARY Mirror the edges of the data to prevent edge effects.
 
     n_scales             = config.wave.n_scales;
-    scale_deltas         = config.wave.scale_deltas;
+    scale_deltas         = interactions.scale_deltas;
     scale_distance       = interactions.scale_distance;
     n_scale_interactions = interactions.n_scale_interactions;
     
@@ -29,7 +29,7 @@ function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, inter
     n_cols               = config.image.width;
     n_rows               = config.image.height;
     n_scales             = config.wave.n_scales;
-    scale_deltas         = config.wave.scale_deltas;
+    scale_deltas         = interactions.scale_deltas;
     scale_distance       = interactions.scale_distance;
     border_weight        = interactions.border_weight;
     n_scale_interactions = interactions.n_scale_interactions;

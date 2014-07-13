@@ -21,7 +21,7 @@ function [gx_final] = process_induction(Iitheta, config)
     % Prepare orientation/scale/color interactions for x_ei
     interactions = model.terms.get_interactions(config);
     % Prepare J & W: the excitatory and inhibitory masks
-    JW           = model.terms.get_JW(interactions.scale_distance, config);
+    JW           = model.terms.get_JW(interactions, config);
     % Set the initial x (excitation) & y (inhibition) activity
     [x, y]       = initialize_xy(Iitheta, config);
     % Run recurrent network: the loop over time

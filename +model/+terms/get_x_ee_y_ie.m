@@ -34,6 +34,7 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
 
     half_size_filter    = interactions.half_size_filter;
     scale_distance      = interactions.scale_distance;
+    scale_deltas        = interactions.scale_deltas;
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_channels          = config.image.n_channels;
@@ -52,12 +53,12 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
                     filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
                     gx = gx_padded{scale_distance+s}(:,:,:,ov);
                     gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                    oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, s, config);
+                    oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
                 else
                     for c=1:n_channels
                         gx = gx_padded{scale_distance+s}(:,:,c,ov);
                         gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                        oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, s, config);
+                        oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
                     end
                 end
             end
@@ -102,14 +103,13 @@ function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
     end
 end
 
-function center = extract_center(padded, s, config)
+function center = extract_center(padded, scale_delta_s, config)
 %Remove the padding added to the outside of each image.
 
     n_cols       = config.image.width;
     n_rows       = config.image.height;
-    scale_deltas = config.wave.scale_deltas;
     
-    cols   = scale_deltas(s)+1 : scale_deltas(s)+n_cols;
-    rows   = scale_deltas(s)+1 : scale_deltas(s)+n_rows;
+    cols   = scale_delta_s+1 : scale_delta_s+n_cols;
+    rows   = scale_delta_s+1 : scale_delta_s+n_rows;
     center = padded(cols, rows, :);
 end

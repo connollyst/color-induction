@@ -57,7 +57,4 @@ function config = init_config(I, config)
         config.wave.n_scales = model.utils.calculate_n_scales(I, config);    
     end
     logger.log('Processing at %i scales\n', config.wave.n_scales, config);
-    
-    % Calculate the scale deltas
-    config.wave.scale_deltas = model.utils.calculate_scale_deltas(config);
 end

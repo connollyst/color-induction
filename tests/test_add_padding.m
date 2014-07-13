@@ -57,11 +57,8 @@ function [x, y, interactions, config] = get_input(instance)
     input        = load(['data/input/add_padding_',instance,'.mat']);
     x            = input.x;
     y            = input.y;
-    Delta        = input.Delta;
-    interactions = input.interactions;
-    config       = input.config;
-    interactions.n_scale_interactions = 4; % TODO update config
-    config.wave.scale_deltas = Delta;      % TODO use common config
+    config       = get_test_config(40, 40, 3, 2);
+    interactions = model.terms.get_interactions(config);
 end
 
 function output = get_output(instance)

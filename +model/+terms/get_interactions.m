@@ -3,19 +3,19 @@ function interactions = get_interactions(config)
 %   Detailed explanation goes here
     
     n_scales                          = config.wave.n_scales;
-    scale_deltas                      = config.wave.scale_deltas;
     scale_interaction_distance        = config.zli.scale_interaction_distance;
     
     [e, f]                            = get_e_f(scale_interaction_distance);
     
     interactions                      = struct;
+    interactions.scale_deltas         = model.utils.calculate_scale_deltas(config);
     interactions.PsiDtheta            = model.terms.get_psi_delta_theta();
     interactions.scale_distance       = scale_interaction_distance; % TODO rename to scale_interaction_distance
     interactions.n_scale_interactions = get_n_scale_interactions(n_scales, scale_interaction_distance);
     interactions.border_weight        = get_border_weights(e, f);
-    interactions.Delta_ext            = get_Delta_ext(scale_interaction_distance, scale_deltas, config);
+    interactions.Delta_ext            = get_Delta_ext(scale_interaction_distance, interactions.scale_deltas, config);
     interactions.scale_filter         = get_scale_filter(e, f, scale_interaction_distance);
-    interactions.half_size_filter     = get_half_size_filter(scale_interaction_distance, scale_deltas, config);
+    interactions.half_size_filter     = get_half_size_filter(scale_interaction_distance, interactions.scale_deltas, config);
 end
 
 function [e, f] = get_e_f(scale_interaction)

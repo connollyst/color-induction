@@ -1,14 +1,16 @@
-function JW = get_JW(scale_distance, config)
+function JW = get_JW(interactions, config)
 %GET_JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
 
-% TODO perhaps J & W don't need the interactions.scale_distance?
+    % TODO perhaps J & W don't need the interactions?
+    scale_deltas   = interactions.scale_deltas;
+    scale_distance = interactions.scale_distance;
+    
     zli        = config.zli;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
-    scale_deltas = config.wave.scale_deltas;
-    transform   = config.wave.transform;
+    transform  = config.wave.transform;
     % maximum diameter of the area of influence
     diameter   = 2*scale_deltas+1;
     all_J      = cell(n_scales, 1);
@@ -40,26 +42,24 @@ function JW = get_JW(scale_distance, config)
         end
         % a matrix for each scale
         % fft for speed (convolutions are computed in another space)
-        if config.compute.use_fft
-            all_J_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s), 1, n_orients, n_orients);
-            all_W_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s), 1, n_orients, n_orients);
-            all_W_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s));
-            for ov=1:n_orients
-                for oc=1:n_orients
-                    if config.compute.avoid_circshift_fft==1
-                        % FFT that does not require circshift (by far better)
-                        padsize = [n_cols+2*scale_deltas(s)-diameter(s),n_rows+2*scale_deltas(s)-diameter(s)];
-                        J_circ = padarray(all_J{s}(:,:,1,ov,oc), padsize, 0,'post');
-                        W_circ = padarray(all_W{s}(:,:,1,ov,oc), padsize, 0,'post');
-                        J_circ = circshift(J_circ, -[scale_deltas(s) scale_deltas(s)]);
-                        W_circ = circshift(W_circ, -[scale_deltas(s) scale_deltas(s)]);
-                        all_J_fft{s}(:,:,1,ov,oc) = fftn(J_circ);
-                        all_W_fft{s}(:,:,1,ov,oc) = fftn(W_circ);
-                    else
-                        % FFT that requires circshift
-                        all_J_fft{s}(:,:,1,ov,oc) = fftn(all_J{s}(:,:,1,ov,oc),[n_cols+2*scale_deltas(s),n_rows+2*scale_deltas(s)]);
-                        all_W_fft{s}(:,:,1,ov,oc) = fftn(all_W{s}(:,:,1,ov,oc),[n_cols+2*scale_deltas(s),n_rows+2*scale_deltas(s)]);
-                    end
+        all_J_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s), 1, n_orients, n_orients);
+        all_W_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s), 1, n_orients, n_orients);
+        all_W_fft{s} = zeros(n_cols+2*scale_deltas(s), n_rows+2*scale_deltas(s));
+        for ov=1:n_orients
+            for oc=1:n_orients
+                if config.compute.avoid_circshift_fft==1
+                    % FFT that does not require circshift (by far better)
+                    padsize = [n_cols+2*scale_deltas(s)-diameter(s),n_rows+2*scale_deltas(s)-diameter(s)];
+                    J_circ = padarray(all_J{s}(:,:,1,ov,oc), padsize, 0,'post');
+                    W_circ = padarray(all_W{s}(:,:,1,ov,oc), padsize, 0,'post');
+                    J_circ = circshift(J_circ, -[scale_deltas(s) scale_deltas(s)]);
+                    W_circ = circshift(W_circ, -[scale_deltas(s) scale_deltas(s)]);
+                    all_J_fft{s}(:,:,1,ov,oc) = fftn(J_circ);
+                    all_W_fft{s}(:,:,1,ov,oc) = fftn(W_circ);
+                else
+                    % FFT that requires circshift
+                    all_J_fft{s}(:,:,1,ov,oc) = fftn(all_J{s}(:,:,1,ov,oc),[n_cols+2*scale_deltas(s),n_rows+2*scale_deltas(s)]);
+                    all_W_fft{s}(:,:,1,ov,oc) = fftn(all_W{s}(:,:,1,ov,oc),[n_cols+2*scale_deltas(s),n_rows+2*scale_deltas(s)]);
                 end
             end
         end
