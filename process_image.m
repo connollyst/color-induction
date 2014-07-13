@@ -33,11 +33,5 @@ function img_out = process_image(image_data, varargin)
                                                 % to compute the output of the model (by taking the mean)
     end
 
-    cfg.display.plot_io             = 0;  % plot input/output
-    cfg.display.reduce              = 0;  % 0 all (9)/ 1 reduced (useless if single_or_multiple=1)
-    cfg.display.plot_wavelet_planes = 0;  % display wavelet coefficients
-    cfg.display.store               = 0;  % 0 don't store/ 1 store curv, iFactor and more...
-    cfg.display.store_img_img_out   = 0;  % 0/1 don't save/save img and img_out
-
     img_out = model.process(image_data, cfg);
 end
