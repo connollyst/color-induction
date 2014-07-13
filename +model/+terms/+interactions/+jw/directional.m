@@ -1,5 +1,5 @@
 function JW = directional(interactions, config)
-%JW.DIRECTIONAL Return directional J (excitation) & W (inhibition) masks.
+%JW.DIRECTIONAL Return directional J (excitation) & W (inhibition).
 %   Reference: Z. Li 1999.
 
     % TODO perhaps J & W don't need the interactions?

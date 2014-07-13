@@ -61,7 +61,7 @@ end
 function [I, config] = get_input(instance, channel_interaction)
     input  = load(['data/input/do_process_',instance,'.mat']);
     I      = input.I;
-    config = configurations.get_defaults();
+    config = configurations.default();
     config.zli.n_membr = 3;
     config.zli.config.zli.add_neural_noise = 0;
     config.zli.channel_interaction = channel_interaction;

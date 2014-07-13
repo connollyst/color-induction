@@ -1,5 +1,5 @@
 function config = get_test_config(width, height, colors, scales)
-    config = configurations.get_defaults();
+    config = configurations.default();
     % Don't add noise in tests
     config.zli.config.zli.add_neural_noise = 0;
     config.wave.n_scales = scales;

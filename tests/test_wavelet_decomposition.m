@@ -8,7 +8,7 @@ function test_no_replication_of_single_image
 % there should be just a single wavelet and residual.
     n_membr = 1;
     I = make_I(1);
-    config = make_config(n_membr, 'DWD_and_a_trous', 3);
+    config = make_config(n_membr, 'DWD_orient_undecimated', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  1);
     assertEqual(length(residuals), 1);
@@ -19,7 +19,7 @@ function test_no_replication_of_many_images
 % we should get back one wavelet and residual for each input.
     n_membr = 4;
     I = make_I(4);
-    config = make_config(n_membr, 'DWD_and_a_trous', 3);
+    config = make_config(n_membr, 'DWD_orient_undecimated', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
@@ -30,7 +30,7 @@ function test_replication_of_single_image
 % the wavelet and residual should be replicated for each step.
     n_membr = 42;
     I = make_I(1);
-    config = make_config(n_membr, 'DWD_and_a_trous', 3);
+    config = make_config(n_membr, 'DWD_orient_undecimated', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
@@ -53,7 +53,7 @@ function test_replication_of_many_images
 % the wavelets and residuals should be replicated as needed.
     n_membr = 42;
     I = make_I(5);
-    config = make_config(n_membr, 'DWD_and_a_trous', 3);
+    config = make_config(n_membr, 'DWD_orient_undecimated', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
@@ -84,7 +84,7 @@ function test_error_with_too_many_images
 % an appropriate error should be thrown.
     n_membr = 1;
     I = make_I(2);
-    config = make_config(n_membr, 'DWD_and_a_trous', 3);
+    config = make_config(n_membr, 'DWD_orient_undecimated', 3);
     err_thrown = 0;
     try
         model.data.wavelet.decomposition(I, config);
