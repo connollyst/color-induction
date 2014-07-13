@@ -1,5 +1,5 @@
 function test_suite = test_wavelet_decompositon
-%TEST_ADD_PADDING Test suite for model.wavelet.decomposition()
+%TEST_ADD_PADDING Test suite for model.data.wavelet.decomposition()
   initTestSuite;
 end
 
@@ -9,7 +9,7 @@ function test_no_replication_of_single_image
     n_membr = 1;
     I = make_I(1);
     config = make_config(n_membr, 'DWD_and_a_trous', 3);
-    [wavelets, residuals] = model.wavelet.decomposition(I, config);
+    [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  1);
     assertEqual(length(residuals), 1);
 end
@@ -20,7 +20,7 @@ function test_no_replication_of_many_images
     n_membr = 4;
     I = make_I(4);
     config = make_config(n_membr, 'DWD_and_a_trous', 3);
-    [wavelets, residuals] = model.wavelet.decomposition(I, config);
+    [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
 end
@@ -31,7 +31,7 @@ function test_replication_of_single_image
     n_membr = 42;
     I = make_I(1);
     config = make_config(n_membr, 'DWD_and_a_trous', 3);
-    [wavelets, residuals] = model.wavelet.decomposition(I, config);
+    [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
     % The one wavelet should be replicated 42 times
@@ -54,7 +54,7 @@ function test_replication_of_many_images
     n_membr = 42;
     I = make_I(5);
     config = make_config(n_membr, 'DWD_and_a_trous', 3);
-    [wavelets, residuals] = model.wavelet.decomposition(I, config);
+    [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  n_membr);
     assertEqual(length(residuals), n_membr);
     % The 5 wavelets should be replicated to fill the required steps
@@ -87,7 +87,7 @@ function test_error_with_too_many_images
     config = make_config(n_membr, 'DWD_and_a_trous', 3);
     err_thrown = 0;
     try
-        model.wavelet.decomposition(I, config);
+        model.data.wavelet.decomposition(I, config);
     catch
         err_thrown = 1;
     end
