@@ -1,4 +1,4 @@
-function img_out = process_image(img_data, img_type, varargin)
+function img_out = process_image(img_data, img_type, n_membr, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -21,15 +21,17 @@ function img_out = process_image(img_data, img_type, varargin)
 % Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
 % or below.
     
-    cfg = configurations.single_opponent();
-
-    cfg.image.type = img_type;
-
     if length(varargin) == 1
         % parameters for the differential equation (Euler integration scheme)
-        n_membr         = varargin{1};
-        cfg.zli.n_membr = n_membr;	% number of membrane time constant    
+        cfg_function_name = varargin{1};
+        cfg_function      = str2func(['configurations.',cfg_function_name]);
+        cfg               = cfg_function();
+    else
+        cfg = configurations.double_opponent();
     end
+
+    cfg.image.type = img_type;
+    cfg.zli.n_membr = n_membr;	% number of membrane time constant
 
     img_out = model.apply(img_data, cfg);
 end
