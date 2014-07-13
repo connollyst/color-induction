@@ -13,8 +13,8 @@ function [gx_final] = process_induction_model(Iitheta, config)
     validate_input(config)
 
     % Initialize output membrane potentials
-    gx_final     = utils.initialize_data(config);
-    gy_final     = utils.initialize_data(config);
+    gx_final     = model.utils.initialize_data(config);
+    gy_final     = model.utils.initialize_data(config);
     % Normalization
     Iitheta      = model.utils.normalize_input(Iitheta, config);
     norm_masks   = model.terms.get_normalization_masks(config);

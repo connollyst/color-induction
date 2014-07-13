@@ -47,14 +47,14 @@ W_inh=zeros(diam,diam,K);
 xx=repmat([(-Delta:1:Delta)],2*Delta+1,1);
 yy=repmat([(-Delta:1:Delta)]',1,2*Delta+1);
 
-factor_scale=utils.scale2size(scale,zli.scale2size_type,zli.scale2size_epsilon);
+factor_scale=model.utils.scale2size(scale,zli.scale2size_type,zli.scale2size_epsilon);
 
-d=utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
-
-
+d=model.utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
 
 
-theta=utils.angle_orient(orient,multires);
+
+
+theta=model.utils.angle_orient(orient,multires);
 
 
 for o=1:K
@@ -69,16 +69,16 @@ for o=1:K
         W_inh(:,:,o)=0;
     else
         
-        thetap=utils.angle_orient(o,multires);
+        thetap=model.utils.angle_orient(o,multires);
         
-        Dtheta=utils.send_in_the_right_interval_pi_2(theta-thetap);
+        Dtheta=model.utils.send_in_the_right_interval_pi_2(theta-thetap);
         
         
         
         c=complex(xx,yy);
-        angline=utils.send_in_the_right_interval_pi_2(angle(c));
-        theta1=utils.send_in_the_right_interval_pi_2(theta-angline);
-        theta2=utils.send_in_the_right_interval_pi_2(thetap-angline);
+        angline=model.utils.send_in_the_right_interval_pi_2(angle(c));
+        theta1=model.utils.send_in_the_right_interval_pi_2(theta-angline);
+        theta2=model.utils.send_in_the_right_interval_pi_2(thetap-angline);
         
         angle1=theta1;
         angle2=theta2;

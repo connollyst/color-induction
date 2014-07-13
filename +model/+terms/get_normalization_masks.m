@@ -21,12 +21,12 @@ function [M_norm_conv, inv_den] = compute_M_norm_conv(config)
     M_norm_conv = cell(n_scales, 1);
     inv_den     = cell(n_scales, 1);
     for s=1:n_scales
-        radi           = utils.scale2size(s+1, scale_type, epsilon);
-        factor_scale   = utils.scale2size(s,   scale_type, epsilon);
+        radi           = model.utils.scale2size(s+1, scale_type, epsilon);
+        factor_scale   = model.utils.scale2size(s,   scale_type, epsilon);
         M_norm_conv{s} = zeros(2*radi+1, 2*radi+1);
         xx             = repmat((-radi:1:radi),  2*radi+1, 1);
         yy             = repmat((-radi:1:radi)', 1, 2*radi+1);
-        d              = utils.distance_xop(xx/factor_scale, yy/factor_scale, dist_type);
+        d              = model.utils.distance_xop(xx/factor_scale, yy/factor_scale, dist_type);
         M_norm_conv{s}(d<=2) = 1;
         inv_den{s} = 1/sum(M_norm_conv{s}(:));
     end

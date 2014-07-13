@@ -11,7 +11,7 @@ function O = process(I, config)
     n_membr = config.zli.n_membr;
     dynamic = config.compute.dynamic;
 
-    if utils.is_uniform(I)
+    if model.utils.is_uniform(I)
         % If the image is uniform we do not process it
         O = get_initial_I(I, n_membr, dynamic);
     else
@@ -50,12 +50,12 @@ function config = init_config(I, config)
     
     % Calculate number of scales automatically
     if config.wave.n_scales == 0
-        config.wave.n_scales = utils.calculate_n_scales(I, config);    
+        config.wave.n_scales = model.utils.calculate_n_scales(I, config);    
     end
     logger.log('Processing at %i scales\n', config.wave.n_scales, config);
     
     % Calculate the scale deltas
-    config.wave.scale_deltas = utils.calculate_scale_deltas(config);
+    config.wave.scale_deltas = model.utils.calculate_scale_deltas(config);
 end
 
 function O = get_initial_I(I, n_membr, dynamic)
