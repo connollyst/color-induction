@@ -2,7 +2,6 @@ function [J, W] = directional(interactions, config)
 %JW.DIRECTIONAL Return directional J (excitation) & W (inhibition).
 %   Reference: Z. Li 1999.
 
-    % TODO perhaps J & W don't need the interactions?
     scale_deltas    = interactions.scale_deltas;
     scale_diameters = interactions.scale_diameters;
     
@@ -10,8 +9,7 @@ function [J, W] = directional(interactions, config)
     n_orients  = config.wave.n_orients;
     transform  = config.wave.transform;
     
-    J = cell(n_scales, 1);
-    W = cell(n_scales, 1);
+    [J, W] = deal(cell(n_scales, 1));
    
     for s=1:n_scales
         % TODO J & W should NOT be sized by the scale!

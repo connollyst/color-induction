@@ -3,14 +3,13 @@ function [J, W] = nondirectional(interactions, config)
 %   J & W specify the excitatatory and inhibitory interactions between
 %   neighboring neurons.
 
-    % TODO perhaps J & W don't need the interactions?
     scale_deltas    = interactions.scale_deltas;
     scale_diameters = interactions.scale_diameters;
     
     zli      = config.zli;
     n_scales = config.wave.n_scales;
-    J        = cell(n_scales, 1);
-    W        = cell(n_scales, 1);
+    
+    [J, W] = deal(cell(n_scales, 1));
    
     for s=1:n_scales
         % TODO J & W should NOT be sized by the scale!
