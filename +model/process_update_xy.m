@@ -4,7 +4,7 @@ function [x_out, y_out] = process_update_xy(tIitheta, x, y, JW, norm_mask, inter
 %   x:              The current excitatory membrane potentials.
 %   y:              The current inhibitory membrane potentials.
 %   JW:             The excitation (J) and inhibition (W) connection masks.
-%   norm_mask:      Normalized interaction mask. (TODO part of interactions?)
+%   norm_mask:      Normalized interaction mask.
 %   interactions:   Structure array defining the neuronal interactions.
 %   config:         Structure array of general application configurations.
 %

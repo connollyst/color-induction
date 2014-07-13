@@ -1,17 +1,24 @@
-function O = process(I, config)
-%   I: the input images, either in the form I(cols, rows, colors) or
-%      I{frames}(cols, rows, colors)
-%   config: the algorithm configuration structure
+function I_out = process(I_in, config)
+%PROCESS
+%   Perform the wavelet decomposition, process the ON & OFF channels, and
+%   recover the output with an inverse wavelet transformation.
+%
+%   I:      The input image(s) of the format, for example: I{frame}(:,:,:)
+%
+%   I_out: The output data is a 3D cell array of 1) cell orientation
+%          preferences, 2) spatial frequency scales, and 3) membrane time
+%          steps.
+%          Each cell in the array has the dimensions of the original image,
+%          each pixel indicating the excitation at that row, column &
+%          channel.
 
-    start_time = tic;
-    
-    I      = init_input(I, config);
-    config = init_config(I, config);
-
-    O = model.process_channel(I, config);
-    O = model.utils.average_output(O, config);
-
-    % Print processing time
+    start_time          = tic;
+    I                   = init_input(I_in, config);
+    config              = init_config(I, config);
+    [wavelet, residual] = model.wavelet.decomposition(I, config);
+    wavelet_out         = model.process_channel_on_off(wavelet, config);
+    O                   = model.wavelet.decomposition_inverse(wavelet_out, residual, config);
+    I_out               = model.utils.average_output(O, config);
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
 
