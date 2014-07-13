@@ -1,11 +1,10 @@
-function JW = nondirectional(interactions, config)
+function [J, W] = nondirectional(interactions, config)
 %JW.NONDIRECTIONAL Return non-directional J (excitation) & W (inhibition).
 %   J & W specify the excitatatory and inhibitory interactions between
 %   neighboring neurons.
 
     % TODO perhaps J & W don't need the interactions?
     scale_deltas    = interactions.scale_deltas;
-    scale_distance  = interactions.scale_distance;
     scale_diameters = interactions.scale_diameters;
     
     zli      = config.zli;
@@ -25,12 +24,4 @@ function JW = nondirectional(interactions, config)
         J{s}(ii)     = 0.126*exp(-(d(ii)).^2/90);
         % W is left as is, there is no non-directional inhibition
     end
-
-    [J_fft, W_fft] = model.terms.interactions.jw.utils.to_fft(J, W, interactions, config);
-    
-    JW = struct;
-    JW.J = J;
-    JW.W = W;
-    JW.J_fft = J_fft;
-    JW.W_fft = W_fft;
 end

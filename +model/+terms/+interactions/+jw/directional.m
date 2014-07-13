@@ -1,4 +1,4 @@
-function JW = directional(interactions, config)
+function [J, W] = directional(interactions, config)
 %JW.DIRECTIONAL Return directional J (excitation) & W (inhibition).
 %   Reference: Z. Li 1999.
 
@@ -25,12 +25,4 @@ function JW = directional(interactions, config)
                 );
         end
     end
-
-    [J_fft, W_fft] = model.terms.interactions.jw.utils.to_fft(J, W, interactions, config);
-    
-    JW = struct;
-    JW.J = J;
-    JW.W = W;
-    JW.J_fft = J_fft;
-    JW.W_fft = W_fft;
 end
