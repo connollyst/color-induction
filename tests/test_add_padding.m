@@ -39,14 +39,14 @@ end
 
 function assert_gx_padded(instance)
     [x, y, interactions, config] = get_input(instance);
-    [gx_padded, ~] = utils.padding.add(x, y, interactions, config);
+    [gx_padded, ~] = model.utils.padding.add(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(gx_padded, expected.newgx_toroidal_x);
 end
 
 function assert_gy_padded(instance)
     [x, y, interactions, config] = get_input(instance);
-    [~, gy_padded] = utils.padding.add(x, y, interactions, config);
+    [~, gy_padded] = model.utils.padding.add(x, y, interactions, config);
     expected = get_output(instance);
     assertEqualData(gy_padded, expected.newgy_toroidal_y);
 end

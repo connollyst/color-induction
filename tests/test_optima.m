@@ -27,7 +27,7 @@ end
 
 function assert_optima(instance)
     [data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft] = get_input(instance);
-    actual   = utils.convolutions.optima(data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft);
+    actual   = model.utils.convolutions.optima(data, filter_fft, half_size_filter, fft_flag, avoid_circshift_fft);
     expected = get_expected(instance);
     assertEqual(actual, expected);
 end
