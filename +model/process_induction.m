@@ -1,5 +1,5 @@
-function [gx_final] = process_induction_model(Iitheta, config)
-%PROCESS_INDUCTION_MODEL Apply induction model to input data.
+function [gx_final] = process_induction(Iitheta, config)
+%PROCESS_INDUCTION Apply induction model to input data.
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999.
 %   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
@@ -31,7 +31,7 @@ function [gx_final] = process_induction_model(Iitheta, config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
             tIitheta = Iitheta{t};
-            [x, y] = model.process_update_xy(tIitheta, x, y, JW, norm_masks, interactions, config);
+            [x, y] = model.update_xy(tIitheta, x, y, JW, norm_masks, interactions, config);
         end
         if config.display.logging
             toc

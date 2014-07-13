@@ -1,5 +1,5 @@
-function I_out = process(I_in, config)
-%PROCESS
+function I_out = apply(I_in, config)
+%MODEL.APPLY
 %   Perform the wavelet decomposition, process the ON & OFF channels, and
 %   recover the output with an inverse wavelet transformation.
 %
@@ -16,7 +16,7 @@ function I_out = process(I_in, config)
     I                   = init_input(I_in, config);
     config              = init_config(I, config);
     [wavelet, residual] = model.wavelet.decomposition(I, config);
-    wavelet_out         = model.process_channel_on_off(wavelet, config);
+    wavelet_out         = model.process_data_on_off(wavelet, config);
     O                   = model.wavelet.decomposition_inverse(wavelet_out, residual, config);
     I_out               = model.utils.average_output(O, config);
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);

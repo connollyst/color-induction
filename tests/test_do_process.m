@@ -42,7 +42,7 @@ end
 
 function assert_do_process(instance, channel_interaction)
     [I, config] = get_input(instance, channel_interaction);
-    actual   = model.process(I, config);
+    actual   = model.apply(I, config);
     expected = get_expected(instance);
     assertDimensionsEqual(actual, expected)
 end

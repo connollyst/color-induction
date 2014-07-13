@@ -1,5 +1,5 @@
-function Iitheta_final = process_on_off(Iitheta, config)
-%PROCESS_CHANNEL_ON_OFF Separate ON and OFF channels and start
+function Iitheta_final = process_data_on_off(Iitheta, config)
+%PROCESS_DATA_ON_OFF Separate ON and OFF channels and start
 %   recovering the response at the level of the wavelet/Gabor responses.
     switch config.zli.ON_OFF
         case 'abs'
@@ -8,6 +8,8 @@ function Iitheta_final = process_on_off(Iitheta, config)
             Iitheta_final = process_ON_OFF_square(Iitheta, config);
         case 'separate'
             Iitheta_final = process_ON_OFF_separately(Iitheta, config);
+        otherwise
+            error('Invalid config.zli.ON_OFF: %s', config.zli.ON_OFF)
     end
 end
 
@@ -19,7 +21,7 @@ function Iitheta_final = process_ON_OFF_abs(Iitheta, config)
     for t=1:n_membr
         data{t} = abs(Iitheta{t});
     end
-    iFactor = model.process_induction_model(data, config);
+    iFactor = model.process_induction(data, config);
     for t=1:n_membr
         Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
     end
@@ -33,7 +35,7 @@ function Iitheta_final = process_ON_OFF_square(Iitheta, config)
     for t=1:n_membr
         data{t} = Iitheta{t}.*Iitheta{t};
     end
-    iFactor = model.process_induction_model(data, config);
+    iFactor = model.process_induction(data, config);
     for t=1:n_membr
         Iitheta_final{t} = Iitheta{t} .* iFactor{t} * zli.normal_output;
     end
@@ -63,11 +65,11 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
-    iFactor_ON  = model.process_induction_model(Iitheta_ON, config);
+    iFactor_ON  = model.process_induction(Iitheta_ON, config);
     
     % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
-    iFactor_OFF = model.process_induction_model(Iitheta_OFF, config);
+    iFactor_OFF = model.process_induction(Iitheta_OFF, config);
 
     % Prepare output
     iFactor = iFactor_ON;
