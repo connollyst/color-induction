@@ -31,5 +31,5 @@ function img_out = process_image(img_data, img_type, varargin)
         cfg.zli.n_membr = n_membr;	% number of membrane time constant    
     end
 
-    img_out = model.process(img_data, cfg);
+    img_out = model.apply(img_data, cfg);
 end
