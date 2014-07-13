@@ -1,5 +1,5 @@
-function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
-%RMODELINDUCTIOND_V0_3_2 Apply induction model to input data.
+function [gx_final] = process_induction_model(Iitheta, config)
+%PROCESS_INDUCTION_MODEL Apply induction model to input data.
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999.
 %   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
@@ -23,7 +23,7 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
     % Prepare J & W: the excitatory and inhibitory masks
     JW           = model.terms.get_JW(interactions.scale_distance, config);
     % Set the initial x (excitation) & y (inhibition) activity
-    [x, y]       = initialize_input(Iitheta, config);
+    [x, y]       = initialize_xy(Iitheta, config);
     % Run recurrent network: the loop over time
     for t=1:config.zli.n_membr  % membrane time
         logger.log('Membrane time step: %i/%i\n', t, config.zli.n_membr, config);
@@ -31,13 +31,14 @@ function [gx_final] = Rmodelinductiond_v0_3_2(Iitheta, config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
             tIitheta = Iitheta{t};
-            [x, y] = model.UpdateXY(tIitheta, x, y, JW, norm_masks, interactions, config);
+            [x, y] = model.process_update_xy(tIitheta, x, y, JW, norm_masks, interactions, config);
         end
         if config.display.logging
             toc
         end
         % TODO we are bypassing initialization, no?
         gx_final{t} = model.terms.gx(x);
+        % TODO we are not using gy_final..?
         gy_final{t} = model.terms.gy(y);    
     end
 end
@@ -48,16 +49,8 @@ function validate_input(config)
     end
 end
 
-function [x, y] = initialize_input(Iitheta, config)
-%INITIALIZE_INPUT Initialize the initial stimulus to the system.
-%   x and y are two dimensional cell arrays of n-dimensional images. The
-%   first cell dimension is the scale of the wavelet decomposition
-%   (neural frequency preference) and the second cell dimension is the
-%   orientation of the wavelet decomposition (neural orientation
-%   preference).
-%
-%   x: Cell array of the initial exitation stimulus
-%   y: Cell array of the initial inhibition stimulus
+function [x, y] = initialize_xy(Iitheta, config)
+%INITIALIZE_XY Initialize the initial stimulus & inhibition to the system.
 
     n_cols     = config.image.width;
     n_rows     = config.image.height;

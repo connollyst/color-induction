@@ -1,5 +1,5 @@
-function I_out = NCZLd_channel_v1_0(I, config)
-%NCZLD_CHANNEL_V1_0
+function I_out = process_channel(I, config)
+%PROCESS_CHANNEL
 %   Perform the wavelet decomposition, process the ON & OFF channels, and
 %   recover the output with an inverse wavelet transformation.
 %
@@ -17,6 +17,6 @@ function I_out = NCZLd_channel_v1_0(I, config)
 %          each pixel indicating the excitation at that row, column &
 %          channel.
     [wavelet, residual] = utils.wavelet.decomposition(I, config);
-    wavelet_out         = model.NCZLd_channel_ON_OFF_v1_1(wavelet, config);
+    wavelet_out         = model.process_channel_on_off(wavelet, config);
     I_out               = utils.wavelet.decomposition_inverse(wavelet_out, residual, config);
 end

@@ -1,5 +1,5 @@
-function Iitheta_final = NCZLd_channel_ON_OFF_v1_1(Iitheta, config)
-%NCZLd_CHANNEL_ON_OFF_V1_1 Separate ON and OFF channels and start
+function Iitheta_final = process_channel_on_off(Iitheta, config)
+%PROCESS_CHANNEL_ON_OFF Separate ON and OFF channels and start
 %   recovering the response at the level of the wavelet/Gabor responses.
     switch config.zli.ON_OFF
         case 0 % Separated
@@ -35,11 +35,11 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
-    iFactor_ON  = model.Rmodelinductiond_v0_3_2(Iitheta_ON, config);
+    iFactor_ON  = model.process_induction_model(Iitheta_ON, config);
     
     % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
-    iFactor_OFF = model.Rmodelinductiond_v0_3_2(Iitheta_OFF, config);
+    iFactor_OFF = model.process_induction_model(Iitheta_OFF, config);
 
     % Prepare output
     iFactor = iFactor_ON;

@@ -1,5 +1,5 @@
-function [x_out, y_out] = UpdateXY(tIitheta, x, y, JW, norm_mask, interactions, config)
-%UPDATEXY Update the excitatiory (x) and inhibitory (y) membrane potentials
+function [x_out, y_out] = process_update_xy(tIitheta, x, y, JW, norm_mask, interactions, config)
+%PROCESS_UPDATE_XY Update the excitatiory (x) and inhibitory (y) membrane potentials
 %   tIitheta:       Cell array of new input stimulus.
 %   x:              The current excitatory membrane potentials.
 %   y:              The current inhibitory membrane potentials.

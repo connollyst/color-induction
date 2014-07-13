@@ -1,4 +1,4 @@
-function O = do_process(I, config)
+function O = process(I, config)
 %   I: the input images, either in the form I(cols, rows, colors) or
 %      I{frames}(cols, rows, colors)
 %   config: the algorithm configuration structure
@@ -15,7 +15,7 @@ function O = do_process(I, config)
         % If the image is uniform we do not process it
         O = get_initial_I(I, n_membr, dynamic);
     else
-        O = model.NCZLd_channel_v1_0(I, config);
+        O = model.process_channel(I, config);
         O = model.utils.average_output(O, config, n_membr, dynamic);
     end
 
