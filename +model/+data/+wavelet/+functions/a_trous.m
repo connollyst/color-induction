@@ -18,16 +18,21 @@ function [wavelets, residuals] = a_trous(image, scales)
 	energy     = sum(h(:));
 	inv_energy = 1/energy;
 	h          = h*inv_energy;
-	wavelets   = cell(scales, 1);
-	residuals  = cell(scales, 1);
+    
+    I_cols     = size(image, 1);
+    I_rows     = size(image, 2);
+    I_channels = size(image, 3);
+    
+	wavelets   = zeros(I_cols, I_rows, I_channels, scales);
+    residuals  = zeros(I_cols, I_rows, I_channels, scales);
     
     for s=1:scales
-		inv_energy     = 1/sum(h(:));
-		prod           = model.data.wavelet.functions.utils.symmetric_filtering(image, h) * inv_energy;  % blur
-		wavelets{s,1}  = image - prod;
-		residuals{s,1} = prod;
-		image          = residuals{s,1};
-		h              = padarray(upsample(upsample(h,2)',2),[1 1],0,'pre')';                       % upsample filter
+		inv_energy         = 1/sum(h(:));
+		prod               = model.data.wavelet.functions.utils.symmetric_filtering(image, h) * inv_energy;  % blur
+		wavelets(:,:,:,s)  = image - prod;
+		residuals(:,:,:,s) = prod;
+		image              = residuals(:,:,:,s);
+		h                  = padarray(upsample(upsample(h,2)',2),[1 1],0,'pre')';                       % upsample filter
     end
 end
 

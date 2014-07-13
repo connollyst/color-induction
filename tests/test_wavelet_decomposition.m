@@ -96,12 +96,68 @@ function test_error_with_too_many_images
     end
 end
 
+%% TEST WAVELET DECOMPOSITION FUNCTIONS
+
+function test_a_trous
+    n_membr     = 1;
+    n_imgs      = 1;
+    n_cols      = 20;
+    n_rows      = 30;
+    n_channels  = 2;
+    n_scales    = 3;
+    n_orients   = 1;    % a trous is not an oriented decomposition
+    n_residuals = 1;    % there is only ever one residual orientation
+    config = make_config(n_membr, 'a_trous', n_scales);
+    [wavelets, residuals] = model.data.wavelet.decomposition(make_I(n_imgs), config);
+    assertEqual(n_membr, length(wavelets));
+    assertEqual(n_membr, length(residuals));
+    wavelet  = wavelets{1};
+    residual = residuals{1};
+    assertEqual(n_cols,      size(wavelet, 1));
+    assertEqual(n_rows,      size(wavelet, 2));
+    assertEqual(n_channels,  size(wavelet, 3));
+    assertEqual(n_scales,    size(wavelet, 4));
+    assertEqual(n_orients,   size(wavelet, 5));
+    assertEqual(n_cols,      size(residual, 1));
+    assertEqual(n_rows,      size(residual, 2));
+    assertEqual(n_channels,  size(residual, 3));
+    assertEqual(n_scales,    size(residual, 4));
+    assertEqual(n_residuals, size(residual, 5));
+end
+
+function test_DWD_orient_undecimated
+    n_membr     = 1;
+    n_imgs      = 1;
+    n_cols      = 20;
+    n_rows      = 30;
+    n_channels  = 2;
+    n_scales    = 3;
+    n_orients   = 3;    % 3 orientations: vertical, horizontal, & diagonal
+    n_residuals = 1;    % there is only ever one residual orientation
+    config = make_config(n_membr, 'DWD_orient_undecimated', n_scales);
+    [wavelets, residuals] = model.data.wavelet.decomposition(make_I(n_imgs), config);
+    assertEqual(n_membr, length(wavelets));
+    assertEqual(n_membr, length(residuals));
+    wavelet  = wavelets{1};
+    residual = residuals{1};
+    assertEqual(n_cols,      size(wavelet, 1));
+    assertEqual(n_rows,      size(wavelet, 2));
+    assertEqual(n_channels,  size(wavelet, 3));
+    assertEqual(n_scales,    size(wavelet, 4));
+    assertEqual(n_orients,   size(wavelet, 5));
+    assertEqual(n_cols,      size(residual, 1));
+    assertEqual(n_rows,      size(residual, 2));
+    assertEqual(n_channels,  size(residual, 3));
+    assertEqual(n_scales,    size(residual, 4));
+    assertEqual(n_residuals, size(residual, 5));
+end
+
 %% TEST UTILITIES
 
 function I = make_I(I_size)
     I = cell(I_size, 1);
     for i=1:I_size
-        I{i} = ones(20, 20) * i;
+        I{i} = ones(20, 30, 2) * i;
     end
 end
 

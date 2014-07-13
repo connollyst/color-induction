@@ -14,12 +14,15 @@ function [wavelets, residuals] = DWD_orient_undecimated(image, scales)
 
     energy     = sum(h);
     inv_energy = 1/energy;
+    h          = h*inv_energy;
+    
     I_cols     = size(image, 1);
     I_rows     = size(image, 2);
     I_channels = size(image, 3);
-    h          = h*inv_energy;
+    
     wavelets   = zeros(I_cols, I_rows, I_channels, scales, 3);
     residuals  = zeros(I_cols, I_rows, I_channels, scales);
+    
     for s = 1:scales
         orig_image   = image;
         inv_sum      = 1/sum(h);
