@@ -26,8 +26,6 @@ function JW = nondirectional(interactions, config)
         % W is left as is, there is no non-directional inhibition
     end
 
-    n_orients = 1;
-    [J, W]         = model.terms.interactions.jw.utils.reformat(J, W, scale_diameters, scale_distance, n_scales, n_orients);
     [J_fft, W_fft] = model.terms.interactions.jw.utils.to_fft(J, W, interactions, config);
     
     JW = struct;
