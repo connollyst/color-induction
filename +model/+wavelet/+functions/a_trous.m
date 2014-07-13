@@ -23,12 +23,12 @@ function [w, c] = a_trous(image, scales)
     
     for s=1:scales
 		inv_energy = 1/sum(h(:));
-		prod   = wavelets.symmetric_filtering(image, h)*inv_energy;     % blur
-		DF     = image - prod;                                          % wavelet plane
+		prod   = model.wavelet.function.utils.symmetric_filtering(image, h) * inv_energy;   % blur
+		DF     = image - prod;                                                              % wavelet plane
 		w{s,1} = DF;
-		c{s,1} = prod;  % Residual
+		c{s,1} = prod;                                                                      % residual
 		image  = c{s,1};
-		h      = padarray(upsample(upsample(h,2)',2),[1 1],0,'pre')';   % Upsample filter
+		h      = padarray(upsample(upsample(h,2)',2),[1 1],0,'pre')';                       % upsample filter
     end
 end
 

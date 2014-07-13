@@ -16,7 +16,7 @@ function I_out = process_channel(I, config)
 %          Each cell in the array has the dimensions of the original image,
 %          each pixel indicating the excitation at that row, column &
 %          channel.
-    [wavelet, residual] = utils.wavelet.decomposition(I, config);
+    [wavelet, residual] = model.wavelet.decomposition(I, config);
     wavelet_out         = model.process_channel_on_off(wavelet, config);
-    I_out               = utils.wavelet.decomposition_inverse(wavelet_out, residual, config);
+    I_out               = model.wavelet.decomposition_inverse(wavelet_out, residual, config);
 end

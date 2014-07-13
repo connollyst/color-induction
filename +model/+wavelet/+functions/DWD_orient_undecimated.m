@@ -24,14 +24,14 @@ function [w, c] = DWD_orient_undecimated(image, scales)
         orig_image   = image;
         inv_sum      = 1/sum(h);
         % Decimate image along horizontal direction
-        prod         = wavelets.utils.symmetric_filtering(image, h)  * inv_sum;	% blur
+        prod         = model.wavelet.functions.utils.symmetric_filtering(image, h)  * inv_sum;	% blur
         HF           = prod;
-        GF           = image - prod;                                            % horizontal frequency info
+        GF           = image - prod;                                                            % horizontal frequency info
         % Decimate image along vertical direction   
-        prod         = wavelets.utils.symmetric_filtering(image, h') * inv_sum; % blur
-        GHF          = image - prod;                                            % vertical wavelet plane
+        prod         = model.wavelet.functions.utils.symmetric_filtering(image, h') * inv_sum;  % blur
+        GHF          = image - prod;                                                            % vertical wavelet plane
         % Decimate GF along vertical direction
-        HGF          = wavelets.utils.symmetric_filtering(HF, h')    * inv_sum; % blur
+        HGF          = model.wavelet.functions.utils.symmetric_filtering(HF, h')    * inv_sum;  % blur
         % Save horizontal and vertical wavelet planes
         w(:,:,:,s,1) = GF;
         w(:,:,:,s,2) = GHF;

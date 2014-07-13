@@ -8,6 +8,6 @@ function I_out = decomposition_inverse(wavelet, residual, config)
     for t=1:n_membr
         w = wavelet{t};
         c = residual{t};
-        I_out{t} = wavelets.DWD_orient_undecimated_inverse(w, c);
+        I_out{t} = model.wavelet.functions.DWD_orient_undecimated_inverse(w, c);
     end
 end

@@ -21,7 +21,7 @@ function [wavelet, residual] = decomposition(I, config)
     residual = cell(n_membr, 1);
     for i=1:n_iters
         % TODO provide wavelet function based on configuration
-        [wavelet{i}, residual{i}] = wavelets.DWD_orient_undecimated(I{i}, n_scales);
+        [wavelet{i}, residual{i}] = model.wavelet.functions.DWD_orient_undecimated(I{i}, n_scales);
     end
     
     % replicate wavelet planes if static stimulus
