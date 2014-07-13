@@ -1,5 +1,6 @@
-function JW = get_JW(interactions, config)
-%GET_JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
+function JW = directional(interactions, config)
+%JW.DIRECTIONAL Return directional J (excitation) & W (inhibition) masks.
+%   Reference: Z. Li 1999.
 
     % TODO perhaps J & W don't need the interactions?
     scale_deltas   = interactions.scale_deltas;
@@ -26,7 +27,9 @@ function JW = get_JW(interactions, config)
         %      If the cell is not oriented, J & W should be... circular?
         for o=1:n_orients
             [all_J{s}(:,:,:,o), all_W{s}(:,:,:,o)] = ...
-                model.utils.get_Jithetajtheta_v0_4(s, n_orients, o, scale_deltas(s), transform, zli);
+                model.terms.interactions.jw.utils.get_Jithetajtheta_v0_4(...
+                    s, n_orients, o, scale_deltas(s), transform, zli...
+                );
         end
     end
 

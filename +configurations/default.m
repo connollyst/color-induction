@@ -1,4 +1,4 @@
-function config = get_defaults()
+function config = default()
     config.zli     = configurations.defaults.get_zli();
     config.wave    = configurations.defaults.get_wave();
     config.image   = configurations.defaults.get_image();
