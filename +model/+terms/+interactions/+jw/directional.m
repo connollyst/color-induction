@@ -14,8 +14,8 @@ function [J, W] = directional(interactions, config)
     W = cell(n_scales, 1);
    
     for s=1:n_scales
-        scale_diameter = scale_diameters(s);
         % TODO J & W should NOT be sized by the scale!
+        scale_diameter = scale_diameters(s);
         J{s} = zeros(scale_diameter, scale_diameter, 1, n_orients, n_orients);
         W{s} = zeros(scale_diameter, scale_diameter, 1, n_orients, n_orients);
         for o=1:n_orients
