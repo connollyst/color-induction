@@ -23,7 +23,7 @@ function [w, c] = a_trous(image, scales)
     
     for s=1:scales
 		inv_energy = 1/sum(h(:));
-		prod   = model.wavelet.function.utils.symmetric_filtering(image, h) * inv_energy;   % blur
+		prod   = model.wavelet.functions.utils.symmetric_filtering(image, h) * inv_energy;  % blur
 		DF     = image - prod;                                                              % wavelet plane
 		w{s,1} = DF;
 		c{s,1} = prod;                                                                      % residual
