@@ -22,6 +22,7 @@ function [J, W] = nondirectional(interactions, config)
         d            = model.utils.distance_xop(xx/factor_scale, yy/factor_scale, zli.dist_type) * zli.reduccio_JW;
         ii           = find(d <= 10);
         J{s}(ii)     = 0.126*exp(-(d(ii)).^2/90);
+        J{s}         = J{s} / sum(J{s}(:));
         % W is left as is, there is no non-directional inhibition
     end
 end
