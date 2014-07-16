@@ -45,8 +45,6 @@ end
 
 function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 %PROCESS_ON_OFF_SEPARATELY Process the ON and OFF channels independently.
-
-    n_membr  = config.zli.n_membr;
     
     % Calculate the ON/OFF signals
     [Iitheta_ON, Iitheta_OFF] = model.data.signal.on_off(Iitheta, config);
@@ -64,7 +62,7 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     Iitheta_OFF_final = cell(size(Iitheta));
     Iitheta_final     = cell(size(Iitheta));
     iFactor = iFactor_ON;
-    for t=1:n_membr
+    for t=1:config.zli.n_membr
         Iitheta_ON_final{t}  =  Iitheta_ON{t}      .* iFactor_ON{t}  * config.zli.normal_output;
         Iitheta_OFF_final{t} = -Iitheta_OFF{t}     .* iFactor_OFF{t} * config.zli.normal_output;
         iFactor{t}           =  iFactor_ON{t}       + iFactor_OFF{t};
@@ -74,6 +72,28 @@ end
 
 function Iitheta_final = process_ON_OFF_opponent(Iitheta, config)
 %PROCESS_ON_OFF_OPPONENT Process the ON and OFF channels as opponents.
-    error('config.zli.ON_OFF=opponent not yet implemented')
+%   We take the input data as and split the ON and OFF information of each
+%   color channel into independent color channels, which excite/inhibit
+%   each other.
+    
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = config.image.n_channels;
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    
+    on_off_channels = n_channels*2;
+    on_off_odds     = 1:2:on_off_channels;
+    on_off_evens    = 2:2:on_off_channels;
+    [Iitheta_ON, Iitheta_OFF] = model.data.signal.on_off(Iitheta, config);
+    
+    Iitheta_ON_OFF = cell(size(Iitheta));
+    [Iitheta_ON_OFF{:}] = deal(zeros(n_cols, n_rows, n_channels*2, n_scales, n_orients)) ;
+    for t=1:config.zli.n_membr
+        Iitheta_ON_OFF{t}(:,:,on_off_odds,:,:)  = Iitheta_ON{t};
+        Iitheta_ON_OFF{t}(:,:,on_off_evens,:,:) = Iitheta_OFF{t};
+    end
+    
+    % TODO do something with Iitheta_ON_OFF
 end
 
