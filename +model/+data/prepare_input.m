@@ -1,10 +1,15 @@
-function [wavelets, residuals, config] = prepare_input(I_in, config)
+function [w, r, config] = prepare_input(I, config)
 %PREPARE_INPUT Takes initial input data and prepares it for processing.
 %   The input data is expected to be either a single image, or a sequence
 %   of images in a 1D cell array.
-    I                     = model.data.color.transform(I_in, config);
-    config                = record_dimensions(I, config);
-    [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
+%
+%   w: the planes of the wavelet decomposition
+%   r: the residuals of the wavelet decomposition
+
+    I_cells    = model.data.utils.to_cells(I);
+    I_opponent = model.data.color.transform(I_cells, config);
+    config     = record_dimensions(I_opponent, config);
+    [w, r]     = model.data.wavelet.decomposition(I_opponent, config);
 end
 
 function config = record_dimensions(I, config)

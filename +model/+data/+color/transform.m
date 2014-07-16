@@ -1,15 +1,12 @@
 function I_out = transform( I_in, config )
-%INIT_INPUT Initialize the input image(s)
-%   If it is a single image, return a 1x1 cell containg just that image.
-%   If it is a cell array of images, return the cell array.
-    if ~iscell(I_in)
-        I_in = double(I_in);
-        I_out = cell(1, 1);
-        I_out{1} = I_in;
-    else
-        % TODO validate input images: same dimensions
-        I_out = I_in;
-    end
+%INIT_INPUT Transform the input image to the appropriate color space.
+    
+    % TODO do we want to limit to RGB??
+    %if ~model.data.utils.is_rgb(I_in)
+    %    error('Expected RGB image as input.');
+    %end
+    
+    I_out = I_in;
     
     % Transform the original image data to the color space for processing
     switch config.image.type
