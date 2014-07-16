@@ -32,6 +32,11 @@ function img_out = process_image(img_data, img_type, n_membr, varargin)
 
     cfg.image.type = img_type;
     cfg.zli.n_membr = n_membr;	% number of membrane time constant
+    if config.wave.n_scales == 0
+        % calculate number of scales automatically
+        config.wave.n_scales = model.utils.calculate_n_scales(I, config);    
+    end
+    
 
     img_out = model.apply(img_data, cfg);
 end
