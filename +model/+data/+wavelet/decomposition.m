@@ -8,8 +8,11 @@ function [wavelets, residuals] = decomposition(I, config)
     n_membr  = config.zli.n_membr;
     n_scales = config.wave.n_scales;
     
-    logger.log('Processing at %i scales\n', config.wave.n_scales, config);
+    logger.log('Processing with %i scales\n', n_scales, config);
     
+    if n_scales < 1
+        error('Cannot apply wavelet decomposition at %i scales.', n_scales)
+    end
     if n_images > n_membr
         error('There are more images than time steps.')
     end
