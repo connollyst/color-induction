@@ -8,6 +8,8 @@ function Iitheta_final = process_data_on_off(Iitheta, config)
             Iitheta_final = process_ON_OFF_square(Iitheta, config);
         case 'separate'
             Iitheta_final = process_ON_OFF_separately(Iitheta, config);
+        case 'opponent'
+            Iitheta_final = process_ON_OFF_opponent(Iitheta, config);
         otherwise
             error('Invalid config.zli.ON_OFF: %s', config.zli.ON_OFF)
     end
@@ -46,22 +48,8 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 
     n_membr  = config.zli.n_membr;
     
-    % Initialize data structures
-    Iitheta_ON        = Iitheta;
-    Iitheta_OFF       = Iitheta;
-    Iitheta_ON_final  = Iitheta;
-    Iitheta_OFF_final = Iitheta;
-    Iitheta_final     = cell(size(Iitheta));
-
     % Calculate the ON/OFF signals
-    for t=1:n_membr
-        index_OFF                =  Iitheta{t} <= 0;
-        index_ON                 =  Iitheta{t} >= 0;
-        Iitheta_ON{t}            =  Iitheta{t};
-        Iitheta_OFF{t}           = -Iitheta{t};
-        Iitheta_ON{t}(index_OFF) = 0;
-        Iitheta_OFF{t}(index_ON) = 0;
-    end
+    [Iitheta_ON, Iitheta_OFF] = model.data.signal.on_off(Iitheta, config);
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
@@ -72,6 +60,9 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     iFactor_OFF = model.process_induction(Iitheta_OFF, config);
 
     % Prepare output
+    Iitheta_ON_final  = cell(size(Iitheta));
+    Iitheta_OFF_final = cell(size(Iitheta));
+    Iitheta_final     = cell(size(Iitheta));
     iFactor = iFactor_ON;
     for t=1:n_membr
         Iitheta_ON_final{t}  =  Iitheta_ON{t}      .* iFactor_ON{t}  * config.zli.normal_output;
@@ -80,3 +71,9 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
         Iitheta_final{t}     =  Iitheta_ON_final{t} + Iitheta_OFF_final{t};
     end
 end
+
+function Iitheta_final = process_ON_OFF_opponent(Iitheta, config)
+%PROCESS_ON_OFF_OPPONENT Process the ON and OFF channels as opponents.
+    error('config.zli.ON_OFF=opponent not yet implemented')
+end
+
