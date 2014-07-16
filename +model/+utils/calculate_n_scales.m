@@ -7,6 +7,10 @@ function n_scales = calculate_n_scales(I, config)
         extra = 2;
     end
     mida_min = config.wave.mida_min;
-    % TODO scales should be calculated using all colors/frames
-    n_scales = floor(log(max(size(I{1}(:,:,1))-1)/mida_min)/log(2)) + extra;
+    % TODO scales should be calculated using all frames
+    if iscell(I)
+        I = I{1};
+    end
+    % TODO scales should be calculated using all colors
+    n_scales = floor(log(max(size(I(:,:,1))-1)/mida_min)/log(2)) + extra;
 end
