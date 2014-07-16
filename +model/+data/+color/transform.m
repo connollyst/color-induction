@@ -12,17 +12,20 @@ function I_out = transform( I_in, config )
     switch config.image.type
         case 'bw'
             % Just process intensity..
+            logger.log('Processing B&W image..', config);
             for i=1:length(I_out)
                 I_out{i} = im2double(I_out{i});
             end
         case 'rgb'
             % Transform from RGB to L*a*b
+            logger.log('Converting RGB image to L*a*b..', config);
             cform = makecform('srgb2lab');
             for i=1:length(I_out)
                 I_out{i} = lab2double(applycform(I_out{i}, cform));
             end
         case 'lab'
             % Trust that the input data is already in L*a*b..
+            logger.log('Processing L*a*b image..', config);
         otherwise
             error('Invalid input image type: %s', config.image.type)
     end
