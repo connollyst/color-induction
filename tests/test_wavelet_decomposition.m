@@ -178,9 +178,11 @@ function I = make_I(I_size)
 end
 
 function config = make_config(n_membr, transform, n_scales)
-    config.zli.n_membr    = n_membr;
-    config.wave.n_scales  = n_scales;
-    config.wave.transform = transform;
+    config.zli.n_membr     = n_membr;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = transform;
+    config.display.logging = 0;
+    config.display.plot    = 0;
 end
 
 function assertSame(img_in, img_out)
