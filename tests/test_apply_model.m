@@ -29,6 +29,28 @@ function test_apply_model_1D_3_with_channel_interactions
     assert_apply_model('1D_3', 1)
 end
 
+function test_separate_and_opponent_ON_OFF_without_channel_interactions
+% Processing the ON & OFF channels 'separate' should give the exact same
+% output as processing them as 'opponent', if channel interactions are
+% disabled.
+    I = imread('peppers.png');
+    I = imresize(I, 0.15);
+    I = I(:,:,1);
+    config = configurations.default();
+    config.display.logging          = 0;
+    config.display.plot             = 0;
+    config.image.type               = 'bw';
+    config.wave.n_scales            = 2;
+    config.zli.n_membr              = 3;
+    config.zli.n_iter               = 3;
+    config.zli.channel_interactions = 0;
+    config.zli.ON_OFF               = 'separate';
+    separate = model.apply(I, config);
+    config.zli.ON_OFF               = 'opponent';
+    opponent = model.apply(I, config);
+    assertDimensionsEqual(separate, opponent)
+end
+
 % 3D TESTS
 
 function test_apply_model_3D_1
