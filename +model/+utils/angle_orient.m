@@ -1,6 +1,6 @@
 function  theta = angle_orient(orient, transform)
-% S'han de posar en la direccio perpendicular, ja que una cosa es la dir 
-% de variacio i l'altra la del marge
+% state it in the perpendicular direction, because one thing is the change
+% direction and the other is the edge orientation 
     switch(transform)
         case('wav')
             thetas = [pi/2 -pi/4 0];
