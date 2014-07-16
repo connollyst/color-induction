@@ -43,8 +43,8 @@ function do_plot(x_in, y_in, gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_o
     title(get_title('x out',x_out));
     subplot(10,1,10); imagesc(y_out(:,:));
     title(get_title('y out',y_out));
-    %drawnow
-    waitforbuttonpress;
+    drawnow
+    %waitforbuttonpress;
 end
 
 function t = get_title(name, data)
