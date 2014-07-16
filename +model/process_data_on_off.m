@@ -47,27 +47,17 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 %PROCESS_ON_OFF_SEPARATELY Process the ON and OFF channels independently.
     
     % Calculate the ON/OFF signals
-    [Iitheta_ON, Iitheta_OFF] = model.data.signal.on_off(Iitheta, config);
+    [ON_in, OFF_in] = model.data.signal.on_off(Iitheta, config);
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
-    iFactor_ON  = model.process_induction(Iitheta_ON, config);
+    ON_out  = model.process_induction(ON_in, config);
     
     % Negatius ----------------------------------------------------
     logger.log('Starting OFF processing', config);
-    iFactor_OFF = model.process_induction(Iitheta_OFF, config);
+    OFF_out = model.process_induction(OFF_in, config);
 
-    % Prepare output
-    Iitheta_ON_final  = cell(size(Iitheta));
-    Iitheta_OFF_final = cell(size(Iitheta));
-    Iitheta_final     = cell(size(Iitheta));
-    iFactor = iFactor_ON;
-    for t=1:config.zli.n_membr
-        Iitheta_ON_final{t}  =  Iitheta_ON{t}      .* iFactor_ON{t}  * config.zli.normal_output;
-        Iitheta_OFF_final{t} = -Iitheta_OFF{t}     .* iFactor_OFF{t} * config.zli.normal_output;
-        iFactor{t}           =  iFactor_ON{t}       + iFactor_OFF{t};
-        Iitheta_final{t}     =  Iitheta_ON_final{t} + Iitheta_OFF_final{t};
-    end
+    Iitheta_final = combine_ON_OFF(ON_in, OFF_in, ON_out, OFF_out, config);
 end
 
 function Iitheta_final = process_ON_OFF_opponent(Iitheta, config)
@@ -76,24 +66,53 @@ function Iitheta_final = process_ON_OFF_opponent(Iitheta, config)
 %   color channel into independent color channels, which excite/inhibit
 %   each other.
     
+    n_membr    = config.zli.n_membr;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     
-    on_off_channels = n_channels*2;
-    on_off_odds     = 1:2:on_off_channels;
-    on_off_evens    = 2:2:on_off_channels;
-    [Iitheta_ON, Iitheta_OFF] = model.data.signal.on_off(Iitheta, config);
+    n_on_off_channels = n_channels*2;
+    on_off_odds       = 1:2:n_on_off_channels;
+    on_off_evens      = 2:2:n_on_off_channels;
     
-    Iitheta_ON_OFF = cell(size(Iitheta));
-    [Iitheta_ON_OFF{:}] = deal(zeros(n_cols, n_rows, n_channels*2, n_scales, n_orients)) ;
-    for t=1:config.zli.n_membr
-        Iitheta_ON_OFF{t}(:,:,on_off_odds,:,:)  = Iitheta_ON{t};
-        Iitheta_ON_OFF{t}(:,:,on_off_evens,:,:) = Iitheta_OFF{t};
+    [ON_in, OFF_in] = model.data.signal.on_off(Iitheta, config);
+    ON_OFF_in       = cell(n_membr, 1);
+    [ON_OFF_in{:}]  = deal(zeros(n_cols, n_rows, n_on_off_channels, n_scales, n_orients)) ;
+    for t=1:n_membr
+        ON_OFF_in{t}(:,:,on_off_odds,:,:)  = ON_in{t};
+        ON_OFF_in{t}(:,:,on_off_evens,:,:) = OFF_in{t};
     end
     
-    % TODO do something with Iitheta_ON_OFF
+    % EEK! this isn't right..
+    config.image.n_channels = n_on_off_channels;
+    
+    logger.log('Starting ON OFF opponency processing', config);
+    ON_OFF_out = model.process_induction(ON_OFF_in, config);
+    
+    config.image.n_channels = n_channels;
+    
+    ON_out  = cell(n_membr, 1);
+    OFF_out = cell(n_membr, 1);
+    for t=1:n_membr
+    ON_out{t}  = ON_OFF_out{t}(:,:,on_off_odds,:,:);
+    OFF_out{t} = ON_OFF_out{t}(:,:,on_off_evens,:,:);
+    end
+    
+    Iitheta_final = combine_ON_OFF(ON_in, OFF_in, ON_out, OFF_out, config);
 end
 
+function final = combine_ON_OFF(ON_in, OFF_in, ON_out, OFF_out, config)
+    n_membr   = config.zli.n_membr;
+    ON_final  = cell(n_membr, 1);
+    OFF_final = cell(n_membr, 1);
+    final     = cell(n_membr, 1);
+    iFactor = ON_out;
+    for t=1:n_membr
+        ON_final{t}  =  ON_in{t}   .* ON_out{t}  * config.zli.normal_output;
+        OFF_final{t} = -OFF_in{t}  .* OFF_out{t} * config.zli.normal_output;
+        iFactor{t}   =  ON_out{t}   + OFF_out{t};
+        final{t}     =  ON_final{t} + OFF_final{t};
+    end
+end
