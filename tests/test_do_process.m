@@ -66,7 +66,7 @@ function [I, config] = get_input(instance, channel_interaction)
     config.zli.config.zli.add_neural_noise = 0;
     config.zli.channel_interaction = channel_interaction;
     % Infer number of scales
-    config.wave.n_scales = 0;
+    config.wave.n_scales = 2;
     % Use the orientation wavelet decompositon
     config.wave.transform = 'DWD_orient_undecimated';
     % 
