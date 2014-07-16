@@ -1,46 +1,46 @@
-function test_suite = test_do_process
-%Test suite for model.do_process()
+function test_suite = test_apply_model
+%Test suite for model.apply()
   initTestSuite;
 end
 
 % 1D TESTS: channel interactions should not affect the output
 
-function test_do_process_1D_1_without_channel_interactions
-    assert_do_process('1D_1', 0)
+function test_apply_model_1D_1_without_channel_interactions
+    assert_apply_model('1D_1', 0)
 end
 
-function test_do_process_1D_2_without_channel_interactions
-    assert_do_process('1D_2', 0)
+function test_apply_model_1D_2_without_channel_interactions
+    assert_apply_model('1D_2', 0)
 end
 
-function test_do_process_1D_3_without_channel_interactions
-    assert_do_process('1D_3', 0)
+function test_apply_model_1D_3_without_channel_interactions
+    assert_apply_model('1D_3', 0)
 end
 
-function test_do_process_1D_1_with_channel_interactions
-    assert_do_process('1D_1', 1)
+function test_apply_model_1D_1_with_channel_interactions
+    assert_apply_model('1D_1', 1)
 end
 
-function test_do_process_1D_2_with_channel_interactions
-    assert_do_process('1D_2', 1)
+function test_apply_model_1D_2_with_channel_interactions
+    assert_apply_model('1D_2', 1)
 end
 
-function test_do_process_1D_3_with_channel_interactions
-    assert_do_process('1D_3', 1)
+function test_apply_model_1D_3_with_channel_interactions
+    assert_apply_model('1D_3', 1)
 end
 
 % 3D TESTS
 
-function test_do_process_3D_1
+function test_apply_model_3D_1
 % Note: the 3 1D channels processed in other tests are combined here. If
 %       those tests pass, this should also.
-    assert_do_process('3D_1', 0)
+    assert_apply_model('3D_1', 0)
 end
 
 
 %% ASSERTIONS
 
-function assert_do_process(instance, channel_interaction)
+function assert_apply_model(instance, channel_interaction)
     [I, config] = get_input(instance, channel_interaction);
     actual   = model.apply(I, config);
     expected = get_expected(instance);
@@ -59,7 +59,7 @@ end
 %% TEST UTILITIES
 
 function [I, config] = get_input(instance, channel_interaction)
-    input  = load(['data/input/do_process_',instance,'.mat']);
+    input  = load(['data/input/apply_model_',instance,'.mat']);
     I      = input.I;
     config = configurations.default();
     config.zli.n_membr = 3;
@@ -77,6 +77,6 @@ function [I, config] = get_input(instance, channel_interaction)
 end
 
 function expected = get_expected(instance)
-    expected = load(['data/expected/do_process_',instance,'.mat']);
+    expected = load(['data/expected/apply_model_',instance,'.mat']);
     expected = expected.O;
 end
