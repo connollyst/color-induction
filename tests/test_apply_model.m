@@ -6,27 +6,27 @@ end
 % 1D TESTS: channel interactions should not affect the output
 
 function test_apply_model_1D_1_without_channel_interactions
-    assert_apply_model('1D_1', 0)
+    assert_apply_model(1, 0)
 end
 
 function test_apply_model_1D_2_without_channel_interactions
-    assert_apply_model('1D_2', 0)
+    assert_apply_model(2, 0)
 end
 
 function test_apply_model_1D_3_without_channel_interactions
-    assert_apply_model('1D_3', 0)
+    assert_apply_model(3, 0)
 end
 
 function test_apply_model_1D_1_with_channel_interactions
-    assert_apply_model('1D_1', 1)
+    assert_apply_model(1, 1)
 end
 
 function test_apply_model_1D_2_with_channel_interactions
-    assert_apply_model('1D_2', 1)
+    assert_apply_model(2, 1)
 end
 
 function test_apply_model_1D_3_with_channel_interactions
-    assert_apply_model('1D_3', 1)
+    assert_apply_model(3, 1)
 end
 
 function test_separate_and_opponent_ON_OFF_without_channel_interactions
@@ -56,16 +56,17 @@ end
 function test_apply_model_3D_1
 % Note: the 3 1D channels processed in other tests are combined here. If
 %       those tests pass, this should also.
-    assert_apply_model('3D_1', 0)
+    assert_apply_model(1:3, 0)
 end
 
 
 %% ASSERTIONS
 
-function assert_apply_model(instance, channel_interaction)
-    [I, config] = get_input(instance, channel_interaction);
+function assert_apply_model(channels, channel_interaction)
+    config   = get_config(channel_interaction);
+    I        = get_input(channels);
     actual   = model.apply(I, config);
-    expected = get_expected(instance);
+    expected = get_expected(channels);
     assertDimensionsEqual(actual, expected)
 end
 
@@ -80,9 +81,7 @@ end
 
 %% TEST UTILITIES
 
-function [I, config] = get_input(instance, channel_interaction)
-    input  = load(['data/input/apply_model_',instance,'.mat']);
-    I      = input.I;
+function config = get_config(channel_interaction)
     config = configurations.default();
     config.zli.n_membr = 3;
     config.zli.config.zli.add_neural_noise = 0;
@@ -98,7 +97,12 @@ function [I, config] = get_input(instance, channel_interaction)
     config.display.plot    = 0;
 end
 
-function expected = get_expected(instance)
-    expected = load(['data/expected/apply_model_',instance,'.mat']);
-    expected = expected.O;
+function I = get_input(channels)
+    input  = load('data/input/apply_model_3D.mat');
+    I      = input.I(:,:,channels);
+end
+
+function expected = get_expected(channels)
+    expected = load('data/expected/apply_model_3D.mat');
+    expected = expected.O(:,:,channels);
 end
