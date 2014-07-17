@@ -17,11 +17,11 @@ function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, con
     [x_out, y_out]         = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot
-        do_plot(x, y, gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_out, y_out);
+        do_plot(x, y, x_ee, x_ei, y_ie, I_norm, x_out, y_out);
     end
 end
 
-function do_plot(x_in, y_in, gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
+function do_plot(x_in, y_in, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
     figure(1);
     subplot(8,1,1); imagesc(x_in(:,:));
     title(get_title('x in',x_in));
