@@ -1,5 +1,5 @@
-function norm_mask = get_normalization_masks(config)
-%GET_NORMALIZATION_MASK Returns the normalization masks for each scale.
+function norm_mask = get_masks(config)
+%GET_MASKS Returns the normalization masks for each scale.
 %   Generates and returns a structure array containing the original and
 %   FFT normalization convolution masks for each scale.
     
