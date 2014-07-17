@@ -17,7 +17,7 @@ function [J, W] = nondirectional(interactions, config)
         J{s} = zeros(scale_diameter, scale_diameter);
         W{s} = zeros(scale_diameter, scale_diameter);
         % J is a gaussian looking circle
-        [xx, yy]     = model.terms.interactions.jw.utils.gradients(scale_deltas(s));
+        [xx, yy]     = model.terms.interactions.orients.jw.utils.gradients(scale_deltas(s));
         factor_scale = model.utils.scale2size(s, zli.scale2size_type, zli.scale2size_epsilon);
         d            = model.utils.distance_xop(xx/factor_scale, yy/factor_scale, zli.dist_type) * zli.reduccio_JW;
         ii           = find(d <= 10);

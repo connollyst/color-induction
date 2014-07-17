@@ -128,7 +128,7 @@ function [gx_padded, gy_padded, JW, interactions] = get_input(instance, config)
     gx_padded    = input.gx_padded;
     gy_padded    = input.gy_padded;
     interactions = model.terms.get_interactions(config);
-    JW           = model.terms.get_JW(interactions, config);
+    JW           = model.terms.interactions.orients.JW(interactions, config);
 end
 
 function expected = get_expected(instance)

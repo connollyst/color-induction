@@ -24,7 +24,7 @@ function [J_exc, W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, tr
     J_exc        = zeros(diameter, diameter, K);
     W_inh        = zeros(diameter, diameter, K);
 
-    [xx, yy]     = model.terms.interactions.jw.utils.gradients(Delta);
+    [xx, yy]     = model.terms.interactions.orients.jw.utils.gradients(Delta);
     factor_scale = model.utils.scale2size(scale, zli.scale2size_type, zli.scale2size_epsilon);
     d            = model.utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
     c            = complex(xx, yy);
