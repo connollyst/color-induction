@@ -11,9 +11,9 @@ function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, con
 %   x_out:          The new excitatory membrane potentials.
 %   y_out:          The new inhibitory membrane potentials.
 
-    [gx_padded, gy_padded] = model.utils.padding.add(x, y, interactions.scale, config);
-    [x_ee, x_ei, y_ie]     = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
-    I_norm                 = model.utils.normalize_output(norm_mask, gx_padded, interactions.scale, config);
+    [gx_padded, gy_padded] = model.data.padding.add(x, y, interactions.scale, config);
+    [x_ee, x_ei, y_ie]     = model.terms.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
+    I_norm                 = model.terms.normalization(norm_mask, gx_padded, interactions.scale, config);
     [x_out, y_out]         = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot

@@ -1,9 +1,5 @@
 function Iitheta = normalize_input(Iitheta, config)
-%NORMALIZE_INPUT Normalize the input signal.
-%   Iitheta: the cell array of input signal Iitheta
-%            each cell is a the signal at a membrane time step such that,
-%            for example, Iitheta{3,2,1}(:,:,:) is the entire input signal
-%            at the first time step, second scale, and third orientation.
+%NORMALIZE_INPUT Normalize the input signal to be within a usable range.
     
     %DEBUGGING
     config.zli.normal_type = 'color';

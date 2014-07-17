@@ -51,7 +51,7 @@ end
 
 function [gx_padded, gy_padded] = get_padded(instance)
     [x, y, interactions, config] = get_input(instance);
-    [gx_padded, gy_padded] = model.utils.padding.add(x, y, interactions.scale, config);
+    [gx_padded, gy_padded] = model.data.padding.add(x, y, interactions.scale, config);
 end
 
 %% TEST UTILITIES

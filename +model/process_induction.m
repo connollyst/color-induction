@@ -15,14 +15,10 @@ function [gx_final] = process_induction(Iitheta, config)
     % Initialize output membrane potentials
     gx_final     = model.utils.initialize_data(config);
     gy_final     = model.utils.initialize_data(config);
-    % Normalization
-    Iitheta      = model.utils.normalize_input(Iitheta, config);
+    Iitheta      = model.data.normalization.normalize_input(Iitheta, config);
     norm_masks   = model.terms.get_normalization_masks(config);
-    % Prepare orientation/scale/color interactions
     interactions = model.terms.get_interactions(config);
-    % Set the initial x (excitation) & y (inhibition) activity
     [x, y]       = initialize_xy(Iitheta, config);
-    % Run recurrent network: the loop over time
     for t=1:config.zli.n_membr  % membrane time
         logger.log('Membrane time step: %i/%i\n', t, config.zli.n_membr, config);
         tic
