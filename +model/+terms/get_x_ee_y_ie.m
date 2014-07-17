@@ -13,16 +13,17 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
         gx_padded = apply_fft(gx_padded);
     end
     
-    % First apply orientation interactions
-    x_ee = get_orientation_interactions(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
-    y_ie = get_orientation_interactions(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
+    x_ee = apply_orientation_interactions(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
+    y_ie = apply_orientation_interactions(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
     
-    % Then apply scale interactions
-    x_ee = get_scale_interactions(x_ee, interactions.scale.filter);
-    y_ie = get_scale_interactions(y_ie, interactions.scale.filter);
+    x_ee = apply_color_interactions(x_ee, interactions.color.filter);
+    y_ie = apply_color_interactions(y_ie, interactions.color.filter);
+    
+    x_ee = apply_scale_interactions(x_ee, interactions.scale.filter);
+    y_ie = apply_scale_interactions(y_ie, interactions.scale.filter);
 end
 
-function orient_interactions = get_orientation_interactions(gx_padded, filter_fft, scale_interactions, config)
+function orient_interactions = apply_orientation_interactions(gx_padded, filter_fft, scale_interactions, config)
 %Apply orientation filter (J or W) to get excitation-excitation/inhibition
 %interactions between orientations.
 %
@@ -51,8 +52,6 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
                 shift_size   = half_size_filter{s};
                 filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
                 % TODO last filter seems to always be 0???
-                %max_filter_fft_s = max(real(filter_fft_s(:)))
-                %min_filter_fft_s = min(real(filter_fft_s(:)))
                 if config.zli.channel_interaction
                     % TODO filters can be initialized in n-dimensions
                     filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
@@ -72,9 +71,28 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
     end
 end
 
-function scale_interactions = get_scale_interactions(data, scale_filter)
-%Apply scale filter to get excitation-excitation/inhibition interactions
-%between scales.
+function color_interactions = apply_color_interactions(data, color_filter, config)
+% Apply color filter to get interactions between color channels.
+    if ~config.zli.color_interaction
+        color_interactions = data;
+    else
+        switch config.zli.ON_OFF
+            case 'separate'
+                color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
+            case 'opponent'
+                color_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+                for i=1:2:config.image.n_channels
+                    on  = i;
+                    off = i+1;
+                    color_interactions(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
+                end
+            otherwise
+        end
+    end
+end
+
+function scale_interactions = apply_scale_interactions(data, scale_filter)
+% Apply scale filter to get interactions between scales.
     scale_interactions = model.data.convolutions.optima(data, scale_filter, 0, 0);
 end
 
