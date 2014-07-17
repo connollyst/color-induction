@@ -47,7 +47,7 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
 %PROCESS_ON_OFF_SEPARATELY Process the ON and OFF channels independently.
     
     % Calculate the ON/OFF signals
-    [ON_in, OFF_in] = model.data.signal.on_off.separate.prepare(Iitheta, config);
+    [ON_in, OFF_in] = model.data.on_off.separate.prepare(Iitheta, config);
 
     % Positius +++++++++++++++++++++++++++++++++++++++++++++++++++
     logger.log('Starting ON processing', config);
@@ -57,7 +57,7 @@ function Iitheta_final = process_ON_OFF_separately(Iitheta, config)
     logger.log('Starting OFF processing', config);
     OFF_out = model.process_induction(OFF_in, config);
 
-    Iitheta_final = model.data.signal.on_off.separate.recover(ON_in, OFF_in, ON_out, OFF_out, config);
+    Iitheta_final = model.data.on_off.separate.recover(ON_in, OFF_in, ON_out, OFF_out, config);
 end
 
 function Iitheta_out = process_ON_OFF_opponent(Iitheta, config)
@@ -69,11 +69,11 @@ function Iitheta_out = process_ON_OFF_opponent(Iitheta, config)
     logger.log('Starting ON OFF opponency processing', config);
     n_channels = config.image.n_channels;
     
-    ON_OFF_in = model.data.signal.on_off.opponent.prepare(Iitheta, config);
+    ON_OFF_in = model.data.on_off.opponent.prepare(Iitheta, config);
     config.image.n_channels = n_channels*2; % EEK! this isn't right..?!
     
     ON_OFF_out = model.process_induction(ON_OFF_in, config);
     config.image.n_channels = n_channels;
     
-    Iitheta_out = model.data.signal.on_off.opponent.recover(ON_OFF_in, ON_OFF_out, config);
+    Iitheta_out = model.data.on_off.opponent.recover(ON_OFF_in, ON_OFF_out, config);
 end

@@ -1,5 +1,5 @@
 function ON_OFF = prepare(I, config)
-%MODEL.DATA.SIGNAL.ON_OFF.OPPONENT.PREPARE
+%MODEL.DATA.ON_OFF.OPPONENT.PREPARE
 %   Prepare the input data for opponent ON OFF signal processing.
 %   The positive (ON) and negative (OFF) values for each channel are
 %   separated into their own channels. The ON and OFF channels are
@@ -25,7 +25,7 @@ function ON_OFF = prepare(I, config)
     on_off_odds       = 1:2:n_on_off_channels;
     on_off_evens      = 2:2:n_on_off_channels;
     
-    [ON, OFF]   = model.data.signal.on_off.separate.prepare(I, config);
+    [ON, OFF]   = model.data.on_off.separate.prepare(I, config);
     
     ON_OFF      = cell(n_membr, 1);
     [ON_OFF{:}] = deal(zeros(n_cols, n_rows, n_on_off_channels, n_scales, n_orients)) ;

@@ -1,6 +1,6 @@
 function out = recover(ON_OFF_in, ON_OFF_out, config)
-%RECOVER Summary of this function goes here
-%   Detailed explanation goes here
+%MODEL.DATA.ON_OFF.OPPONENT.RECOVER
+%   Recover the output data given the opponent ON and OFF activity.
     n_membr    = config.zli.n_membr;
     n_channels = config.image.n_channels;
     
@@ -19,6 +19,6 @@ function out = recover(ON_OFF_in, ON_OFF_out, config)
         OFF_out{t} = ON_OFF_out{t}(:,:,on_off_evens,:,:);
     end
     
-    out = model.data.signal.on_off.separate.recover(ON_in, OFF_in, ON_out, OFF_out, config);
+    out = model.data.on_off.separate.recover(ON_in, OFF_in, ON_out, OFF_out, config);
 end
 

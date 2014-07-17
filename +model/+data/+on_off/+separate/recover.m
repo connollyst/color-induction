@@ -1,4 +1,6 @@
 function final = recover(ON_in, OFF_in, ON_out, OFF_out, config)
+%MODEL.DATA.ON_OFF.SEPARATE.PREPARE
+%   Recover the output data given the separate ON and OFF activity.
     n_membr   = config.zli.n_membr;
     ON_final  = cell(n_membr, 1);
     OFF_final = cell(n_membr, 1);
