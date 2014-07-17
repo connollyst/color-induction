@@ -16,8 +16,8 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
     x_ee = apply_orientation_interactions(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
     y_ie = apply_orientation_interactions(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
     
-    x_ee = apply_color_interactions(x_ee, interactions.color.filter);
-    y_ie = apply_color_interactions(y_ie, interactions.color.filter);
+    x_ee = apply_color_interactions(x_ee, interactions.color.filter, config);
+    y_ie = apply_color_interactions(y_ie, interactions.color.filter, config);
     
     x_ee = apply_scale_interactions(x_ee, interactions.scale.filter);
     y_ie = apply_scale_interactions(y_ie, interactions.scale.filter);
@@ -38,15 +38,13 @@ function orient_interactions = apply_orientation_interactions(gx_padded, filter_
     scale_distance      = scale_interactions.distance;
     half_size_filter    = scale_interactions.filter_half_size;
     
-    n_cols              = config.image.width;
-    n_rows              = config.image.height;
     n_channels          = config.image.n_channels;
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     
-    orient_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    orient_interactions = model.utils.zeros(config);
     for oc=1:n_orients  % for each central (reference) orientation
-        oc_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+        oc_interactions = model.utils.zeros(config);
         for ov=1:n_orients  % for all orientations
             for s=1:n_scales
                 shift_size   = half_size_filter{s};
@@ -73,14 +71,14 @@ end
 
 function color_interactions = apply_color_interactions(data, color_filter, config)
 % Apply color filter to get interactions between color channels.
-    if ~config.zli.color_interaction
+    if ~config.zli.channel_interaction
         color_interactions = data;
     else
         switch config.zli.ON_OFF
             case 'separate'
                 color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
             case 'opponent'
-                color_interactions = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+                color_interactions = model.utils.zeros(config);
                 for i=1:2:config.image.n_channels
                     on  = i;
                     off = i+1;

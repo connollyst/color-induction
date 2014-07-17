@@ -17,7 +17,7 @@ function I_norm = normalization(norm_mask, newgx_toroidal_x, scale_interactions,
     scale_distance      = scale_interactions.distance;
     Delta_ext           = scale_interactions.Delta_ext;
     
-    I_norm = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    I_norm = model.utils.zeros(config);
     for s=scale_distance+1:scale_distance+n_scales
         s2 = s - scale_distance;
         radi=(size(M_norm_conv{s2})-1)/2;

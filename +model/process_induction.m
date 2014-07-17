@@ -13,8 +13,8 @@ function [gx_final, gy_final] = process_induction(Iitheta, config)
     validate_input(config)
 
     % Initialize output membrane potentials
-    gx_final     = model.utils.initialize_data(config);
-    gy_final     = model.utils.initialize_data(config);
+    gx_final     = model.utils.cells(config);
+    gy_final     = model.utils.cells(config);
     Iitheta      = model.data.normalization.normalize_input(Iitheta, config);
     norm_masks   = model.data.normalization.get_masks(config);
     interactions = model.terms.get_interactions(config);
@@ -44,16 +44,10 @@ end
 
 function [x, y] = initialize_xy(Iitheta, config)
 %INITIALIZE_XY Initialize the initial stimulus & inhibition to the system.
-
-    n_cols     = config.image.width;
-    n_rows     = config.image.height;
-    n_channels = config.image.n_channels;
-    n_orients  = config.wave.n_orients;
-    n_scales   = config.wave.n_scales;
     
     % x is initialized as the visual stimulus (p.192)
     x = Iitheta{1}; % use first time frame
     
     % y is initialized with zero activity
-    y = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    y = model.utils.zeros(config);
 end

@@ -1,13 +1,9 @@
 function center = remove(padded, scale_interactions, config)
 %PADDING.REMOVE Extract the centers of the padded image.
 
-    n_cols               = config.image.width;
-    n_rows               = config.image.height;
-    n_channels           = config.image.n_channels;
-    n_orients            = config.wave.n_orients;
     n_scale_interactions = scale_interactions.n_interactions;
     
-    center = zeros(n_cols, n_rows, n_channels, n_scale_interactions, n_orients);
+    center = model.utils.zeros(config);
     for s=1:n_scale_interactions
         center(:,:,:,s,:) = extract_center(padded, s, scale_interactions, config);
     end
