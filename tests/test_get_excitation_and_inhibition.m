@@ -93,24 +93,24 @@ end
 
 function assert_x_ee(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
-    [x_ee, ~, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
+    [gx_padded, gy_padded, interactions] = get_input(instance, config);
+    [x_ee, ~, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ee, expected.x_ee);
 end
 
 function assert_x_ei(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
-    [~, x_ei, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
+    [gx_padded, gy_padded, interactions] = get_input(instance, config);
+    [~, x_ei, ~] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
 end
 
 function assert_y_ie(instance, use_fft, channel_interaction)
     config = get_config(use_fft, channel_interaction);
-    [gx_padded, gy_padded, JW, interactions] = get_input(instance, config);
-    [~, ~, y_ie] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, JW, interactions, config);
+    [gx_padded, gy_padded, interactions] = get_input(instance, config);
+    [~, ~, y_ie] = model.utils.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
     assertEqualData(y_ie, expected.y_ie);
 end
@@ -123,12 +123,11 @@ function config = get_config(use_fft, channel_interaction)
     config.zli.channel_interaction = channel_interaction;
 end
 
-function [gx_padded, gy_padded, JW, interactions] = get_input(instance, config)
+function [gx_padded, gy_padded, interactions] = get_input(instance, config)
     input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
     gx_padded    = input.gx_padded;
     gy_padded    = input.gy_padded;
     interactions = model.terms.get_interactions(config);
-    JW           = model.terms.interactions.orients.JW(interactions, config);
 end
 
 function expected = get_expected(instance)

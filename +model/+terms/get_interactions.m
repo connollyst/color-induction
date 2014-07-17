@@ -21,5 +21,6 @@ function interactions = get_interactions(config)
     interactions.scale_filter         = model.terms.interactions.scales.filter(e, f, scale_interaction_distance);
     interactions.half_size_filter     = model.terms.interactions.scales.half_size_filter(scale_interaction_distance, interactions.scale_deltas, config);
     %% ORIENTATION INTERACTION PARAMETERS
-    % TODO
+    % Prepare J & W: the excitatory and inhibitory masks
+    interactions.JW                   = model.terms.interactions.orients.JW(interactions, config);
 end

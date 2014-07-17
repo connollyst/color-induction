@@ -1,4 +1,4 @@
-function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
+function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
 %GET_X_EE_Y_IE Calculate the excitatory and inhibitory terms.
 %   Input
 %       gx_padded:      the gx input data, padded to avoid edge effects
@@ -14,8 +14,8 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, JW, interactions, config)
     end
     
     % First apply orientation interactions
-    x_ee = get_orientation_interactions(gx_padded, JW.J_fft, interactions, config);
-    y_ie = get_orientation_interactions(gx_padded, JW.W_fft, interactions, config);
+    x_ee = get_orientation_interactions(gx_padded, interactions.JW.J_fft, interactions, config);
+    y_ie = get_orientation_interactions(gx_padded, interactions.JW.W_fft, interactions, config);
     
     % Then apply scale interactions
     x_ee = get_scale_interactions(x_ee, interactions);
@@ -32,9 +32,11 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
 %   If config.compute.use_fft is true, gx_padded is expected to be in
 %   Fourier space also. This reduces computation time.
 
+    % TODO why do orientation interactions need scale interaction params??
     half_size_filter    = interactions.half_size_filter;
     scale_distance      = interactions.scale_distance;
     scale_deltas        = interactions.scale_deltas;
+    
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_channels          = config.image.n_channels;

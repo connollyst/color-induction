@@ -20,8 +20,6 @@ function [gx_final] = process_induction(Iitheta, config)
     norm_masks   = model.terms.get_normalization_masks(config);
     % Prepare orientation/scale/color interactions
     interactions = model.terms.get_interactions(config);
-    % Prepare J & W: the excitatory and inhibitory masks
-    JW           = model.terms.interactions.orients.JW(interactions, config);
     % Set the initial x (excitation) & y (inhibition) activity
     [x, y]       = initialize_xy(Iitheta, config);
     % Run recurrent network: the loop over time
@@ -31,7 +29,7 @@ function [gx_final] = process_induction(Iitheta, config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
             tIitheta = Iitheta{t};
-            [x, y] = model.update_xy(tIitheta, x, y, JW, norm_masks, interactions, config);
+            [x, y] = model.update_xy(tIitheta, x, y, norm_masks, interactions, config);
         end
         if config.display.logging
             toc
