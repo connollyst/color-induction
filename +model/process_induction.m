@@ -18,7 +18,7 @@ function [gx_final] = process_induction(Iitheta, config)
     % Normalization
     Iitheta      = model.utils.normalize_input(Iitheta, config);
     norm_masks   = model.terms.get_normalization_masks(config);
-    % Prepare orientation/scale/color interactions for x_ei
+    % Prepare orientation/scale/color interactions
     interactions = model.terms.get_interactions(config);
     % Prepare J & W: the excitatory and inhibitory masks
     JW           = model.terms.get_JW(interactions, config);
@@ -46,6 +46,9 @@ end
 function validate_input(config)
     if config.image.width <= 10 || config.image.height <= 10
        error('Bad stimulus dimensions: the toroidal boundary conditions are ill-defined.');
+    end
+    if strcmp(config.zli.ON_OFF,'opponent') && model.data.utils.is_odd(config.image.n_channels)
+        error('An even number of color channels are required for color opponency.');
     end
 end
 
