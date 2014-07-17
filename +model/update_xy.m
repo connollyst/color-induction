@@ -23,25 +23,21 @@ end
 
 function do_plot(x_in, y_in, gx_padded, gy_padded, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
     figure(1);
-    subplot(10,1,1); imagesc(x_in(:,:));
+    subplot(8,1,1); imagesc(x_in(:,:));
     title(get_title('x in',x_in));
-    subplot(10,1,2); imagesc(y_in(:,:));
+    subplot(8,1,2); imagesc(y_in(:,:));
     title(get_title('y in',y_in));
-    subplot(10,1,3); imagesc(gx_padded{2}(:,:));
-    title(get_title('gx padded #2',gx_padded{2}));
-    subplot(10,1,4); imagesc(gy_padded{2}(:,:));
-    title(get_title('gy padded #2',gy_padded{2}));
-    subplot(10,1,5); imagesc(x_ee(:,:));
+    subplot(8,1,3); imagesc(x_ee(:,:));
     title(get_title('x ee',x_ee));
-    subplot(10,1,6); imagesc(x_ei(:,:));
+    subplot(8,1,4); imagesc(x_ei(:,:));
     title(get_title('x ei',x_ei));
-    subplot(10,1,7); imagesc(y_ie(:,:));
+    subplot(8,1,5); imagesc(y_ie(:,:));
     title(get_title('y ie',y_ie));
-    subplot(10,1,8); imagesc(I_norm(:,:));
+    subplot(8,1,6); imagesc(I_norm(:,:));
     title(get_title('I norm',I_norm));
-    subplot(10,1,9); imagesc(x_out(:,:));
+    subplot(8,1,7); imagesc(x_out(:,:));
     title(get_title('x out',x_out));
-    subplot(10,1,10); imagesc(y_out(:,:));
+    subplot(8,1,8); imagesc(y_out(:,:));
     title(get_title('y out',y_out));
     drawnow
     %waitforbuttonpress;
