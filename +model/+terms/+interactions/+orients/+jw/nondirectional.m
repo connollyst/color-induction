@@ -1,10 +1,10 @@
-function [J, W] = nondirectional(interactions, config)
+function [J, W] = nondirectional(scale_interactions, config)
 %JW.NONDIRECTIONAL Return non-directional J (excitation) & W (inhibition).
 %   J & W specify the excitatatory and inhibitory interactions between
 %   neighboring neurons.
 
-    scale_deltas    = interactions.scale_deltas;
-    scale_diameters = interactions.scale_diameters;
+    scale_deltas    = scale_interactions.deltas;
+    scale_diameters = scale_interactions.diameters;
     
     zli      = config.zli;
     n_scales = config.wave.n_scales;

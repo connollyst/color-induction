@@ -14,15 +14,15 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
     end
     
     % First apply orientation interactions
-    x_ee = get_orientation_interactions(gx_padded, interactions.JW.J_fft, interactions, config);
-    y_ie = get_orientation_interactions(gx_padded, interactions.JW.W_fft, interactions, config);
+    x_ee = get_orientation_interactions(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
+    y_ie = get_orientation_interactions(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
     
     % Then apply scale interactions
-    x_ee = get_scale_interactions(x_ee, interactions);
-    y_ie = get_scale_interactions(y_ie, interactions);
+    x_ee = get_scale_interactions(x_ee, interactions.scale.filter);
+    y_ie = get_scale_interactions(y_ie, interactions.scale.filter);
 end
 
-function orient_interactions = get_orientation_interactions(gx_padded, filter_fft, interactions, config)
+function orient_interactions = get_orientation_interactions(gx_padded, filter_fft, scale_interactions, config)
 %Apply orientation filter (J or W) to get excitation-excitation/inhibition
 %interactions between orientations.
 %
@@ -33,9 +33,9 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
 %   Fourier space also. This reduces computation time.
 
     % TODO why do orientation interactions need scale interaction params??
-    half_size_filter    = interactions.half_size_filter;
-    scale_distance      = interactions.scale_distance;
-    scale_deltas        = interactions.scale_deltas;
+    scale_deltas        = scale_interactions.deltas;
+    scale_distance      = scale_interactions.distance;
+    half_size_filter    = scale_interactions.filter_half_size;
     
     n_cols              = config.image.width;
     n_rows              = config.image.height;
@@ -72,11 +72,9 @@ function orient_interactions = get_orientation_interactions(gx_padded, filter_ff
     end
 end
 
-function scale_interactions = get_scale_interactions(data, interactions)
+function scale_interactions = get_scale_interactions(data, scale_filter)
 %Apply scale filter to get excitation-excitation/inhibition interactions
 %between scales.
-
-    scale_filter       = interactions.scale_filter;
     scale_interactions = model.utils.convolutions.optima(data, scale_filter, 0, 0);
 end
 

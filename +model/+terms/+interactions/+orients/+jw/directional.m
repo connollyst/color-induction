@@ -1,9 +1,9 @@
-function [J, W] = directional(interactions, config)
+function [J, W] = directional(scale_interactions, config)
 %JW.DIRECTIONAL Return directional J (excitation) & W (inhibition).
 %   Reference: Z. Li 1999.
 
-    scale_deltas    = interactions.scale_deltas;
-    scale_diameters = interactions.scale_diameters;
+    scale_deltas    = scale_interactions.deltas;
+    scale_diameters = scale_interactions.diameters;
     
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;

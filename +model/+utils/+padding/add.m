@@ -1,18 +1,18 @@
-function [gx_padded, gy_padded] = add(x, y, interactions, config)
+function [gx_padded, gy_padded] = add(x, y, scale_interactions, config)
 %PADDING.ADD Add padding to prevent edge effects.
 %   TODO Move intermediate interaction scales to another function
 
-    [ x_padded,  y_padded] = mirror_boundary(x, y, interactions, config);
-    [gx_padded, gy_padded] = do_something(x_padded, y_padded, interactions, config);
+    [ x_padded,  y_padded] = mirror_boundary(x, y, scale_interactions, config);
+    [gx_padded, gy_padded] = do_something(x_padded, y_padded, scale_interactions, config);
 end
 
-function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
+function [x_toroidal, y_toroidal] = mirror_boundary(x, y, scale_interactions, config)
 %MIRROR_BOUNDARY Mirror the edges of the data to prevent edge effects.
 
     n_scales             = config.wave.n_scales;
-    scale_deltas         = interactions.scale_deltas;
-    scale_distance       = interactions.scale_distance;
-    n_scale_interactions = interactions.n_scale_interactions;
+    scale_deltas         = scale_interactions.deltas;
+    scale_distance       = scale_interactions.distance;
+    n_scale_interactions = scale_interactions.n_interactions;
     
     x_toroidal = cell(n_scale_interactions, 1);
     y_toroidal = cell(n_scale_interactions, 1);
@@ -23,16 +23,16 @@ function [x_toroidal, y_toroidal] = mirror_boundary(x, y, interactions, config)
     end
 end
 
-function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, interactions, config)
+function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, scale_interactions, config)
 %DO_SOMETHING ..what sorcery is this?
 
     n_cols               = config.image.width;
     n_rows               = config.image.height;
     n_scales             = config.wave.n_scales;
-    scale_deltas         = interactions.scale_deltas;
-    scale_distance       = interactions.scale_distance;
-    border_weight        = interactions.border_weight;
-    n_scale_interactions = interactions.n_scale_interactions;
+    scale_deltas         = scale_interactions.deltas;
+    scale_distance       = scale_interactions.distance;
+    border_weight        = scale_interactions.border_weight;
+    n_scale_interactions = scale_interactions.n_interactions;
     
     gx_toroidal = cell(n_scale_interactions, 1);
     gy_toroidal = cell(n_scale_interactions, 1);

@@ -1,4 +1,4 @@
-function I_norm = normalize_output(norm_mask, newgx_toroidal_x, interactions, config)
+function I_norm = normalize_output(norm_mask, newgx_toroidal_x, scale_interactions, config)
 %NORMALIZE
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
@@ -14,8 +14,8 @@ function I_norm = normalize_output(norm_mask, newgx_toroidal_x, interactions, co
     inv_den             = norm_mask.inv_den;
     M_norm_conv         = norm_mask.M_norm_conv;
     M_norm_conv_fft     = norm_mask.M_norm_conv_fft;
-    scale_distance      = interactions.scale_distance;
-    Delta_ext           = interactions.Delta_ext;
+    scale_distance      = scale_interactions.distance;
+    Delta_ext           = scale_interactions.Delta_ext;
     
     I_norm = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for s=scale_distance+1:scale_distance+n_scales

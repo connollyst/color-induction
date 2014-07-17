@@ -1,4 +1,4 @@
-function x_ei = get_x_ei(gy_padded, interactions, config)
+function x_ei = get_x_ei(gy_padded, scale_interactions, config)
 %GET_X_EI Calculate the excitatory-inhibitory term.
 %   Input
 %       gy_padded:      the gy input data, padded to avoid edge effects
@@ -16,30 +16,30 @@ function x_ei = get_x_ei(gy_padded, interactions, config)
     x_ei = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     
     for oc=1:n_orients  % loop over the central (reference) orientation
-        x_ei_scales         = x_ei_scale_interactions(gy_padded, interactions, config);
-        x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, oc, interactions, config);    
+        x_ei_scales         = x_ei_scale_interactions(gy_padded, scale_interactions, config);
+        x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, oc, scale_interactions, config);    
         x_ei(:,:,:,:,oc)    = x_ei_scales_orients;
     end
 end
 
-function x_ei_scales = x_ei_scale_interactions(gy_padded, interactions, config)
+function x_ei_scales = x_ei_scale_interactions(gy_padded, scale_interactions, config)
 % Process interactions between scales..
 
-    scale_distance      = interactions.scale_distance;
-    scale_filter        = interactions.scale_filter;
+    scale_distance      = scale_interactions.distance;
+    scale_filter        = scale_interactions.filter;
     n_scales            = config.wave.n_scales;
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     
-    gy               = model.utils.padding.remove(gy_padded, interactions, config);
+    gy               = model.utils.padding.remove(gy_padded, scale_interactions, config);
     gy_filtered      = model.utils.convolutions.optima(gy, scale_filter, 0, 0, avoid_circshift_fft);
     real_scale_range = scale_distance+1:scale_distance+n_scales;
     x_ei_scales      = gy_filtered(:,:,:,real_scale_range,:); % remove 'interaction scales'
 end
 
-function x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, center_orient, interactions, config)
+function x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, center_orient, scale_interactions, config)
 % Process interactions between orientations..
 
-    PsiDtheta  = interactions.PsiDtheta;
+    PsiDtheta  = scale_interactions.PsiDtheta;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;

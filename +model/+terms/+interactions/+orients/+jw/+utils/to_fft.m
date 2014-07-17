@@ -1,4 +1,4 @@
-function [filter_fft] = to_fft(filter, interactions, config)
+function [filter_fft] = to_fft(filter, scale_interactions, config)
 %TO_FFT Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,8 +6,8 @@ function [filter_fft] = to_fft(filter, interactions, config)
     n_rows          = config.image.height;
     n_scales        = config.wave.n_scales;
     n_orients       = config.wave.n_orients;
-    scale_deltas    = interactions.scale_deltas;
-    scale_diameters = interactions.scale_diameters;
+    scale_deltas    = scale_interactions.deltas;
+    scale_diameters = scale_interactions.diameters;
     
     filter_fft  = cell(n_scales, 1);
     
