@@ -6,9 +6,10 @@ function color_filter = filter(config)
     else
         switch config.zli.ON_OFF
             case 'separate'
-                color_filter = ones(1,config.image.n_channels);
+                color_filter = ones(1, config.image.n_channels);
             case 'opponent'
-                color_filter = ones(1,2);
+                color_filter = zeros(1, 1, 1, 3, 1);
+                color_filter(1, 1, 1, :, 1) = [0.3 1 0.3];
             otherwise
                 error('Invalid: config.zli.ON_OFF=%s', config.zli.ON_OFF)
         end
