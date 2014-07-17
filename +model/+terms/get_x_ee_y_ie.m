@@ -13,17 +13,17 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
         gx_padded = apply_fft(gx_padded);
     end
     
-    x_ee = apply_orientation_interactions(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
-    y_ie = apply_orientation_interactions(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
+    x_ee = apply_orientation_interaction(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
+    y_ie = apply_orientation_interaction(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
     
-    x_ee = apply_color_interactions(x_ee, interactions.color.filter, config);
-    y_ie = apply_color_interactions(y_ie, interactions.color.filter, config);
+    x_ee = apply_color_excitation(x_ee, interactions.color.filter, config);
+    y_ie = apply_color_inhibition(y_ie, interactions.color.filter, config);
     
-    x_ee = apply_scale_interactions(x_ee, interactions.scale.filter);
-    y_ie = apply_scale_interactions(y_ie, interactions.scale.filter);
+    x_ee = apply_scale_interaction(x_ee, interactions.scale.filter);
+    y_ie = apply_scale_interaction(y_ie, interactions.scale.filter);
 end
 
-function orient_interactions = apply_orientation_interactions(gx_padded, filter_fft, scale_interactions, config)
+function orient_interactions = apply_orientation_interaction(gx_padded, filter_fft, scale_interactions, config)
 %Apply orientation filter (J or W) to get excitation-excitation/inhibition
 %interactions between orientations.
 %
@@ -69,7 +69,7 @@ function orient_interactions = apply_orientation_interactions(gx_padded, filter_
     end
 end
 
-function color_interactions = apply_color_interactions(data, color_filter, config)
+function color_interactions = apply_color_excitation(data, color_filter, config)
 % Apply color filter to get interactions between color channels.
     if ~config.zli.channel_interaction
         color_interactions = data;
@@ -84,12 +84,28 @@ function color_interactions = apply_color_interactions(data, color_filter, confi
                     off = i+1;
                     color_interactions(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
                 end
+                if config.display.plot
+                    figure(2);
+                    subplot(2,1,1); imagesc(data(:,:));
+                    title('before');
+                    subplot(2,1,2); imagesc(color_interactions(:,:))
+                    title('after');
+                    waitforbuttonpress();
+                end
             otherwise
+                error('Invalid: config.zli.ON_OFF=%s',config.zli.ON_OFF)
         end
     end
 end
 
-function scale_interactions = apply_scale_interactions(data, scale_filter)
+function color_interactions = apply_color_inhibition(data, color_filter, config)
+% Apply color filter to get interactions between color channels.
+
+    % TODO what kind of inhibition do we expect between colors?
+    color_interactions = data;
+end
+
+function scale_interactions = apply_scale_interaction(data, scale_filter)
 % Apply scale filter to get interactions between scales.
     scale_interactions = model.data.convolutions.optima(data, scale_filter, 0, 0);
 end
