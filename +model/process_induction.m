@@ -1,4 +1,4 @@
-function [gx_final] = process_induction(Iitheta, config)
+function [gx_final, gy_final] = process_induction(Iitheta, config)
 %PROCESS_INDUCTION Apply induction model to input data.
 %   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
 %   Li 1999.
@@ -21,19 +21,15 @@ function [gx_final] = process_induction(Iitheta, config)
     [x, y]       = initialize_xy(Iitheta, config);
     for t=1:config.zli.n_membr  % membrane time
         logger.log('Membrane time step: %i/%i\n', t, config.zli.n_membr, config);
-        tic
+        logger.tic(config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
-            tIitheta = Iitheta{t};
-            [x, y] = model.update_xy(tIitheta, x, y, norm_masks, interactions, config);
-        end
-        if config.display.logging
-            toc
+            [x, y] = model.update_xy(Iitheta{t}, x, y, norm_masks, interactions, config);
         end
         % TODO we are bypassing initialization, no?
         gx_final{t} = model.terms.gx(x);
-        % TODO we are not using gy_final..?
-        gy_final{t} = model.terms.gy(y);    
+        gy_final{t} = model.terms.gy(y);
+        logger.toc(config)
     end
 end
 
