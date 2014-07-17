@@ -1,4 +1,4 @@
-function x_ei = get_x_ei(gy_padded, scale_interactions, config)
+function x_ei = get_x_ei(gy_padded, interactions, config)
 %GET_X_EI Calculate the excitatory-inhibitory term.
 %   Input
 %       gy_padded:      the gy input data, padded to avoid edge effects
@@ -16,8 +16,8 @@ function x_ei = get_x_ei(gy_padded, scale_interactions, config)
     x_ei = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     
     for oc=1:n_orients  % loop over the central (reference) orientation
-        x_ei_scales         = x_ei_scale_interactions(gy_padded, scale_interactions, config);
-        x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, oc, scale_interactions, config);    
+        x_ei_scales         = x_ei_scale_interactions(gy_padded, interactions.scale, config);
+        x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, oc, interactions.orient, config);    
         x_ei(:,:,:,:,oc)    = x_ei_scales_orients;
     end
 end
@@ -36,10 +36,10 @@ function x_ei_scales = x_ei_scale_interactions(gy_padded, scale_interactions, co
     x_ei_scales      = gy_filtered(:,:,:,real_scale_range,:); % remove 'interaction scales'
 end
 
-function x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, center_orient, scale_interactions, config)
+function x_ei_scales_orients = x_ei_orient_interactions(x_ei_scales, center_orient, orient_interactions, config)
 % Process interactions between orientations..
 
-    PsiDtheta  = scale_interactions.PsiDtheta;
+    PsiDtheta  = orient_interactions.PsiDtheta;
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;

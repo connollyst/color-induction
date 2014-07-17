@@ -5,7 +5,7 @@ function interactions = get_interactions(config)
     interactions                        = struct;
     
     %% COLOR INTERACTION PARAMETERS
-    % TODO
+    interactions.color.filter           = model.terms.interactions.colors.filter(config);
     
     %% SCALE INTERACTION PARAMETERS
     n_scales                            = config.wave.n_scales;
