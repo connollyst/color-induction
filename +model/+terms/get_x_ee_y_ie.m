@@ -76,8 +76,28 @@ function color_interactions = apply_color_excitation(data, color_filter, config)
     else
         switch config.zli.ON_OFF
             case 'separate'
+                % Activity in any color channel excites all others
                 color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
             case 'opponent'
+                % Activity in any color channel excites all others
+                color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
+            otherwise
+                error('Invalid: config.zli.ON_OFF=%s',config.zli.ON_OFF)
+        end
+    end
+end
+
+function color_interactions = apply_color_inhibition(data, color_filter, config)
+% Apply color filter to get interactions between color channels.
+    if ~config.zli.channel_interaction
+        color_interactions = data;
+    else
+        switch config.zli.ON_OFF
+            case 'separate'
+                % No inter-color inhibition
+                color_interactions = data;
+            case 'opponent'
+                % Only opponent colors inhibit each other
                 color_interactions = model.utils.zeros(config);
                 for i=1:2:config.image.n_channels
                     on  = i;
@@ -96,13 +116,6 @@ function color_interactions = apply_color_excitation(data, color_filter, config)
                 error('Invalid: config.zli.ON_OFF=%s',config.zli.ON_OFF)
         end
     end
-end
-
-function color_interactions = apply_color_inhibition(data, color_filter, config)
-% Apply color filter to get interactions between color channels.
-
-    % TODO what kind of inhibition do we expect between colors?
-    color_interactions = data;
 end
 
 function scale_interactions = apply_scale_interaction(data, scale_filter)
