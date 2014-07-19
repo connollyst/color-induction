@@ -155,10 +155,8 @@ end
 
 function center = extract_center(padded, scale_delta_s, config)
 %Remove the padding added to the outside of each image.
-
-    n_cols       = config.image.width;
-    n_rows       = config.image.height;
-    
+    n_cols = config.image.width;
+    n_rows = config.image.height;
     cols   = scale_delta_s+1 : scale_delta_s+n_cols;
     rows   = scale_delta_s+1 : scale_delta_s+n_rows;
     center = padded(cols, rows, :);
