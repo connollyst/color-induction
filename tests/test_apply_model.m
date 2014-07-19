@@ -37,16 +37,18 @@ function test_separate_and_opponent_ON_OFF_without_channel_interactions
     I = imresize(I, 0.15);
     I = I(:,:,1);
     config = configurations.default();
-    config.display.logging          = 0;
-    config.display.plot             = 0;
-    config.image.type               = 'bw';
-    config.wave.n_scales            = 2;
-    config.zli.n_membr              = 3;
-    config.zli.n_iter               = 3;
-    config.zli.channel_interactions = 0;
-    config.zli.ON_OFF               = 'separate';
+    config.display.logging               = 0;
+    config.display.plot                  = 0;
+    config.image.type                    = 'bw';
+    config.wave.n_scales                 = 2;
+    config.zli.n_membr                   = 3;
+    config.zli.n_iter                    = 3;
+    config.zli.interaction.color.enabled = 0;
+    config.zli.interaction.color.scheme  = 'default';
+    config.zli.ON_OFF                    = 'separate';
     separate = model.apply(I, config);
-    config.zli.ON_OFF               = 'opponent';
+    config.zli.interaction.color.scheme  = 'opponent';
+    config.zli.ON_OFF                    = 'opponent';
     opponent = model.apply(I, config);
     assertDimensionsEqual(separate, opponent)
 end
@@ -85,7 +87,7 @@ function config = get_config(channel_interaction)
     config = configurations.default();
     config.zli.n_membr = 3;
     config.zli.config.zli.add_neural_noise = 0;
-    config.zli.channel_interaction = channel_interaction;
+    config.zli.interaction.color.enabled = channel_interaction;
     % Infer number of scales
     config.wave.n_scales = 2;
     % Use the orientation wavelet decompositon

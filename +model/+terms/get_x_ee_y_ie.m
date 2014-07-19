@@ -16,11 +16,11 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
     x_ee = apply_orientation_interaction(gx_padded, interactions.orient.JW.J_fft, interactions.scale, config);
     y_ie = apply_orientation_interaction(gx_padded, interactions.orient.JW.W_fft, interactions.scale, config);
     
-    x_ee = apply_color_excitation(x_ee, interactions.color.filter, config);
-    y_ie = apply_color_inhibition(y_ie, interactions.color.filter, config);
+    x_ee = apply_color_excitation(x_ee, interactions.color, config);
+    y_ie = apply_color_inhibition(y_ie, interactions.color, config);
     
-    x_ee = apply_scale_interaction(x_ee, interactions.scale.filter);
-    y_ie = apply_scale_interaction(y_ie, interactions.scale.filter);
+    x_ee = apply_scale_interaction(x_ee, interactions.scale);
+    y_ie = apply_scale_interaction(y_ie, interactions.scale);
 end
 
 function orient_interactions = apply_orientation_interaction(gx_padded, filter_fft, scale_interactions, config)
@@ -48,9 +48,8 @@ function orient_interactions = apply_orientation_interaction(gx_padded, filter_f
         for ov=1:n_orients  % for all orientations
             for s=1:n_scales
                 shift_size   = half_size_filter{s};
-                filter_fft_s = filter_fft{s}(:,:,1,ov,oc);
-                % TODO last filter seems to always be 0???
-                if config.zli.channel_interaction
+                filter_fft_s = filter_fft{s}(:,:,1,ov,oc); % TODO last filter seems to always be 0???
+                if config.zli.interaction.color.enabled
                     % TODO filters can be initialized in n-dimensions
                     filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
                     gx = gx_padded{scale_distance+s}(:,:,:,ov);
@@ -69,58 +68,61 @@ function orient_interactions = apply_orientation_interaction(gx_padded, filter_f
     end
 end
 
-function color_interactions = apply_color_excitation(data, color_filter, config)
+function excitation = apply_color_excitation(data, color_interactions, config)
 % Apply color filter to get interactions between color channels.
-    if ~config.zli.channel_interaction
-        color_interactions = data;
+    if ~config.zli.interaction.color.enabled
+        excitation = data;
     else
-        switch config.zli.ON_OFF
-            case 'separate'
+        color_filter = color_interactions.excitation_filter;
+        switch config.zli.interaction.color.scheme
+            case 'default'
                 % Activity in any color channel excites all others
-                color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
+                excitation = model.data.convolutions.optima(data, color_filter, 0, 0);
             case 'opponent'
                 % Activity in any color channel excites all others
-                color_interactions = model.data.convolutions.optima(data, color_filter, 0, 0);
+                excitation = model.data.convolutions.optima(data, color_filter, 0, 0);
             otherwise
-                error('Invalid: config.zli.ON_OFF=%s',config.zli.ON_OFF)
+                error('Invalid: config.zli.interaction.color.scheme=%s',...
+                                config.zli.interaction.color.scheme)
         end
     end
 end
 
-function color_interactions = apply_color_inhibition(data, color_filter, config)
+function inhibition = apply_color_inhibition(data, color_interactions, config)
 % Apply color filter to get interactions between color channels.
-    if ~config.zli.channel_interaction
-        color_interactions = data;
+    if ~config.zli.interaction.color.enabled
+        inhibition = data;
     else
-        switch config.zli.ON_OFF
-            case 'separate'
+        color_filter = color_interactions.inhibition_filter;
+        switch config.zli.interaction.color.scheme
+            case 'default'
                 % No inter-color inhibition
-                color_interactions = data;
+                inhibition = data;
             case 'opponent'
                 % Only opponent colors inhibit each other
-                color_interactions = model.utils.zeros(config);
+                inhibition = model.utils.zeros(config);
                 for i=1:2:config.image.n_channels
                     on  = i;
                     off = i+1;
-                    color_interactions(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
+                    inhibition(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
                 end
                 if config.display.plot
-                    figure(2);
-                    subplot(2,1,1); imagesc(data(:,:));
-                    title('before');
-                    subplot(2,1,2); imagesc(color_interactions(:,:))
-                    title('after');
+                    figure(2); title('Inhibition');
+                    subplot(2,1,1); imagesc(data(:,:)); title('before');
+                    subplot(2,1,2); imagesc(inhibition(:,:)); title('after');
                     waitforbuttonpress();
                 end
             otherwise
-                error('Invalid: config.zli.ON_OFF=%s',config.zli.ON_OFF)
+                error('Invalid: config.zli.interaction.color.scheme=%s',...
+                                config.zli.interaction.color.scheme)
         end
     end
 end
 
-function scale_interactions = apply_scale_interaction(data, scale_filter)
+function interaction = apply_scale_interaction(data, scale_interactions)
 % Apply scale filter to get interactions between scales.
-    scale_interactions = model.data.convolutions.optima(data, scale_filter, 0, 0);
+    scale_filter = scale_interactions.filter;
+    interaction  = model.data.convolutions.optima(data, scale_filter, 0, 0);
 end
 
 function gx_padded_fft = apply_fft(gx_padded)

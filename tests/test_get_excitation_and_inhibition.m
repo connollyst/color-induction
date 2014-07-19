@@ -91,24 +91,24 @@ end
 
 % Assert that, given known input, the output is as expected
 
-function assert_x_ee(instance, use_fft, channel_interaction)
-    config = get_config(use_fft, channel_interaction);
+function assert_x_ee(instance, use_fft, color_interaction)
+    config = get_config(use_fft, color_interaction);
     [gx_padded, gy_padded, interactions] = get_input(instance, config);
     [x_ee, ~, ~] = model.terms.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ee, expected.x_ee);
 end
 
-function assert_x_ei(instance, use_fft, channel_interaction)
-    config = get_config(use_fft, channel_interaction);
+function assert_x_ei(instance, use_fft, color_interaction)
+    config = get_config(use_fft, color_interaction);
     [gx_padded, gy_padded, interactions] = get_input(instance, config);
     [~, x_ei, ~] = model.terms.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
 end
 
-function assert_y_ie(instance, use_fft, channel_interaction)
-    config = get_config(use_fft, channel_interaction);
+function assert_y_ie(instance, use_fft, color_interaction)
+    config = get_config(use_fft, color_interaction);
     [gx_padded, gy_padded, interactions] = get_input(instance, config);
     [~, ~, y_ie] = model.terms.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     expected = get_expected(instance);
@@ -117,10 +117,10 @@ end
 
 %% TEST UTILITIES
 
-function config = get_config(use_fft, channel_interaction)
+function config = get_config(use_fft, color_interaction)
     config = get_test_config(40, 40, 3, 2);
     config.compute.use_fft = use_fft;
-    config.zli.channel_interaction = channel_interaction;
+    config.zli.interaction.color.enabled = color_interaction;
 end
 
 function [gx_padded, gy_padded, interactions] = get_input(instance, config)
