@@ -15,9 +15,9 @@ function color_filter = inhibition_filter(config)
                     error('MODEL:config', ['Opponent color interactions ', ...
                         'require an even number of color channels.'])
                 end
-                % OPPONENT COLOR EXCITATION FILTER:
-                % Opponent colors come in pairs. Pairs do not inhibit each
-                % other, but paired colors do.
+                % OPPONENT COLOR INHIBITION FILTER:
+                % Opponent colors come in pairs. Each color only inhibits
+                % it's paired color.
                 filter_size   = 2;     % pair=2 (becomes 3 as a symmetric filter)
                 filter_weight = config.zli.interaction.color.weight.inhibition;
                 color_filter  = model.terms.interactions.filter_equally( ...
