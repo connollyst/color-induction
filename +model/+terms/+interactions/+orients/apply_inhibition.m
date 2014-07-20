@@ -1,0 +1,6 @@
+function y_ie = apply_inhibition(gx_padded, orient_interactions, scale_interactions, config)
+    y_ie = model.terms.interactions.orients.apply(...
+            gx_padded, orient_interactions.JW.W_fft, scale_interactions, config ...
+           );
+end
+
