@@ -6,8 +6,8 @@ function equal_filter = filter_equally(count, weight)
     center         = round(count / 2);
     filter         = ones(count, 1) * weight;
     filter(center) = 1;
-    equal_filter   = zeros(1, 1, 1, count, 1);  % TODO hard coded for color!
-    equal_filter(1,1,1,:,1) = filter;
+    equal_filter   = zeros(1, 1, count, 1, 1);  % TODO hard coded for color!
+    equal_filter(1,1,:,1,1) = filter;
 end
 
 function odd = to_odd(num)
