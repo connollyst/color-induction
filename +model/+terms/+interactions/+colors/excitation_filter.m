@@ -16,13 +16,17 @@ function color_filter = excitation_filter(config)
                                         weight ...
                                );
             case 'opponent'
+                if ~model.data.utils.is_even(config.image.n_channels)
+                    error('MODEL:config', ['Opponent color interactions ', ...
+                        'require an even number of color channels.'])
+                end
                 % OPPONENT COLOR EXCITATION FILTER:
                 % In an opponent color system, non-opponent channels excite
                 % each other equally. However, this is applied in a
                 % pairwise fashion, so we don't need a large filter like
                 % 'filter_equally'.
-                self_weight     = 1;    % TODO get weights from config
-                opponent_weight = 0.2;
+                self_weight     = 1;
+                opponent_weight = config.zli.interaction.color.weight;
                 color_filter    = model.terms.interactions.filter_neighbors(...
                                         self_weight, opponent_weight ...
                                   );
