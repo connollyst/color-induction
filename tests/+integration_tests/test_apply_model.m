@@ -50,7 +50,7 @@ function test_separate_and_opponent_ON_OFF_without_channel_interactions
     config.zli.interaction.color.scheme  = 'opponent';
     config.zli.ON_OFF                    = 'opponent';
     opponent = model.apply(I, config);
-    assertDimensionsEqual(separate, opponent)
+    assertEqualData(separate, opponent)
 end
 
 % 3D TESTS
@@ -69,17 +69,8 @@ function assert_apply_model(channels, channel_interaction)
     I        = get_input(channels);
     actual   = model.apply(I, config);
     expected = get_expected(channels);
-    assertDimensionsEqual(actual, expected)
+    assertEqualData(actual, expected)
 end
-
-function assertDimensionsEqual(actual, expected)
-    assertEqual(size(actual), size(expected));
-    for i=1:size(actual,3)
-        assertEqual(actual(:,:,i), expected(:,:,i), ...
-            ['Results differ in dimension ',num2str(i),' (at least)']);
-    end
-end
-
 
 %% TEST UTILITIES
 
@@ -88,6 +79,7 @@ function config = get_config(channel_interaction)
     config.zli.n_membr = 3;
     config.zli.config.zli.add_neural_noise = 0;
     config.zli.interaction.color.enabled = channel_interaction;
+    config.zli.interaction.color.weight  = 0;   % TODO what's a good weight?
     % Infer number of scales
     config.wave.n_scales = 2;
     % Use the orientation wavelet decompositon
