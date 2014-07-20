@@ -2,6 +2,6 @@ function display = get_display()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%      display plot     %%%%%%%%%%%   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    display.logging             = 1;        % display log messages
-    display.plot                = 1;        % display plots
+    display.logging             = true;        % display log messages
+    display.plot                = true;        % display plots
 end
