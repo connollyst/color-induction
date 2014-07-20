@@ -35,16 +35,13 @@ function test_3D_without_interactions
     % Given
     I = imread('peppers.png');
     I_in = imresize(I, 0.15);
-    config = configurations.default();
+    config = configurations.disabled();
     config.display.logging                = false;
     config.display.plot                   = false;
     config.image.type                     = 'bw';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
-    config.zli.interaction.orient.enabled = false;
-    config.zli.interaction.scale.enabled  = false;
-    config.zli.interaction.color.enabled  = false;
     I_out = model.apply(I_in, config);
     assertEqualData(I_out, im2double(I_in))
 end
@@ -58,22 +55,24 @@ function test_separate_and_opponent_ON_OFF_without_channel_interactions
     I = imresize(I, 0.15);
     I = I(:,:,1);
     config = configurations.default();
-    config.display.logging               = false;
-    config.display.plot                  = false;
-    config.image.type                    = 'bw';
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 3;
-    config.zli.n_iter                    = 3;
-    config.zli.interaction.color.enabled = true;
+    config.display.logging                = false;
+    config.display.plot                   = false;
+    config.image.type                     = 'bw';
+    config.wave.n_scales                  = 2;
+    config.zli.n_membr                    = 3;
+    config.zli.n_iter                     = 3;
+    config.zli.interaction.orient.enabled = true;
+    config.zli.interaction.scale.enabled  = true;
+    config.zli.interaction.color.enabled  = false;
     configA = config;
     configB = config;
     configA.zli.ON_OFF                   = 'separate';
     configB.zli.ON_OFF                   = 'opponent';
     % When
-    separate = model.apply(I, configA);
-    opponent = model.apply(I, configB);
+    I_separate = model.apply(I, configA);
+    I_opponent = model.apply(I, configB);
     % Then
-    assertEqualData(separate, opponent)
+    assertEqualData(I_separate, I_opponent)
 end
 
 function test_3D
