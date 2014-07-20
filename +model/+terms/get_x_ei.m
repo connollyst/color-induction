@@ -14,6 +14,7 @@ function x_ei = get_x_ei(gy_padded, interactions, config)
         ei               = apply_scale_interactions(gy, interactions.scale, config);
         ei               = remove_extra_scales(ei, interactions.scale, config);
         ei               = apply_orient_interactions(ei, oc, interactions.orient, config);    
+        ei               = apply_color_interactions(ei, interactions.color, config);
         x_ei(:,:,:,:,oc) = ei;
     end
 end
@@ -29,10 +30,10 @@ function ei = apply_scale_interactions(gy, scale_interactions, config)
     end
 end
 
-function interaction = apply_orient_interactions(ei, center_orient, orient_interactions, config)
+function ei = apply_orient_interactions(ei, center_orient, orient_interactions, config)
 % Process interactions between orientations..
     if ~config.zli.interaction.scale.enabled
-        interaction = sum(ei, 5);
+        ei = sum(ei, 5);
     else
         PsiDtheta  = orient_interactions.PsiDtheta;
         n_cols     = config.image.width;
@@ -44,7 +45,7 @@ function interaction = apply_orient_interactions(ei, center_orient, orient_inter
         orient_filter            = zeros(1,1,1,1,n_orients);
         orient_filter(1,1,1,1,:) = PsiDtheta(center_orient, :);
         orient_filter            = repmat(orient_filter, [n_cols, n_rows, n_channels, n_scales, 1]);
-        interaction              = sum(ei .* orient_filter, 5);
+        ei                       = sum(ei .* orient_filter, 5);
     end
 end
 
@@ -55,4 +56,8 @@ function ei_out = remove_extra_scales(ei_in, scale_interactions, config)
     n_scales         = config.wave.n_scales;
     real_scale_range = scale_distance+1:scale_distance+n_scales;
     ei_out               = ei_in(:,:,:,real_scale_range,:);
+end
+
+function ei = apply_color_interactions(ei, color_interactions, config)
+    % TODO what kind of interactions do we want?
 end
