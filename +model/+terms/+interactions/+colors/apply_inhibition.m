@@ -16,7 +16,7 @@ function inhibition = apply_inhibition(data, color_interactions, config)
                     off = i+1;
                     inhibition(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
                 end
-                if config.display.plot
+                if config.display.plot >= 2
                     figure(2); title('Inhibition');
                     subplot(2,1,1); imagesc(data(:,:)); title('before');
                     subplot(2,1,2); imagesc(inhibition(:,:)); title('after');
