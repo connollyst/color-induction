@@ -126,8 +126,7 @@ function interaction = apply_scale_interaction(data, scale_interactions)
 end
 
 function gx_padded_fft = apply_fft(gx_padded)
-%Preprocess the input data to Fourier space for faster processing.
-
+%Preprocess the input data to Fourier space for faster convolutions.
     gx_padded_fft = cell(size(gx_padded));
     for s=1:length(gx_padded)
         gx_padded_fft{s} = zeros(size(gx_padded{s}));
