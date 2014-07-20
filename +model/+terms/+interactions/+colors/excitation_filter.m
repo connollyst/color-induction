@@ -26,7 +26,7 @@ function color_filter = excitation_filter(config)
                 % pairwise fashion, so we don't need a large filter like
                 % 'filter_equally'.
                 self_weight     = 1;
-                opponent_weight = config.zli.interaction.color.weight;
+                opponent_weight = config.zli.interaction.color.weight.excitation;
                 color_filter    = model.terms.interactions.filter_neighbors(...
                                         self_weight, opponent_weight ...
                                   );

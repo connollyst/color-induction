@@ -11,6 +11,10 @@ function color_filter = inhibition_filter(config)
                 % By default, colors don't inhibit each other.
                 color_filter = model.terms.interactions.filter_nothing();
             case 'opponent'
+                if ~model.data.utils.is_even(config.image.n_channels)
+                    error('MODEL:config', ['Opponent color interactions ', ...
+                        'require an even number of color channels.'])
+                end
                 % OPPONENT COLOR EXCITATION FILTER:
                 % Opponent colors come in pairs. Pairs do not inhibit each
                 % other, but paired colors do.

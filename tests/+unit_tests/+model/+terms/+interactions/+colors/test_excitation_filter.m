@@ -84,10 +84,10 @@ end
 function test_opponent_color_excitation_filter_with_1_color_channel
     % Given
     config = struct();
-    config.zli.interaction.color.enabled = true;
-    config.zli.interaction.color.scheme  = 'opponent';
-    config.zli.interaction.color.weight  = 0.3;
-    config.image.n_channels              = 1;
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.scheme            = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.3;
+    config.image.n_channels                        = 1;
     % When/Then
     assertExceptionThrown(...
         @() model.terms.interactions.colors.excitation_filter(config),...
@@ -97,10 +97,10 @@ end
 function test_opponent_color_excitation_filter_with_2_color_channels
     % Given
     config = struct();
-    config.zli.interaction.color.enabled = true;
-    config.zli.interaction.color.scheme  = 'opponent';
-    config.zli.interaction.color.weight  = 0.2;
-    config.image.n_channels              = 2;
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.scheme            = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.2;
+    config.image.n_channels                        = 2;
     % When
     actual_filter = model.terms.interactions.colors.excitation_filter(config);
     % Then
@@ -112,10 +112,10 @@ end
 function test_opponent_color_excitation_filter_with_3_color_channels
     % Given
     config = struct();
-    config.zli.interaction.color.enabled = true;
-    config.zli.interaction.color.scheme  = 'opponent';
-    config.zli.interaction.color.weight  = 0.1;
-    config.image.n_channels              = 3;
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.scheme            = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.1;
+    config.image.n_channels                        = 3;
     % When/Then
     assertExceptionThrown(...
         @() model.terms.interactions.colors.excitation_filter(config),...
@@ -125,10 +125,10 @@ end
 function test_opponent_color_excitation_filter_with_42_color_channels
     % Given
     config = struct();
-    config.zli.interaction.color.enabled = true;
-    config.zli.interaction.color.scheme  = 'opponent';
-    config.zli.interaction.color.weight  = 0.05;
-    config.image.n_channels              = 42;
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.scheme            = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.05;
+    config.image.n_channels                        = 42;
     % When
     actual_filter = model.terms.interactions.colors.excitation_filter(config);
     % Then
