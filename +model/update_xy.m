@@ -23,26 +23,18 @@ end
 
 function do_plot(x_in, y_in, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
     figure(1);
-    subplot(8,1,1); imagesc(x_in(:,:));
-    title(get_title('x in',x_in));
-    subplot(8,1,2); imagesc(y_in(:,:));
-    title(get_title('y in',y_in));
-    subplot(8,1,3); imagesc(x_ee(:,:));
-    title(get_title('x ee',x_ee));
-    subplot(8,1,4); imagesc(x_ei(:,:));
-    title(get_title('x ei',x_ei));
-    subplot(8,1,5); imagesc(y_ie(:,:));
-    title(get_title('y ie',y_ie));
-    subplot(8,1,6); imagesc(I_norm(:,:));
-    title(get_title('I norm',I_norm));
-    subplot(8,1,7); imagesc(x_out(:,:));
-    title(get_title('x out',x_out));
-    subplot(8,1,8); imagesc(y_out(:,:));
-    title(get_title('y out',y_out));
+    subplot(8,1,1); imagesc(x_in(:,:));   subplot_title('x in',   x_in);
+    subplot(8,1,2); imagesc(y_in(:,:));   subplot_title('y in',   y_in);
+    subplot(8,1,3); imagesc(x_ee(:,:));   subplot_title('x ee',   x_ee);
+    subplot(8,1,4); imagesc(x_ei(:,:));   subplot_title('x ei',   x_ei);
+    subplot(8,1,5); imagesc(y_ie(:,:));   subplot_title('y ie',   y_ie);
+    subplot(8,1,6); imagesc(I_norm(:,:)); subplot_title('I norm', I_norm);
+    subplot(8,1,7); imagesc(x_out(:,:));  subplot_title('x out',  x_out);
+    subplot(8,1,8); imagesc(y_out(:,:));  subplot_title('y out',  y_out);
     %drawnow
     waitforbuttonpress;
 end
 
-function t = get_title(name, data)
-    t = [name,' (range: [',num2str(min(data(:))),',',num2str(max(data(:))),'])'];
+function subplot_title(name, data)
+    title([name,' (range: [',num2str(min(data(:))),',',num2str(max(data(:))),'])']);
 end
