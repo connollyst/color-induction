@@ -1,4 +1,4 @@
-function I_norm = normalization(norm_mask, newgx_toroidal_x, scale_interactions, config)
+function I_norm = normalization(norm_mask, gx_padded, scale_interactions, config)
 %NORMALIZATION
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
@@ -22,11 +22,11 @@ function I_norm = normalization(norm_mask, newgx_toroidal_x, scale_interactions,
         s2 = s - scale_distance;
         radi=(size(M_norm_conv{s2})-1)/2;
         % sum over all the orientations
-        sum_newgx_toroidal_x_sc = sum(newgx_toroidal_x{s}, 5);
+        gx_padded_sc = sum(gx_padded{s}, 5);
         despl = radi;
         for c=1:n_channels
             kk = model.data.convolutions.optima( ...
-                sum_newgx_toroidal_x_sc( ...
+                gx_padded_sc( ...
                     Delta_ext(s) + 1 - radi(1) : Delta_ext(s) + n_cols + radi(1), ...
                     Delta_ext(s) + 1 - radi(2) : Delta_ext(s) + n_rows + radi(2), ...
                     c ...
