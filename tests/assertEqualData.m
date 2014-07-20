@@ -24,6 +24,7 @@ function assertEqualDataCells(actual, expected)
 end
 
 function assertEqualDataMatrices(actual, expected)
+    assertEqual(size(actual), size(expected), 'matrices should be the same size');
     for c=1:size(actual, 3)
         for s=1:size(actual, 4)
             for o=1:size(actual, 5)
