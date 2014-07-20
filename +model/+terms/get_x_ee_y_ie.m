@@ -24,8 +24,8 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
 end
 
 function orient_interactions = apply_orientation_interaction(gx_padded, filter_fft, scale_interactions, config)
-%Apply orientation filter (J or W) to get excitation-excitation/inhibition
-%interactions between orientations.
+% Apply orientation filter (J or W) to get excitation-excitation/inhibition
+% interactions between orientations.
 %
 %   The filter is expected to be the J or W struct array in Fourier space.
 %   It is applied to the gx input (padded to avoid edge effects) with
@@ -126,7 +126,7 @@ function interaction = apply_scale_interaction(data, scale_interactions)
 end
 
 function gx_padded_fft = apply_fft(gx_padded)
-%Preprocess the input data to Fourier space for faster convolutions.
+% Preprocess the input data to Fourier space for faster convolutions.
     gx_padded_fft = cell(size(gx_padded));
     for s=1:length(gx_padded)
         gx_padded_fft{s} = zeros(size(gx_padded{s}));
@@ -141,7 +141,7 @@ function gx_padded_fft = apply_fft(gx_padded)
 end
 
 function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
-%Apply the FFT filter (J or W) to gx to get it's interactions.
+% Apply the FFT filter (J or W) to gx to get it's interactions.
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     if config.compute.use_fft
         % gx is already in Fourier space
@@ -153,7 +153,7 @@ function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
 end
 
 function center = extract_center(padded, scale_delta_s, config)
-%Remove the padding added to the outside of each image.
+% Remove the padding added to the outside of each image.
     n_cols = config.image.width;
     n_rows = config.image.height;
     cols   = scale_delta_s+1 : scale_delta_s+n_cols;
