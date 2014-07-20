@@ -38,18 +38,10 @@ function interaction = apply(gx_padded, filter_fft, scale_interactions, config)
                 for s=1:n_scales
                     shift_size   = half_size_filter{s};
                     filter_fft_s = filter_fft{s}(:,:,1,ov,oc); % TODO last filter seems to always be 0???
-                    if config.zli.interaction.color.enabled
-                        % TODO filters can be initialized in n-dimensions
-                        filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
-                        gx = gx_padded{scale_distance+s}(:,:,:,ov);
+                    for c=1:n_channels
+                        gx = gx_padded{scale_distance+s}(:,:,c,ov);
                         gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                        oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
-                    else
-                        for c=1:n_channels
-                            gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                            gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                            oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
-                        end
+                        oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
                     end
                 end
             end
