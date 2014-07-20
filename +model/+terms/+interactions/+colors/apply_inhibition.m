@@ -3,18 +3,21 @@ function inhibition = apply_inhibition(data, color_interactions, config)
     if ~config.zli.interaction.color.enabled
         inhibition = data;
     else
-        color_filter = color_interactions.inhibition_filter;
         switch config.zli.interaction.color.scheme
             case 'default'
                 % No inter-color inhibition
                 inhibition = data;
             case 'opponent'
                 % Only opponent colors inhibit each other
-                inhibition = model.utils.zeros(config);
+                inhibition   = model.utils.zeros(config);
+                color_filter = color_interactions.inhibition_filter;
                 for i=1:2:config.image.n_channels
                     on  = i;
                     off = i+1;
-                    inhibition(:,:,[on off],:,:) = model.data.convolutions.optima(data(:,:,[on off],:,:), color_filter, 0, 0);
+                    inhibition(:,:,[on off],:,:) = ...
+                        model.data.convolutions.optima( ...
+                            data(:,:,[on off],:,:), color_filter, 0, 0 ...
+                        );
                 end
                 if config.display.plot >= 2
                     figure(2); title('Inhibition');
