@@ -1,5 +1,4 @@
 function test_suite = test_optima_fft
-%TEST_ADD_PADDING Test suite for convolutions.optima_fft()
   initTestSuite;
 end
 

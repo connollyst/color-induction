@@ -20,12 +20,12 @@ runtests integration_tests
 
 ### Run a specific test suite
 ```
-runtests unit_tests.test_add_padding
+runtests unit_tests.model.data.wavelet.test_decomposition
 runtests integration_tests.test_apply_model
 ```
 
 ### Run a specific test
 ```
-runtests unit_tests.test_add_padding:test_gx_padded_3D_t01_i01
+runtests unit_tests.model.data.wavelet.test_decomposition:test_replication_of_single_image
 runtests integration_tests.test_apply_model:test_separate_and_opponent_ON_OFF_without_channel_interactions
 ```

@@ -1,5 +1,4 @@
-function test_suite = test_add_padding
-%TEST_ADD_PADDING Test suite for model.add_padding()
+function test_suite = test_add
   initTestSuite;
 end
 

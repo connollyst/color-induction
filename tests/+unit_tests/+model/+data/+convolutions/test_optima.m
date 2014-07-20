@@ -1,5 +1,4 @@
 function test_suite = test_optima
-%TEST_ADD_PADDING Test suite for convolutions.optima()
   initTestSuite;
 end
 
