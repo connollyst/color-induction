@@ -44,10 +44,8 @@ function test_separate_and_opponent_ON_OFF_without_channel_interactions
     config.zli.n_membr                   = 3;
     config.zli.n_iter                    = 3;
     config.zli.interaction.color.enabled = 0;
-    config.zli.interaction.color.scheme  = 'default';
     config.zli.ON_OFF                    = 'separate';
     separate = model.apply(I, config);
-    config.zli.interaction.color.scheme  = 'opponent';
     config.zli.ON_OFF                    = 'opponent';
     opponent = model.apply(I, config);
     assertEqualData(separate, opponent)
