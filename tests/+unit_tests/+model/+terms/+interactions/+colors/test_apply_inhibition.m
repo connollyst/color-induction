@@ -6,9 +6,8 @@ end
 
 function test_no_color_inhibition_when_disabled
     % Given
-    config = struct();
     config.zli.interaction.color.enabled = false;
-    color_interactions = model.terms.interactions.colors.inhibition_filter(config);
+    color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
     I_in = get_small_peppers();
     % When
     I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
@@ -18,10 +17,9 @@ end
 
 function test_no_color_inhibition_when_default
     % Given
-    config = struct();
     config.zli.interaction.color.enabled = true;
     config.zli.interaction.color.scheme  = 'default';
-    color_interactions = model.terms.interactions.colors.inhibition_filter(config);
+    color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
     I_in = get_small_peppers();
     % When
     I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
