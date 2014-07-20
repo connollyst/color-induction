@@ -9,7 +9,7 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
 %       x_ee: excitatory-excitatory term
 %       y_ie: excitatory-inhibitory term
 
-    if config.compute.use_fft
+    if config.zli.interaction.orient.enabled && config.compute.use_fft
         gx_padded = apply_fft(gx_padded);
     end
     
@@ -19,11 +19,11 @@ function [x_ee, y_ie] = get_x_ee_y_ie(gx_padded, interactions, config)
     x_ee = apply_color_excitation(x_ee, interactions.color, config);
     y_ie = apply_color_inhibition(y_ie, interactions.color, config);
     
-    x_ee = apply_scale_interaction(x_ee, interactions.scale);
-    y_ie = apply_scale_interaction(y_ie, interactions.scale);
+    x_ee = apply_scale_interaction(x_ee, interactions.scale, config);
+    y_ie = apply_scale_interaction(y_ie, interactions.scale, config);
 end
 
-function orient_interactions = apply_orientation_interaction(gx_padded, filter_fft, scale_interactions, config)
+function interaction = apply_orientation_interaction(gx_padded, filter_fft, scale_interactions, config)
 % Apply orientation filter (J or W) to get excitation-excitation/inhibition
 % interactions between orientations.
 %
@@ -42,29 +42,44 @@ function orient_interactions = apply_orientation_interaction(gx_padded, filter_f
     n_scales            = config.wave.n_scales;
     n_orients           = config.wave.n_orients;
     
-    orient_interactions = model.utils.zeros(config);
-    for oc=1:n_orients  % for each central (reference) orientation
-        oc_interactions = model.utils.zeros(config);
-        for ov=1:n_orients  % for all orientations
-            for s=1:n_scales
-                shift_size   = half_size_filter{s};
-                filter_fft_s = filter_fft{s}(:,:,1,ov,oc); % TODO last filter seems to always be 0???
-                if config.zli.interaction.color.enabled
-                    % TODO filters can be initialized in n-dimensions
-                    filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
-                    gx = gx_padded{scale_distance+s}(:,:,:,ov);
-                    gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                    oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
-                else
+    interaction = model.utils.zeros(config);
+    if ~config.zli.interaction.orient.enabled
+        for oc=1:n_orients  % for each central (reference) orientation
+            oc_interactions = model.utils.zeros(config);
+            for ov=1:n_orients  % for all orientations
+                for s=1:n_scales
                     for c=1:n_channels
                         gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                        gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
-                        oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
+                        oc_interactions(:,:,c,s,ov) = extract_center(gx, scale_deltas(s), config);
                     end
                 end
             end
+            interaction(:,:,:,:,oc) = sum(oc_interactions, 5);
         end
-        orient_interactions(:,:,:,:,oc) = sum(oc_interactions, 5);
+    else
+        for oc=1:n_orients  % for each central (reference) orientation
+            oc_interactions = model.utils.zeros(config);
+            for ov=1:n_orients  % for all orientations
+                for s=1:n_scales
+                    shift_size   = half_size_filter{s};
+                    filter_fft_s = filter_fft{s}(:,:,1,ov,oc); % TODO last filter seems to always be 0???
+                    if config.zli.interaction.color.enabled
+                        % TODO filters can be initialized in n-dimensions
+                        filter_fft_s = repmat(filter_fft_s, [1, 1, n_channels]);
+                        gx = gx_padded{scale_distance+s}(:,:,:,ov);
+                        gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
+                        oc_interactions(:,:,:,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
+                    else
+                        for c=1:n_channels
+                            gx = gx_padded{scale_distance+s}(:,:,c,ov);
+                            gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
+                            oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
+                        end
+                    end
+                end
+            end
+            interaction(:,:,:,:,oc) = sum(oc_interactions, 5);
+        end
     end
 end
 
@@ -119,7 +134,7 @@ function inhibition = apply_color_inhibition(data, color_interactions, config)
     end
 end
 
-function interaction = apply_scale_interaction(data, scale_interactions)
+function interaction = apply_scale_interaction(data, scale_interactions, config)
 % Apply scale filter to get interactions between scales.
     if ~config.zli.interaction.scale.enabled
         interaction  = data;
