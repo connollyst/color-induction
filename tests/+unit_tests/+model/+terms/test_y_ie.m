@@ -1,50 +1,49 @@
-function test_suite = test_get_excitation_and_inhibition
-%TEST_ADD_PADDING Test suite for model.test_get_excitation_and_inhibition()
+function test_suite = test_y_ie
   initTestSuite;
 end
 
-function test_x_ee_3D_t01_i01
-    assert_x_ee('3D_t01_i01', 0, 0);
+
+function test_y_ie_3D_t01_i01
+    assert_y_ie('3D_t01_i01', 0, 0);
 end
-function test_x_ee_3D_t01_i01_fft
-    assert_x_ee('3D_t01_i01', 1, 0);
+function test_y_ie_3D_t01_i01_fft
+    assert_y_ie('3D_t01_i01', 1, 0);
 end
 
 
-function test_x_ee_3D_t01_i02
-    assert_x_ee('3D_t01_i02', 0, 0);
+function test_y_ie_3D_t01_i02
+    assert_y_ie('3D_t01_i02', 0, 0);
 end
-function test_x_ee_3D_t01_i02_fft
-    assert_x_ee('3D_t01_i02', 1, 0);
-end
-
-
-function test_x_ee_3D_t01_i03
-    assert_x_ee('3D_t01_i03', 0, 0);
-end
-function test_x_ee_3D_t01_i03_fft
-    assert_x_ee('3D_t01_i03', 1, 0);
+function test_y_ie_3D_t01_i02_fft
+    assert_y_ie('3D_t01_i02', 1, 0);
 end
 
 
-function test_x_ee_3D_t04_i01
-    assert_x_ee('3D_t04_i01', 0, 0);
+function test_y_ie_3D_t01_i03
+    assert_y_ie('3D_t01_i03', 0, 0);
 end
-function test_x_ee_3D_t04_i01_fft
-    assert_x_ee('3D_t04_i01', 1, 0);
+function test_y_ie_3D_t01_i03_fft
+    assert_y_ie('3D_t01_i03', 1, 0);
 end
 
+
+function test_y_ie_3D_t04_i01
+    assert_y_ie('3D_t04_i01', 0, 0);
+end
+function test_y_ie_3D_t04_i01_fft
+    assert_y_ie('3D_t04_i01', 1, 0);
+end
 
 %% ASSERTIONS
 
 % Assert that, given known input, the output is as expected
 
-function assert_x_ee(instance, use_fft, color_interaction)
+function assert_y_ie(instance, use_fft, color_interaction)
     config                    = get_config(use_fft, color_interaction);
     [gx_padded, interactions] = get_input(instance, config);
-    x_ee                      = model.terms.get_x_ee(gx_padded, interactions, config);
+    y_ie                      = model.terms.y_ie(gx_padded, interactions, config);
     expected                  = get_expected(instance);
-    assertEqualData(x_ee, expected.x_ee);
+    assertEqualData(y_ie, expected.y_ie);
 end
 
 %% TEST UTILITIES

@@ -1,5 +1,5 @@
-function y_ie = get_y_ie(gx_padded, interactions, config)
-%GET_X_EE_Y_IE Calculate the excitatory and inhibitory terms.
+function y_ie = y_ie(gx_padded, interactions, config)
+%MODEL.TERMS.Y_IE Calculate the excitatory and inhibitory terms.
 %   Input
 %       gx_padded:      the gx input data, padded to avoid edge effects
 %       JW:             the struct of J and W interaction data

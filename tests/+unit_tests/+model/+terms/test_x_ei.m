@@ -1,4 +1,4 @@
-function test_suite = test_get_x_ei
+function test_suite = test_x_ei
   initTestSuite;
 end
 
@@ -42,7 +42,7 @@ end
 function assert_x_ei(instance, use_fft, color_interaction)
     config                    = get_config(use_fft, color_interaction);
     [gy_padded, interactions] = get_input(instance, config);
-    x_ei                      = model.terms.get_x_ei(gy_padded, interactions, config);
+    x_ei                      = model.terms.x_ei(gy_padded, interactions, config);
     expected                  = get_expected(instance);
     assertEqualData(x_ei, expected.x_ei);
 end

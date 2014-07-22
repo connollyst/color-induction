@@ -1,5 +1,5 @@
-function [x, y] = get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
-%GET_XY Formulas (1) and (2) p.192, Li 1999
+function [x, y] = xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
+%MODEL.TERMS.GET_XY Formulas (1) and (2) p.192, Li 1999
 %   Calculate the next excitatory (x) and inhibitory (y) membrane
 %   potentials.
     

@@ -1,5 +1,4 @@
-function test_suite = test_get_xy
-%TEST_ADD_PADDING Test suite for model.terms.get_xy()
+function test_suite = test_xy
   initTestSuite;
 end
 
@@ -39,14 +38,14 @@ end
 
 function assert_x(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
-    [x_out, ~] = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [x_out, ~] = model.terms.xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
     assertEqualData(x_out, expected.x);
 end
 
 function assert_y(instance)
     [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance);
-    [~, y_out] = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [~, y_out] = model.terms.xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     expected = get_expected(instance);
     assertEqualData(y_out, expected.y);
 end

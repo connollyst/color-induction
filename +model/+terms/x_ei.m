@@ -1,5 +1,5 @@
-function x_ei = get_x_ei(gy_padded, interactions, config)
-%GET_X_EI Calculate the excitatory-inhibitory term.
+function x_ei = x_ei(gy_padded, interactions, config)
+%MODEL.TERMS.X_EI Calculate the excitatory-inhibitory term.
 %   Input
 %       gy_padded:      the gy input data, padded to avoid edge effects
 %       interactions:   the struct of interaction parameters

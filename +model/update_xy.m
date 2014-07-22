@@ -15,11 +15,11 @@ function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, con
     gy             = model.terms.gy(y);
     gx_padded      = model.data.padding.add(gx, interactions, config);
     gy_padded      = model.data.padding.add(gy, interactions, config);
-    x_ei           = model.terms.get_x_ei(gy_padded, interactions, config);
-    x_ee           = model.terms.get_x_ee(gx_padded, interactions, config);
-    y_ie           = model.terms.get_y_ie(gx_padded, interactions, config);
+    x_ei           = model.terms.x_ei(gy_padded, interactions, config);
+    x_ee           = model.terms.x_ee(gx_padded, interactions, config);
+    y_ie           = model.terms.y_ie(gx_padded, interactions, config);
     I_norm         = model.terms.normalization(norm_mask, gx_padded, interactions.scale, config);
-    [x_out, y_out] = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
+    [x_out, y_out] = model.terms.xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot
         do_plot(x, y, x_ee, x_ei, y_ie, I_norm, x_out, y_out);
