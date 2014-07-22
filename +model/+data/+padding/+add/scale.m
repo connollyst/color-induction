@@ -1,14 +1,11 @@
-function [gx_padded, gy_padded] = add(x, y, scale_interactions, config)
+function [gx_padded, gy_padded] = scale(x, y, scale_interactions, config)
 %PADDING.ADD Add padding to prevent edge effects.
-%   TODO Move intermediate interaction scales to another function
-
     [ x_padded,  y_padded] = mirror_boundary(x, y, scale_interactions, config);
     [gx_padded, gy_padded] = do_something(x_padded, y_padded, scale_interactions, config);
 end
 
 function [x_toroidal, y_toroidal] = mirror_boundary(x, y, scale_interactions, config)
 %MIRROR_BOUNDARY Mirror the edges of the data to prevent edge effects.
-
     n_scales             = config.wave.n_scales;
     scale_deltas         = scale_interactions.deltas;
     scale_distance       = scale_interactions.distance;
@@ -48,14 +45,14 @@ function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, scale
     kk_tmp2_y = zeros(size(y_toroidal{n_scales+scale_distance}));
     
     for i=1:scale_distance+1
-        cols      = scale_deltas(1)+1:scale_deltas(1)+n_cols;
-        rows      = scale_deltas(1)+1:scale_deltas(1)+n_rows;
-        i_cols    = scale_deltas(i)+1:scale_deltas(i)+n_cols;
-        i_rows    = scale_deltas(i)+1:scale_deltas(i)+n_rows;
-        s_cols    = scale_deltas(n_scales)+1:scale_deltas(n_scales)+n_cols;
-        s_rows    = scale_deltas(n_scales)+1:scale_deltas(n_scales)+n_rows;
-        si_cols   = scale_deltas(n_scales-i+1)+1:scale_deltas(n_scales-i+1)+n_cols;
-        si_rows   = scale_deltas(n_scales-i+1)+1:scale_deltas(n_scales-i+1)+n_rows;
+        cols      = scale_deltas(1)+1            : scale_deltas(1)+n_cols;
+        rows      = scale_deltas(1)+1            : scale_deltas(1)+n_rows;
+        i_cols    = scale_deltas(i)+1            : scale_deltas(i)+n_cols;
+        i_rows    = scale_deltas(i)+1            : scale_deltas(i)+n_rows;
+        s_cols    = scale_deltas(n_scales)+1     : scale_deltas(n_scales)+n_cols;
+        s_rows    = scale_deltas(n_scales)+1     : scale_deltas(n_scales)+n_rows;
+        si_cols   = scale_deltas(n_scales-i+1)+1 : scale_deltas(n_scales-i+1)+n_cols;
+        si_rows   = scale_deltas(n_scales-i+1)+1 : scale_deltas(n_scales-i+1)+n_rows;
         radius_i  = scale_distance+i;
         radius_si = n_scales+scale_distance-(i-1);
         kk_tmp1_x(cols,rows,:)     = kk_tmp1_x(cols,rows,:)     + border_weight(i) * gx_toroidal{radius_i}(i_cols,i_rows,:);

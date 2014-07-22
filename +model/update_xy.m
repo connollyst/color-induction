@@ -11,7 +11,7 @@ function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, con
 %   x_out:          The new excitatory membrane potentials.
 %   y_out:          The new inhibitory membrane potentials.
 
-    [gx_padded, gy_padded] = model.data.padding.add(x, y, interactions.scale, config);
+    [gx_padded, gy_padded] = model.data.padding.add(x, y, interactions, config);
     [x_ee, x_ei, y_ie]     = model.terms.get_excitation_and_inhibition(gx_padded, gy_padded, interactions, config);
     I_norm                 = model.terms.normalization(norm_mask, gx_padded, interactions.scale, config);
     [x_out, y_out]         = model.terms.get_xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
@@ -31,8 +31,8 @@ function do_plot(x_in, y_in, x_ee, x_ei, y_ie, I_norm, x_out, y_out)
     subplot(8,1,6); imagesc(I_norm(:,:)); subplot_title('I norm', I_norm);
     subplot(8,1,7); imagesc(x_out(:,:));  subplot_title('x out',  x_out);
     subplot(8,1,8); imagesc(y_out(:,:));  subplot_title('y out',  y_out);
-    %drawnow
-    waitforbuttonpress;
+    drawnow
+    %waitforbuttonpress;
 end
 
 function subplot_title(name, data)

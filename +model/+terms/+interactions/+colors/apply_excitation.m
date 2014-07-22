@@ -3,19 +3,10 @@ function excitation = apply_excitation(data, color_interactions, config)
     if ~config.zli.interaction.color.enabled
         excitation = data;
     else
-        color_filter = color_interactions.excitation_filter;
-        switch config.zli.interaction.color.scheme
-            case 'default'
-                % Activity in any color channel excites all others
-                % TODO should be combinatorial pair-wise
-                excitation = model.data.convolutions.optima(data, color_filter, 0, 0);
-            case 'opponent'
-                % Activity in any color channel excites all others
-                % TODO should be combinatorial pair-wise
-                excitation = model.data.convolutions.optima(data, color_filter, 0, 0);
-            otherwise
-                error('Invalid: config.zli.interaction.color.scheme=%s',...
-                                config.zli.interaction.color.scheme)
-        end
+        % Activity in any opponent color channel excites all others
+        % TODO can/should we use use fft?
+        excitation = model.data.convolutions.optima( ...
+                        data, color_interactions.excitation_filter, 0, 0 ...
+                     );
     end
 end

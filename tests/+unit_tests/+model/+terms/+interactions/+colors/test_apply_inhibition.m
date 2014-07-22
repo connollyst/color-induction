@@ -15,17 +15,7 @@ function test_no_color_inhibition_when_disabled
     assertEqual(I_out, I_in);
 end
 
-function test_no_color_inhibition_when_default
-    % Given
-    config.zli.interaction.color.enabled = true;
-    config.zli.interaction.color.scheme  = 'default';
-    color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
-    I_in = get_small_peppers();
-    % When
-    I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
-    % Then
-    assertEqual(I_out, I_in);
-end
+%% TEST COLOR OPPONENT INTERACTIONS
 
 function test_opponent_color_inhibition_simple
 % Apply opponent color inhibition to a 2D image.
@@ -82,7 +72,6 @@ function config = opponent_config(I)
     config.display.plot                            = false;
     config.display.logging                         = false;
     config.zli.interaction.color.enabled           = true;
-    config.zli.interaction.color.scheme            = 'opponent';
     config.zli.interaction.color.weight.inhibition = 0.5;
 end
 

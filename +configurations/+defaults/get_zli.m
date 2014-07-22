@@ -41,6 +41,5 @@ function zli = get_zli()
     zli.interaction.scale.enabled  = true;
     zli.interaction.orient.enabled = true;
     zli.interaction.color.enabled  = false;
-    zli.interaction.color.scheme   = 'default';     % 'default' or 'opponent'
     
 end
