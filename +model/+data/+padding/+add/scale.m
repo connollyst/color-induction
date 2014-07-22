@@ -31,14 +31,12 @@ function [gx_toroidal, gy_toroidal] = do_something(x_toroidal, y_toroidal, scale
     border_weight        = scale_interactions.border_weight;
     n_scale_interactions = scale_interactions.n_interactions;
     
-    gx_toroidal = cell(n_scale_interactions, 1);
-    gy_toroidal = cell(n_scale_interactions, 1);
-    for s=1:n_scale_interactions
-        % TODO its better to convert to gx/gy before mirror_boundary()!
-        gx_toroidal{s} = model.terms.gx(x_toroidal{s});
-        gy_toroidal{s} = model.terms.gy(y_toroidal{s});
-    end
-
+    %gx_toroidal = model.terms.gx(x_toroidal);
+    %gy_toroidal = model.terms.gy(y_toroidal);
+    gx_toroidal = x_toroidal;
+    gy_toroidal = y_toroidal;
+    
+    
     kk_tmp1_x = zeros(size(x_toroidal{scale_distance+1})); 
     kk_tmp2_x = zeros(size(x_toroidal{n_scales+scale_distance}));
     kk_tmp1_y = zeros(size(y_toroidal{scale_distance+1})); 

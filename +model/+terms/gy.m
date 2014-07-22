@@ -1,7 +1,6 @@
 function y = gy(y)
 %GY Sigmoid-like function modeling cells' firing rates in response to
 %   membrane potential y.
-%
 %   Refer to Z. Li 1999 p209   
     Ly         = 1.2;
     g1         = 0.21;
