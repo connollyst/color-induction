@@ -1,10 +1,14 @@
-function I_padded = color(I, color_interactions, config)
+function I_padded = color(I, config)
 %PADDING.ADD.COLOR Add padding to the color channel.
     if ~config.zli.interaction.color.enabled
         I_padded = I;
     else
-        % TODO padding dimensions need to be provided
-        I_padded = padarray(I, [0 0 2], 'circular');
+        if model.data.utils.is_odd(config.image.n_channels)
+            error('MODEL:uneven_opponent', ['Opponent color ' ...
+               'interactions require an even number of color channels.'])
+        end
+        padding  = config.image.n_channels / 2;
+        I_padded = padarray(I, [0 0 padding 0 0], 'circular');
     end
 end
 

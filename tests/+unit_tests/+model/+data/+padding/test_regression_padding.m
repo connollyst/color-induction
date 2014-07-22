@@ -1,4 +1,7 @@
-function test_suite = test_add
+function test_suite = test_regression_padding
+% Regression tests for padding.
+% We have known input and output from the original code and expect the
+% exact same functionality when color interactions are disabled.
   initTestSuite;
 end
 

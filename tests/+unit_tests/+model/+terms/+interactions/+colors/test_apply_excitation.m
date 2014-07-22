@@ -21,7 +21,7 @@ function test_opponent_excitation
     % Given
     I_in     = get_small_pepperman();
     config   = opponent_config(I_in);
-    I_padded = model.data.padding.add.color(I_in, [], config);
+    I_padded = model.data.padding.add.color(I_in, config);
     color_interactions.excitation_filter = model.terms.interactions.colors.excitation_filter(config);
     % When
     I_out = model.terms.interactions.colors.apply_excitation(I_padded, color_interactions, config);
