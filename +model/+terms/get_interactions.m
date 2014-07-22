@@ -5,6 +5,7 @@ function interactions = get_interactions(config)
     interactions                         = struct;
     
     %% COLOR INTERACTION PARAMETERS
+    interactions.color.n_interactions    = model.terms.interactions.colors.n_interactions(config);
     interactions.color.excitation_filter = model.terms.interactions.colors.excitation_filter(config);
     interactions.color.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
     

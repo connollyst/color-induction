@@ -21,12 +21,12 @@ function test_opponent_excitation
     % Given
     I_in     = get_small_pepperman();
     config   = opponent_config(I_in);
-    I_padded = model.data.padding.add.color(I_in, config);
-    color_interactions.excitation_filter = model.terms.interactions.colors.excitation_filter(config);
+    interactions = model.terms.get_interactions(config);
+    I_padded = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out = model.terms.interactions.colors.apply_excitation(I_padded, color_interactions, config);
+    I_out = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
     % Then
-    I_expected = convn(I_padded, color_interactions.excitation_filter, 'same');
+    I_expected = convn(I_padded, interactions.color.excitation_filter, 'same');
     assertEqual(I_out, I_expected);
 end
 
@@ -45,9 +45,11 @@ end
 function config = opponent_config(I)
     config = common_config(I);
     config.zli.interaction.color.weight.excitation = 0.5;
+    config.zli.interaction.color.weight.inhibition = 0.2;
 end
 
 function config = common_config(I)
+    config = configurations.double_opponent();
     config.image.width                             = size(I, 1);
     config.image.height                            = size(I, 2);
     config.image.n_channels                        = size(I, 3);

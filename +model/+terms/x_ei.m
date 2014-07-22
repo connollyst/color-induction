@@ -8,23 +8,28 @@ function x_ei = x_ei(gy_padded, interactions, config)
 %       x_ei: excitatory-inhibitory term
 
     % TODO it's sloppy that we don't get the data how we want it
-    gy   = restructure_data(gy_padded, interactions.scale, config);
+    gy   = restructure_data(gy_padded, interactions, config);
     x_ei = model.utils.zeros(config);
     
     for oc=1:config.wave.n_orients  % loop over the central (reference) orientation
         ei               = apply_scale_interactions(gy, interactions.scale, config);
-        ei               = apply_orient_interactions(ei, oc, interactions.orient, config);    
         ei               = apply_color_interactions(ei, interactions.color, config);
+        ei               = apply_orient_interactions(ei, oc, interactions.orient, config);    
         x_ei(:,:,:,:,oc) = ei;
     end
 end
 
-function center = restructure_data(padded, scale_interactions, config)
+function center = restructure_data(padded, interactions, config)
 %RESTRUCTURE_DATA Extract the centers of the padded image.
 %   TODO why pad the image in the first place??
-    center = model.utils.zeros(config); % TODO doesn't account for extra scales
-    for s=1:scale_interactions.n_interactions
-        center(:,:,:,s,:) = extract_center(padded, s, scale_interactions, config);
+    n_cols     = config.image.width;
+    n_rows     = config.image.height;
+    n_channels = interactions.color.n_interactions;
+    n_scales   = interactions.scale.n_interactions;
+    n_orients  = config.wave.n_orients;
+    center = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    for s=1:n_scales
+        center(:,:,:,s,:) = extract_center(padded, s, interactions.scale, config);
     end
 end
 
@@ -59,7 +64,7 @@ function ei_out = remove_extra_scales(ei_in, scale_interactions, config)
     scale_distance   = scale_interactions.distance;
     n_scales         = config.wave.n_scales;
     real_scale_range = scale_distance+1:scale_distance+n_scales;
-    ei_out               = ei_in(:,:,:,real_scale_range,:);
+    ei_out           = ei_in(:,:,:,real_scale_range,:);
 end
 
 function ei = apply_orient_interactions(ei, center_orient, orient_interactions, config)
@@ -83,4 +88,9 @@ end
 
 function ei = apply_color_interactions(ei, color_interactions, config)
     % TODO what kind of interactions do we want?
+    n_interactions = color_interactions.n_interactions;
+    n_channels     = config.image.n_channels;
+    n_padding      = (n_interactions - n_channels) / 2;
+    center         = n_padding+1:n_padding+n_channels;
+    ei             = ei(:,:,center,:,:);    % TODO implement interaction
 end
