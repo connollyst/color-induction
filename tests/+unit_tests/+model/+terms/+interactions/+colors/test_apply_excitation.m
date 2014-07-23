@@ -63,6 +63,8 @@ function config = common_config(I)
     config.wave.n_orients                          = 1;
     config.display.plot                            = false;
     config.display.logging                         = false;
+    config.zli.interaction.orient.enabled          = false;
+    config.zli.interaction.scale.enabled           = false;
     config.zli.interaction.color.enabled           = true;
 end
 
