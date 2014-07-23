@@ -15,6 +15,22 @@ function test_no_color_inhibition_when_disabled
     assertEqual(I_out, I_in);
 end
 
+function test_no_color_inhibition_with_zero_weight
+% Apply opponent color inhibition to a 4D image.
+% Assert that the two pairs of channels (1 & 2, and 3 & 4) inhibit
+% themselves, but that there is no inhibition between the pairs.
+    % Given
+    I_in         = get_small_pepperman();
+    config       = opponent_config(I_in);
+    config.zli.interaction.color.weight.inhibition = 0;
+    interactions = model.terms.get_interactions(config);
+    % TODO should we add padding?
+    % When
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
+    % Then
+    assertEqual(I_out, I_in);
+end
+
 %% TEST COLOR OPPONENT INTERACTIONS
 
 function test_opponent_color_inhibition_simple
