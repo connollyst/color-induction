@@ -1,6 +1,10 @@
 function test_suite = test_regression
 % Ensure backward compatability with the original model by comparing the
 % output with that obtained from the original model.
+% Note: due to a rounding difference between the original model and the
+%       current model, we actually assert the output is exactly what is
+%       expected from this model, and also assert that the output is
+%       'almost' what is expected from the original model.
   initTestSuite;
 end
 
@@ -29,8 +33,8 @@ function assert_apply_model(channels)
     % When
     actual   = model.apply(I, config);
     % Then
-    expected = get_expected(channels);
-    assertEqualData(actual, expected)
+    assertEqualData(actual,           get_expected_current(channels))
+    assertElementsAlmostEqual(actual, get_expected_original(channels));
 end
 
 %% TEST UTILITIES
@@ -56,7 +60,12 @@ function I = get_input(channels)
     I      = input.I(:,:,channels);
 end
 
-function expected = get_expected(channels)
-    expected = load('data/expected/apply_model_3D.mat');
+function expected = get_expected_current(channels)
+    expected = load('data/expected/regression_current.mat');
+    expected = expected.O(:,:,channels);
+end
+
+function expected = get_expected_original(channels)
+    expected = load('data/expected/regression_original.mat');
     expected = expected.O(:,:,channels);
 end
