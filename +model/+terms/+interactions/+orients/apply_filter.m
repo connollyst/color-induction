@@ -8,7 +8,7 @@ function interaction = apply_filter(gx_padded, filter_fft, scale_interactions, c
 %   If config.compute.use_fft is true, gx_padded is expected to be in
 %   Fourier space also. This reduces computation time.
 
-    % TODO why do orientation interactions need scale interaction params??
+    % TODO orientation interactions don't need to add extra scales!
     scale_deltas        = scale_interactions.deltas;
     scale_distance      = scale_interactions.distance;
     half_size_filter    = scale_interactions.filter_half_size;
