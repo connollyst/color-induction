@@ -8,7 +8,7 @@ function test_no_color_inhibition_when_disabled
     % Given
     config.zli.interaction.color.enabled = false;
     color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
-    I_in = get_small_peppers();
+    I_in  = get_small_pepperman();
     % When
     I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
     % Then
@@ -21,16 +21,15 @@ function test_opponent_color_inhibition_simple
 % Apply opponent color inhibition to a 2D image.
 % Assert that the two color channels inhibit each other as expected.
     % Given
-    I_in = get_small_peppers();
-    I_in = I_in(:,:,[1,2]);     % Reduce to a 2D image
-    config = opponent_config(I_in);
-    color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
+    I_in         = get_small_pepperman();
+    I_in         = I_in(:,:,[1,2]);     % Reduce to a 2D image
+    config       = opponent_config(I_in);
+    interactions = model.terms.get_interactions(config);
+    % TODO should we add padding?
     % When
-    I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
     % Then
-    I_expected = model.data.convolutions.optima( ...
-                    I_in(:,:,:), color_interactions.inhibition_filter, 0, 0 ...
-                 );
+    I_expected   = convn(I_in, interactions.color.inhibition_filter, 'same');
     assertEqual(I_out, I_expected);
 end
 
@@ -39,31 +38,43 @@ function test_opponent_color_inhibition_advanced
 % Assert that the two pairs of channels (1 & 2, and 3 & 4) inhibit
 % themselves, but that there is no inhibition between the pairs.
     % Given
-    I_in = get_small_peppers();
-    I_in(:,:,4) = I_in(:,:,2);  % Bump up to a 4D image
-    config = opponent_config(I_in);
-    color_interactions.inhibition_filter = model.terms.interactions.colors.inhibition_filter(config);
+    I_in         = get_small_pepperman();
+    config       = opponent_config(I_in);
+    interactions = model.terms.get_interactions(config);
+    % TODO should we add padding?
     % When
-    I_out = model.terms.interactions.colors.apply_inhibition(I_in, color_interactions, config);
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
     % Then
-    I_expected = zeros(config.image.width, config.image.height, 4);
+    I_expected   = zeros(config.image.width, config.image.height, 4);
     I_expected(:,:,[1,2]) = model.data.convolutions.optima( ...
-                    I_in(:,:,[1,2]), color_interactions.inhibition_filter, 0, 0 ...
+                    I_in(:,:,[1,2]), interactions.color.inhibition_filter, 0, 0 ...
                  );
     I_expected(:,:,[3,4]) = model.data.convolutions.optima( ...
-                    I_in(:,:,[3,4]), color_interactions.inhibition_filter, 0, 0 ...
+                    I_in(:,:,[3,4]), interactions.color.inhibition_filter, 0, 0 ...
                  );
     assertEqual(I_out, I_expected);
 end
 
 %% UTILITIES
 
-function small_peppers = get_small_peppers()
-    peppers = imread('peppers.png');
-    small_peppers = im2double(imresize(peppers, 0.1));
+function peppers = get_small_pepperman()
+% Returns a small test image of represent an opponent color image
+    peppers  = im2double(imresize(imread('peppers.png'), 0.1));
+    man      = im2double(imresize(imread('cameraman.tif'), 0.1));
+    man_cols = size(man, 1);
+    man_rows = size(man, 2);
+    peppers  = peppers(1:man_cols, 1:man_rows);
+    peppers(:,:,4) = man;
 end
 
 function config = opponent_config(I)
+    config = common_config(I);
+    config.zli.interaction.color.weight.excitation = 0.5;
+    config.zli.interaction.color.weight.inhibition = 0.2;
+end
+
+function config = common_config(I)
+    config = configurations.double_opponent();
     config.image.width                             = size(I, 1);
     config.image.height                            = size(I, 2);
     config.image.n_channels                        = size(I, 3);
@@ -72,7 +83,6 @@ function config = opponent_config(I)
     config.display.plot                            = false;
     config.display.logging                         = false;
     config.zli.interaction.color.enabled           = true;
-    config.zli.interaction.color.weight.inhibition = 0.5;
 end
 
 % Tests:
