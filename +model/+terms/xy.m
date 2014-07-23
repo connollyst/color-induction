@@ -10,8 +10,7 @@ function [x, y] = xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             - config.zli.alphay * y...                  % decay
             + model.terms.gx(x)...
             + y_ie...
-            + 1.0...                                    % spontaneous firing rate
-            + model.terms.noise(config)...              % neural noise
+            + model.terms.Ic(config) ...
         );
     % (2) excitatory neurons
     x = x + prec * (...
@@ -20,8 +19,6 @@ function [x, y] = xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config)
             + config.zli.J0 * model.terms.gx(x)...      % input
             + x_ee...
             + tIitheta...                               % visual input at time t
-            + I_norm...                                 % normalization
-            + 0.85...                                   % spontaneous firing rate
-            + model.terms.noise(config)...              % neural noise
+            + model.terms.Io(I_norm, config) ...
         );
 end

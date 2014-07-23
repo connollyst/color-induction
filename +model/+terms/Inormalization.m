@@ -1,5 +1,6 @@
-function I_norm = normalization(norm_mask, gx_padded, scale_interactions, config)
-%NORMALIZATION
+function I_norm = Inormalization(norm_mask, gx_padded, scale_interactions, config)
+%MODEL.TERMS.INORMALIZATION Generate normalization term.
+%                           p.209, Li 1999
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
 %   over all the orientations)

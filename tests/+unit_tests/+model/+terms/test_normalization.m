@@ -1,5 +1,4 @@
-function test_suite = test_normalization_term
-%TEST_ADD_PADDING Test suite for model.terms.normalization()
+function test_suite = test_Inormalization_term
   initTestSuite;
 end
 
@@ -24,7 +23,7 @@ end
 function assert_I_norm(instance)
     % TODO get input
     [norm_mask, newgx_toroidal_x, interactions, config] = get_input(instance);
-    I_norm   = model.terms.normalization(norm_mask, newgx_toroidal_x, interactions.scale, config);
+    I_norm   = model.terms.Inormalization(norm_mask, newgx_toroidal_x, interactions.scale, config);
     expected = get_expected(instance);
     assertEqualData(I_norm, expected.I_norm);
 end
