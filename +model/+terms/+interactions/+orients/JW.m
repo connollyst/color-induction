@@ -12,8 +12,6 @@ function J_W = JW(scale_interactions, config)
     J_W = struct;
     J_W.J = J;
     J_W.W = W;
-    if config.compute.use_fft
-        J_W.J_fft = model.terms.interactions.orients.jw.utils.to_fft(J, scale_interactions, config);
-        J_W.W_fft = model.terms.interactions.orients.jw.utils.to_fft(W, scale_interactions, config);
-    end
+    J_W.J_fft = model.terms.interactions.orients.jw.utils.to_fft(J, scale_interactions, config);
+    J_W.W_fft = model.terms.interactions.orients.jw.utils.to_fft(W, scale_interactions, config);
 end
