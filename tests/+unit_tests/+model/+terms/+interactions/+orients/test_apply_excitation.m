@@ -34,7 +34,7 @@ function test_output_color_dimension
     % Then
     actual_colors   = size(I_out, 3);
     expected_colors = interactions.color.n_interactions;
-    assertEqual(expected_colors, actual_colors);
+    assertEqual(expected_colors, actual_colors); % TODO this fails because color padding is lost!
 end
 
 function test_output_scale_dimension

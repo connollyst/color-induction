@@ -16,7 +16,7 @@ function test_no_scale_padding_if_disabled
     % Then
     actual_scales   = length(padded);
     expected_scales = n_scales;
-    assertEqual(actual_scales, expected_scales);
+    assertEqual(actual_scales, expected_scales); % TODO this fails until we support disabling scales
 end
 
 function test_error_padding_to_1_scales
