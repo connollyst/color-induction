@@ -14,7 +14,7 @@ function I_out = apply(I_in, config)
 
     start_time                    = tic;
     [wavelets, residuals, config] = model.data.prepare_input(I_in, config);
-    wavelet_out                   = model.process_data_on_off(wavelets, config);
-    I_out                         = model.data.prepare_output(wavelet_out, residuals, config);
+    wavelets_out                  = model.process_data_on_off(wavelets, config);
+    I_out                         = model.data.prepare_output(wavelets_out, residuals, config);
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
