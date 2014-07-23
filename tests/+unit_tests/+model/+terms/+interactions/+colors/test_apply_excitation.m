@@ -6,27 +6,41 @@ end
 
 function test_no_color_excitation_when_disabled
     % Given
+    I_in   = get_small_pepperman();
+    config = opponent_config(I_in);
     config.zli.interaction.color.enabled = false;
     color_interactions.excitation_filter = model.terms.interactions.colors.excitation_filter(config);
-    I_in = get_small_pepperman();
     % When
-    I_out = model.terms.interactions.colors.apply_excitation(I_in, color_interactions, config);
+    I_out  = model.terms.interactions.colors.apply_excitation(I_in, color_interactions, config);
     % Then
     assertEqual(I_out, I_in);
+end
+
+function test_no_color_excitation_with_zero_weight
+    % Given
+    I_in         = get_small_pepperman();
+    config       = opponent_config(I_in);
+    config.zli.interaction.color.weight.excitation = 0;
+    interactions = model.terms.get_interactions(config);
+    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
+    % When
+    I_out        = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
+    % Then
+    assertEqual(I_out, I_padded);
 end
 
 %% TEST OPPONENT COLOR INTERACTIONS
 
 function test_opponent_excitation
     % Given
-    I_in     = get_small_pepperman();
-    config   = opponent_config(I_in);
+    I_in         = get_small_pepperman();
+    config       = opponent_config(I_in);
     interactions = model.terms.get_interactions(config);
-    I_padded = model.data.padding.add.color(I_in, interactions.color, config);
+    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
     % Then
-    I_expected = convn(I_padded, interactions.color.excitation_filter, 'same');
+    I_expected   = convn(I_padded, interactions.color.excitation_filter, 'same');
     assertEqual(I_out, I_expected);
 end
 
