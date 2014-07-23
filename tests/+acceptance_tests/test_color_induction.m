@@ -17,17 +17,17 @@ function test_no_color_induction_with_zero_weights
     configA = config;
     configA.zli.interaction.color.enabled = false;
     configB = config;
-    configA.zli.interaction.color.enabled = true;
-    configA.zli.interaction.color.weight.excitation = 0;
-    configA.zli.interaction.color.weight.inhibition = 0;
+    configB.zli.interaction.color.enabled = true;
+    configB.zli.interaction.color.weight.excitation = 0;
+    configB.zli.interaction.color.weight.inhibition = 0;
     % When
-    expected = model.apply(I, configA);
     actual   = model.apply(I, configB);
+    expected = model.apply(I, configA);
     % Then
     assertEqualData(expected, actual);
 end
 
-function ignored_test_opponent_channel_induction
+function ignored_test_color_induction
     I        = ones(42, 42, 1) * -0.3;
     I(:,:,1) = get_image()     *  0.5;
     config = configurations.double_opponent();
