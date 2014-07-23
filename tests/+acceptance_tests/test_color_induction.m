@@ -2,7 +2,7 @@ function test_suite = test_color_induction
   initTestSuite;
 end
 
-function test_opponent_channel_induction
+function ignored_test_opponent_channel_induction
     I        = ones(42, 42, 1) * -0.3;
     I(:,:,1) = get_image()     *  0.5;
     config = configurations.double_opponent();
