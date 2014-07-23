@@ -1,14 +1,12 @@
 function [gx_final, gy_final] = process_induction(Iitheta, config)
-%PROCESS_INDUCTION Apply induction model to input data.
-%   From NCZLd_channel_ON_OFF_v1_1.m to all the functions for implementing
-%   Li 1999.
-%   Iitheta: Cell struct of input stimuli at each membrane time step, eg:
-%            Iitheta{t}(c,r,d,s,o) is the column (c), row (r) and color
-%            dimension (d) of image (t), decomposed at scale (s) and
-%            orientation (o).
-%   config:  The model configuration struct array
+%MODEL.PROCESS_INDUCTION Apply induction model to input data.
+%   Iitheta:  Cell struct of input stimuli at each membrane time step, eg:
+%             Iitheta{t}(c,r,d,s,o) is the column (c), row (r) and color
+%             dimension (d) of image (t), decomposed at scale (s) and
+%             orientation (o).
+%   config:   The model configuration struct array
 %
-%   gx_final:   the excitation membrane potentials
+%   gx_final: the excitation membrane potentials
     
     validate_input(config)
 

@@ -30,7 +30,7 @@ function img_out = process_image(img, img_type, n_membr, varargin)
     else
         config = configurations.double_opponent();
     end
-
+    
     if config.wave.n_scales == 0
         % calculate number of scales automatically
         config.wave.n_scales = model.utils.calculate_n_scales(img, config);    

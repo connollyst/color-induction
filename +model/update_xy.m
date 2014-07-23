@@ -1,10 +1,10 @@
-function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, config, varargin)
+function [x_out, y_out] = update_xy(tIitheta, x, y, norm_masks, interactions, config, varargin)
 %MODEL.UPDATE_XY Update the excitatiory (x) and inhibitory (y) membrane potentials
 %   tIitheta:       Cell array of new input stimulus.
 %   x:              The current excitatory membrane potentials.
 %   y:              The current inhibitory membrane potentials.
 %   JW:             The excitation (J) and inhibition (W) connection masks.
-%   norm_mask:      Normalized interaction mask.
+%   norm_masks:     Normalized interaction mask.
 %   interactions:   Structure array defining the neuronal interactions.
 %   config:         Structure array of general application configurations.
 %
@@ -18,7 +18,7 @@ function [x_out, y_out] = update_xy(tIitheta, x, y, norm_mask, interactions, con
     x_ei           = model.terms.x_ei(gy_padded, interactions, config);
     x_ee           = model.terms.x_ee(gx_padded, interactions, config);
     y_ie           = model.terms.y_ie(gx_padded, interactions, config);
-    I_norm         = model.terms.Inormalization(norm_mask, gx_padded, interactions.scale, config);
+    I_norm         = model.terms.Inormalization(norm_masks, gx_padded, interactions.scale, config);
     [x_out, y_out] = model.terms.xy(tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config);
     
     if config.display.plot

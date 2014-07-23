@@ -2,44 +2,62 @@ function test_suite = test_y_ie
   initTestSuite;
 end
 
+%% TEST FFT DISABLED
 
 function test_y_ie_3D_t01_i01
-    assert_y_ie('3D_t01_i01', 0, 0);
+    data_name     = '3D_t01_i01';
+    use_fft       = false;
+    assert_y_ie(data_name, use_fft);
 end
-function test_y_ie_3D_t01_i01_fft
-    assert_y_ie('3D_t01_i01', 1, 0);
-end
-
 
 function test_y_ie_3D_t01_i02
-    assert_y_ie('3D_t01_i02', 0, 0);
+    data_name     = '3D_t01_i02';
+    use_fft       = false;
+    assert_y_ie(data_name, use_fft);
 end
-function test_y_ie_3D_t01_i02_fft
-    assert_y_ie('3D_t01_i02', 1, 0);
-end
-
 
 function test_y_ie_3D_t01_i03
-    assert_y_ie('3D_t01_i03', 0, 0);
+    data_name     = '3D_t01_i03';
+    use_fft       = false;
+    assert_y_ie(data_name, use_fft);
 end
-function test_y_ie_3D_t01_i03_fft
-    assert_y_ie('3D_t01_i03', 1, 0);
-end
-
 
 function test_y_ie_3D_t04_i01
-    assert_y_ie('3D_t04_i01', 0, 0);
+    data_name     = '3D_t04_i01';
+    use_fft       = false;
+    assert_y_ie(data_name, use_fft);
 end
+
+%% TEST FFT ENABLED
+
+function test_y_ie_3D_t01_i01_fft
+    data_name     = '3D_t01_i01';
+    use_fft       = true;
+    assert_y_ie(data_name, use_fft);
+end
+
+function test_y_ie_3D_t01_i02_fft
+    data_name     = '3D_t01_i02';
+    use_fft       = true;
+    assert_y_ie(data_name, use_fft);
+end
+
+function test_y_ie_3D_t01_i03_fft
+    data_name     = '3D_t01_i03';
+    use_fft       = true;
+    assert_y_ie(data_name, use_fft);
+end
+
 function test_y_ie_3D_t04_i01_fft
-    assert_y_ie('3D_t04_i01', 1, 0);
+    data_name     = '3D_t04_i01';
+    use_fft       = true;
+    assert_y_ie(data_name, use_fft);
 end
 
 %% ASSERTIONS
 
-% Assert that, given known input, the output is as expected
-
-function assert_y_ie(instance, use_fft, color_interaction)
-    config                    = get_config(use_fft, color_interaction);
+function assert_y_ie(instance, use_fft)
+    config                    = get_config(use_fft);
     [gx_padded, interactions] = get_input(instance, config);
     y_ie                      = model.terms.y_ie(gx_padded, interactions, config);
     expected                  = get_expected(instance);
@@ -48,10 +66,10 @@ end
 
 %% TEST UTILITIES
 
-function config = get_config(use_fft, color_interaction)
+function config = get_config(use_fft)
     config = get_test_config(40, 40, 3, 2);
     config.compute.use_fft = use_fft;
-    config.zli.interaction.color.enabled = color_interaction;
+    config.zli.interaction.color.enabled = false;
 end
 
 function [gx_padded, interactions] = get_input(instance, config)
