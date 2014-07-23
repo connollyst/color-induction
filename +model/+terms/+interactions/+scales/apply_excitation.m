@@ -4,4 +4,3 @@ function x_ee = apply_excitation(x_ee, scale_interactions, config)
 %       signal pathways.
     x_ee = model.terms.interactions.scales.apply(x_ee, scale_interactions, config);
 end
-

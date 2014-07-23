@@ -1,5 +1,5 @@
 function gx_padded = scale(x, scale_interactions, config)
-%PADDING.ADD Add padding to prevent edge effects.
+%PADDING.ADD.SCALE Add padding to prevent edge effects.
     x_padded  = mirror_boundary(x, scale_interactions, config);
     gx_padded = do_something(x_padded, scale_interactions, config);
 end
