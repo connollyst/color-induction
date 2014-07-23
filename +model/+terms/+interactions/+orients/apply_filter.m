@@ -1,4 +1,4 @@
-function interaction = apply(gx_padded, filter_fft, scale_interactions, config)
+function interaction = apply_filter(gx_padded, filter_fft, scale_interactions, config)
 % Apply orientation filter (J or W) to get excitation-excitation/inhibition
 % interactions between orientations.
 %
@@ -40,7 +40,7 @@ function interaction = apply(gx_padded, filter_fft, scale_interactions, config)
                     filter_fft_s = filter_fft{s}(:,:,1,ov,oc); % TODO last filter seems to always be 0???
                     for c=1:n_channels
                         gx = gx_padded{scale_distance+s}(:,:,c,ov);
-                        gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config);
+                        gx_filtered = filter_data(gx, filter_fft_s, shift_size, config);
                         oc_interactions(:,:,c,s,ov) = extract_center(gx_filtered, scale_deltas(s), config);
                     end
                 end
@@ -50,7 +50,7 @@ function interaction = apply(gx_padded, filter_fft, scale_interactions, config)
     end
 end
 
-function gx_filtered = apply_filter(gx, filter_fft_s, shift_size, config)
+function gx_filtered = filter_data(gx, filter_fft_s, shift_size, config)
 % Apply the FFT filter (J or W) to gx to get it's interactions.
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     if config.compute.use_fft
