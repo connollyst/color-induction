@@ -24,7 +24,8 @@ function [gx_final, gy_final] = process_induction(Iitheta, config)
         logger.tic(config)
         for t_iter=1:config.zli.n_iter  % from the differential equation (Euler!)
             logger.log('Membrane interation: %i/%i\n', t_iter, config.zli.n_iter, config);
-            [x, y] = model.update_xy(Iitheta{t}, x, y, norm_masks, interactions, config);
+            title  = ['Iteraction ',num2str(t),'x',num2str(t_iter)];
+            [x, y] = model.update_xy(Iitheta{t}, x, y, norm_masks, interactions, config, title);
         end
         % TODO we are bypassing initialization, no?
         gx_final{t} = model.terms.gx(x);
