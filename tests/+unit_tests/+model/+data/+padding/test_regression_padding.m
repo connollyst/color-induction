@@ -62,7 +62,7 @@ end
 %% TEST UTILITIES
 
 function [gx, gy, interactions, config] = get_input(instance)
-    input        = load(['data/input/add_padding_',instance,'.mat']);
+    input        = load(['data/input/update_xy_',instance,'.mat']);
     x            = input.x;
     y            = input.y;
     gx           = model.terms.gx(x);

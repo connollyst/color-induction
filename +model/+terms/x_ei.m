@@ -1,4 +1,4 @@
-function x_ei = x_ei(gy_padded, interactions, config)
+function x_ei = x_ei(gy_in, interactions, config)
 %MODEL.TERMS.X_EI Calculate the excitatory-inhibitory term.
 %   Input
 %       gy_padded:      the gy input data, padded to avoid edge effects
@@ -8,8 +8,9 @@ function x_ei = x_ei(gy_padded, interactions, config)
 %       x_ei: excitatory-inhibitory term
 
     % TODO it's sloppy that we don't get the data how we want it
-    gy   = restructure_data(gy_padded, interactions, config);
-    x_ei = model.utils.zeros(config);
+    gy_padded = model.data.padding.add(gy_in, interactions, config);
+    gy        = restructure_data(gy_padded, interactions, config);
+    x_ei      = model.utils.zeros(config);
     
     for oc=1:config.wave.n_orients  % loop over the central (reference) orientation
         ei               = apply_scale_interactions(gy, interactions.scale, config);

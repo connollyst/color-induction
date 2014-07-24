@@ -7,10 +7,9 @@ function test_output_image_dimension
     config          = get_config();
     I_in            = model.utils.zeros(config);
     interactions    = model.terms.get_interactions(config);
-    I_padded        = model.data.padding.add(I_in, interactions, config);
     % When
     I_out           = model.terms.interactions.orients.apply_excitation( ...
-                        I_padded, interactions.orient, interactions.scale, config ...
+                        I_in, interactions, config ...
                       );
     % Then
     actual_cols   = size(I_out, 1);
@@ -26,14 +25,13 @@ function test_output_color_dimension
     config          = get_config();
     I_in            = model.utils.zeros(config);
     interactions    = model.terms.get_interactions(config);
-    I_padded        = model.data.padding.add(I_in, interactions, config);
     % When
     I_out           = model.terms.interactions.orients.apply_excitation( ...
-                        I_padded, interactions.orient, interactions.scale, config ...
+                        I_in, interactions, config ...
                       );
     % Then
     actual_colors   = size(I_out, 3);
-    expected_colors = interactions.color.n_interactions;
+    expected_colors = config.image.n_channels;
     assertEqual(expected_colors, actual_colors); % TODO this fails because color padding is lost!
 end
 
@@ -42,14 +40,13 @@ function test_output_scale_dimension
     config          = get_config();
     I_in            = model.utils.zeros(config);
     interactions    = model.terms.get_interactions(config);
-    I_padded        = model.data.padding.add(I_in, interactions, config);
     % When
     I_out           = model.terms.interactions.orients.apply_excitation( ...
-                        I_padded, interactions.orient, interactions.scale, config ...
+                        I_in, interactions, config ...
                       );
     % Then
     actual_scales   = size(I_out, 4);
-    expected_scales = config.wave.n_scales; % TODO why is scale padding lost?
+    expected_scales = config.wave.n_scales;
     assertEqual(expected_scales, actual_scales);
 end
 
@@ -58,10 +55,9 @@ function test_output_orient_dimension
     config           = get_config();
     I_in             = model.utils.zeros(config);
     interactions     = model.terms.get_interactions(config);
-    I_padded         = model.data.padding.add(I_in, interactions, config);
     % When
     I_out            = model.terms.interactions.orients.apply_excitation( ...
-                        I_padded, interactions.orient, interactions.scale, config ...
+                        I_in, interactions, config ...
                        );
     % Then
     actual_orients   = size(I_out, 5);

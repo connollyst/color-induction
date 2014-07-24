@@ -1,10 +1,11 @@
-function I_norm = Inormalization(norm_mask, gx_padded, scale_interactions, config)
+function I_norm = Inormalization(gx, norm_mask, scale_interactions, config)
 %MODEL.TERMS.INORMALIZATION Generate normalization term.
 %                           p.209, Li 1999
 %   We generalize Z.Li's formula for the normalization by suming over all
 %   the scales within a given hypercolumn (cf. p209, where she already sums
 %   over all the orientations)
 
+    gx_padded           = model.data.padding.add.orient(gx, scale_interactions, config);
     n_cols              = config.image.width;
     n_rows              = config.image.height;
     n_channels          = config.image.n_channels;

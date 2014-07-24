@@ -57,27 +57,27 @@ end
 %% ASSERTIONS
 
 function assert_y_ie(instance, use_fft)
-    config                    = get_config(use_fft);
-    [gx_padded, interactions] = get_input(instance, config);
-    y_ie                      = model.terms.y_ie(gx_padded, interactions, config);
-    expected                  = get_expected(instance);
-    assertEqualData(y_ie, expected.y_ie);
+    [gx, interactions, config] = get_input(instance, use_fft);
+    actual_y_ie                = model.terms.y_ie(gx, interactions, config);
+    expected_y_ie              = get_expected(instance);
+    assertEqualData(actual_y_ie, expected_y_ie);
 end
 
 %% TEST UTILITIES
 
-function config = get_config(use_fft)
+function [gx, interactions, config] = get_input(instance, use_fft)
+    input  = load(['data/input/update_xy_',instance,'.mat']);
+    x      = input.x;
+    gx     = model.terms.gx(x);
     config = get_test_config(40, 40, 3, 2);
     config.compute.use_fft = use_fft;
-    config.zli.interaction.color.enabled = false;
-end
-
-function [gx_padded, interactions] = get_input(instance, config)
-    input        = load(['data/input/get_excitation_inhibition_',instance,'.mat']);
-    gx_padded    = input.gx_padded;
+    config.zli.interaction.orient.enabled = true;
+    config.zli.interaction.scale.enabled  = true;
+    config.zli.interaction.color.enabled  = false;
     interactions = model.terms.get_interactions(config);
 end
 
-function expected = get_expected(instance)
+function expected_y_ie = get_expected(instance)
     expected = load(['data/expected/get_excitation_inhibition_',instance,'.mat']);
+    expected_y_ie = expected.y_ie;
 end

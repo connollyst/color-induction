@@ -23,9 +23,8 @@ function test_no_color_excitation_with_zero_weight
     config.zli.interaction.color.enabled = true;
     config.zli.interaction.color.weight.excitation = 0;
     interactions = model.terms.get_interactions(config);
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out        = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
     % Then
     assertEqual(I_out, I_in);
 end
@@ -37,10 +36,10 @@ function test_opponent_excitation
     I_in         = little_pepperman();
     config       = opponent_config(I_in);
     interactions = model.terms.get_interactions(config);
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out        = model.terms.interactions.colors.apply_excitation(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
     % Then
+    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     I_conv       = convn(I_padded, interactions.color.excitation_filter, 'same');
     I_expected   = model.data.padding.remove.color(I_conv, interactions.color, config);
     assertEqual(I_out, I_expected);
