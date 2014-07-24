@@ -3,6 +3,9 @@ function test_suite = test_color_induction
 end
 
 function test_no_color_induction_with_zero_weights
+% Setting the excitation & inhibition weights to 0 should be effectively
+% the same as turning off interactions all together. Here we run both
+% scenarios and expect the output to be the same.
     % Given
     I = little_peppers();
     config = configurations.double_opponent();
@@ -21,33 +24,73 @@ function test_no_color_induction_with_zero_weights
     configB.zli.interaction.color.weight.excitation = 0;
     configB.zli.interaction.color.weight.inhibition = 0;
     % When
-    actual   = model.apply(I, configB);
     expected = model.apply(I, configA);
+    actual   = model.apply(I, configB);
     % Then
     assertEqualData(expected, actual);
 end
 
-function ignored_test_color_induction
-    I        = ones(42, 42, 1) * -0.3;
-    I(:,:,1) = get_image()     *  0.5;
+
+function test_opponent_color_excitation
+    % Given
+    I = synthetic_image() * 0.5;
     config = configurations.double_opponent();
-    config.display.logging                = false;
-    config.display.plot                   = false;
-    config.display.play                   = false;
+    config.display.logging                = true;
+    config.display.plot                   = true;
+    config.display.play                   = true;
     config.image.type                     = 'bw';
     config.wave.n_scales                  = 2;
-    config.zli.n_membr                    = 10;
+    config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
     config.zli.ON_OFF                     = 'opponent';
-    config.zli.interaction.color.enabled  = true;
-    config.zli.interaction.color.weight.excitation = 0;
-    config.zli.interaction.color.weight.inhibition = 0;
+    configB.zli.interaction.color.enabled = true;
+    configA = config;
+    configB.zli.interaction.color.weight.excitation = 0.1;
+    configB.zli.interaction.color.weight.inhibition = 0.0;
+    configB = config;
+    configB.zli.interaction.color.weight.excitation = 0.3;
+    configB.zli.interaction.color.weight.inhibition = 0.0;
     % When
-    O = model.apply(I, config);
-    %error('TODO assert the colors move in the direction expected');
+    normal  = model.apply(I, configA);
+    excited = model.apply(I, configB);
+    figure(4), surf(normal)
+    figure(5), surf(excited)
+    % Then
+    assertPositivesAverageHigher(excited, normal);
+    assertNegativesAverageLower(excited, normal);
+    assertPositivesPeakHigher(excited, normal);
+    assertNegativesPeakLower(excited, normal);
 end
 
-function I = get_image()
+function I = synthetic_image()
     I = zeros(42, 42);
-    I(11:end-11,11:end-11) = 1; 
+    I(11:end-11,11:end-11) = 1;
+end
+
+function assertPositivesAverageHigher(test, reference)
+    test_mean      = mean(test(test > 0));
+    reference_mean = mean(reference(reference > 0));
+    assertTrue(test_mean > reference_mean, ...
+                'Mean of positive values should be higher than reference.');
+end
+
+function assertNegativesAverageLower(test, reference)
+    test_mean      = mean(test(test < 0));
+    reference_mean = mean(reference(reference < 0));
+    assertTrue(test_mean < reference_mean, ...
+                'Mean of negative values should be lower than reference.');
+end
+
+function assertPositivesPeakHigher(test, reference)
+    test_mean      = max(test(test > 0));
+    reference_mean = max(reference(reference > 0));
+    assertTrue(test_mean > reference_mean, ...
+                'Peak of positive values should be higher than reference.');
+end
+
+function assertNegativesPeakLower(test, reference)
+    test_mean      = min(test(test < 0));
+    reference_mean = min(reference(reference < 0));
+    assertTrue(test_mean < reference_mean, ...
+                'Peak of negative values should be lower than reference.');
 end
