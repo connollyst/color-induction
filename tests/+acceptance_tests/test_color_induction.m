@@ -45,7 +45,7 @@ function test_opponent_color_excitation
     config.zli.ON_OFF                     = 'opponent';
     configB.zli.interaction.color.enabled = true;
     configA = config;
-    configB.zli.interaction.color.weight.excitation = 0.1;
+    configB.zli.interaction.color.weight.excitation = 0.0;
     configB.zli.interaction.color.weight.inhibition = 0.0;
     configB = config;
     configB.zli.interaction.color.weight.excitation = 0.3;
@@ -53,13 +53,40 @@ function test_opponent_color_excitation
     % When
     normal  = model.apply(I, configA);
     excited = model.apply(I, configB);
-    figure(4), surf(normal)
-    figure(5), surf(excited)
     % Then
-    assertPositivesAverageHigher(excited, normal);
-    assertNegativesAverageLower(excited, normal);
-    assertPositivesPeakHigher(excited, normal);
     assertNegativesPeakLower(excited, normal);
+    assertPositivesPeakHigher(excited, normal);
+    assertNegativesAverageLower(excited, normal);
+    assertPositivesAverageHigher(excited, normal);
+end
+
+function test_opponent_color_inhibition
+    % Given
+    I = synthetic_image() * 0.5;
+    config = configurations.double_opponent();
+    config.display.logging                = true;
+    config.display.plot                   = true;
+    config.display.play                   = true;
+    config.image.type                     = 'bw';
+    config.wave.n_scales                  = 2;
+    config.zli.n_membr                    = 5;
+    config.zli.n_iter                     = 10;
+    config.zli.ON_OFF                     = 'opponent';
+    configB.zli.interaction.color.enabled = true;
+    configA = config;
+    configB.zli.interaction.color.weight.excitation = 0.0;
+    configB.zli.interaction.color.weight.inhibition = 0.0;
+    configB = config;
+    configB.zli.interaction.color.weight.excitation = 0.0;
+    configB.zli.interaction.color.weight.inhibition = 0.3;
+    % When
+    normal  = model.apply(I, configA);
+    excited = model.apply(I, configB);
+    % Then
+    assertNegativesPeakLower(normal, excited);
+    assertPositivesPeakHigher(normal, excited);
+    assertNegativesAverageLower(normal, excited);
+    assertPositivesAverageHigher(normal, excited);
 end
 
 function I = synthetic_image()
