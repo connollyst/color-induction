@@ -22,9 +22,8 @@ function test_no_color_inhibition_with_zero_weight
     config       = opponent_config(I_in);
     config.zli.interaction.color.weight.inhibition = 0;
     interactions = model.terms.get_interactions(config);
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out        = model.terms.interactions.colors.apply_inhibition(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
     % Then
     assertEqual(I_out, I_in);
 end
@@ -39,9 +38,8 @@ function test_opponent_color_inhibition_simple
     I_in         = I_in(:,:,[1,2]);     % Reduce to a 2D image
     config       = opponent_config(I_in);
     interactions = model.terms.get_interactions(config);
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out        = model.terms.interactions.colors.apply_inhibition(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
     % Then
     I_expected   = convn(I_in, interactions.color.inhibition_filter, 'same');
     assertEqual(I_out, I_expected);
@@ -55,9 +53,8 @@ function test_opponent_color_inhibition_advanced
     I_in         = little_pepperman();
     config       = opponent_config(I_in);
     interactions = model.terms.get_interactions(config);
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
     % When
-    I_out        = model.terms.interactions.colors.apply_inhibition(I_padded, interactions.color, config);
+    I_out        = model.terms.interactions.colors.apply_inhibition(I_in, interactions.color, config);
     % Then
     I_expected   = zeros(config.image.width, config.image.height, 4);
     I_expected(:,:,[1,2]) = model.data.convolutions.optima( ...
