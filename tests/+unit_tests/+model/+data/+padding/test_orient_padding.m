@@ -4,6 +4,24 @@ function test_suite = test_orient_padding
   initTestSuite;
 end
 
+function test_no_orient_padding_if_disabled
+    % Given
+    n_scales        = 2;
+    n_orients       = 1;
+    scale_enabled   = false;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    interactions    = model.terms.get_interactions(config);
+    data            = model.utils.rand(config);
+    % When
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
+    % Then
+    actual_scales   = length(padded);
+    expected_scales = n_scales;
+    % TODO assert orients too
+    assertEqual(actual_scales, expected_scales); % TODO this fails until we support disabling scales
+end
+
 function test_orient_padding_for_20x20
     n_cols           = 20;
     n_rows           = 20;
@@ -25,10 +43,94 @@ function test_orient_padding_for_137x42
     check_orient_padding(n_cols, n_rows, n_orients)
 end
 
+function test_error_padding_to_1_scales
+    % Given
+    n_scales        = 1;
+    n_orients       = 1;
+    scale_enabled   = true;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    % When/Then
+    assertExceptionThrown(...
+        @() model.terms.get_interactions(config), 'MODEL:scales'...
+    );
+end
+
+function test_orient_padding_to_2_scales
+    % Given
+    n_scales        = 2;
+    n_orients       = 1;
+    scale_enabled   = true;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    interactions    = model.terms.get_interactions(config);
+    data            = model.utils.rand(config);
+    % When
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
+    % Then
+    actual_scales   = length(padded);
+    expected_scales = interactions.scale.n_interactions;
+    assertEqual(actual_scales, expected_scales);
+end
+
+function test_orient_padding_to_3_scales
+    % Given
+    n_scales        = 3;
+    n_orients       = 1;
+    scale_enabled   = true;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    interactions    = model.terms.get_interactions(config);
+    data            = model.utils.rand(config);
+    % When
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
+    % Then
+    actual_scales   = length(padded);
+    expected_scales = interactions.scale.n_interactions;
+    assertEqual(actual_scales, expected_scales);
+end
+
+function test_orient_padding_to_4_scales
+    % Given
+    n_scales        = 4;
+    n_orients       = 1;
+    scale_enabled   = true;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    interactions    = model.terms.get_interactions(config);
+    data            = model.utils.rand(config);
+    % When
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
+    % Then
+    actual_scales   = length(padded);
+    expected_scales = interactions.scale.n_interactions;
+    assertEqual(actual_scales, expected_scales);
+end
+
+function test_orient_padding_to_5_scales
+    % Given
+    n_scales        = 5;
+    n_orients       = 1;
+    scale_enabled   = true;
+    orient_enabled  = true;
+    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    interactions    = model.terms.get_interactions(config);
+    data            = model.utils.rand(config);
+    % When
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
+    % Then
+    actual_scales   = length(padded);
+    expected_scales = interactions.scale.n_interactions;
+    assertEqual(actual_scales, expected_scales);
+end
+
 function check_orient_padding(n_cols, n_rows, n_orients)
     % Given
+    n_scales         = 2;
     orient_enabled   = true;
-    config           = get_config(n_cols, n_rows, n_orients, orient_enabled);
+    scale_enabled    = true;
+    config           = get_config(n_cols, n_rows, n_scales, n_orients, ...
+                                            scale_enabled, orient_enabled);
     interactions     = model.terms.get_interactions(config);
     data             = model.utils.rand(config);
     % When
@@ -57,8 +159,13 @@ end
 
 %% UTILITIES
 
-function config = get_config(n_cols, n_rows, n_orients, orient_enabled)
-    config = get_test_config(n_cols, n_rows, 2, 2);
+function config = get_config(n_cols, n_rows, n_scales, n_orients, scale_enabled, orient_enabled)
+    config = get_test_config(n_cols, n_rows, 2, n_scales);
     config.wave.n_orients = n_orients;
+    config.zli.interaction.scale.enabled = scale_enabled;
     config.zli.interaction.orient.enabled = orient_enabled;
+    if scale_enabled
+        config.zli.interaction.scale.weight = 0.137;
+    end
+    config.compute.use_fft = false;
 end
