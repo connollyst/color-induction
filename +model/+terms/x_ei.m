@@ -25,7 +25,7 @@ function center = restructure_data(padded, interactions, config)
 %   TODO why pad the image in the first place??
     n_cols     = config.image.width;
     n_rows     = config.image.height;
-    n_channels = interactions.color.n_interactions;
+    n_channels = config.image.n_channels;
     n_scales   = interactions.scale.n_interactions;
     n_orients  = config.wave.n_orients;
     center = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
@@ -68,10 +68,10 @@ function ei_out = remove_extra_scales(ei_in, scale_interactions, config)
     ei_out           = ei_in(:,:,:,real_scale_range,:);
 end
 
-function ei = apply_orient_interactions(ei, center_orient, orient_interactions, config)
+function ei_out = apply_orient_interactions(ei_in, center_orient, orient_interactions, config)
 % Process interactions between orientations..
     if ~config.zli.interaction.scale.enabled
-        ei = sum(ei, 5);
+        ei_out = sum(ei_in, 5);
     else
         PsiDtheta  = orient_interactions.PsiDtheta;
         n_cols     = config.image.width;
@@ -83,15 +83,20 @@ function ei = apply_orient_interactions(ei, center_orient, orient_interactions, 
         orient_filter            = zeros(1,1,1,1,n_orients);
         orient_filter(1,1,1,1,:) = PsiDtheta(center_orient, :);
         orient_filter            = repmat(orient_filter, [n_cols, n_rows, n_channels, n_scales, 1]);
-        ei                       = sum(ei .* orient_filter, 5);
+        ei_out                   = sum(ei_in .* orient_filter, 5);
     end
 end
 
-function ei = apply_color_interactions(ei, color_interactions, config)
-    % TODO what kind of interactions do we want?
-    n_interactions = color_interactions.n_interactions;
-    n_channels     = config.image.n_channels;
-    n_padding      = (n_interactions - n_channels) / 2;
-    center         = n_padding+1:n_padding+n_channels;
-    ei             = ei(:,:,center,:,:);    % TODO implement interaction
+function ei_out = apply_color_interactions(ei_in, color_interactions, config)
+    if ~config.zli.interaction.color.enabled
+        ei_out = ei_in;
+    else
+        % TODO what kind of interactions do we want?
+        ei_padded      = model.data.padding.add.color(ei_in, color_interactions, config);
+        n_interactions = color_interactions.n_interactions;
+        n_channels     = config.image.n_channels;
+        n_padding      = (n_interactions - n_channels) / 2;
+        center         = n_padding+1:n_padding+n_channels;
+        ei_out         = ei_padded(:,:,center,:,:);    % TODO implement interaction
+    end
 end
