@@ -1,5 +1,0 @@
-function x_padded = add(x, interactions, config)
-%PADDING.ADD Add padding to prevent edge effects.
-    x_padded = model.data.padding.add.color(x,         interactions.color, config);
-    x_padded = model.data.padding.add.orient(x_padded, interactions.scale, config);
-end

@@ -32,7 +32,7 @@ function check_orient_padding(n_cols, n_rows, n_orients)
     interactions     = model.terms.get_interactions(config);
     data             = model.utils.rand(config);
     % When
-    padded           = model.data.padding.add(data, interactions, config);
+    padded           = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     assertPadding(padded, interactions, config);
 end

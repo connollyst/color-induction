@@ -43,7 +43,7 @@ function assert_gx_padded(instance)
     % Given
     [gx, ~, interactions, config] = get_input(instance);
     % When
-    gx_padded = model.data.padding.add(gx, interactions, config);
+    gx_padded = model.data.padding.add.orient(gx, interactions.scale, config);
     % Then
     expected = get_output(instance);
     assertEqualData(gx_padded, expected.newgx_toroidal_x);
@@ -53,7 +53,7 @@ function assert_gy_padded(instance)
     % Given
     [~, gy, interactions, config] = get_input(instance);
     % When
-    gy_padded = model.data.padding.add(gy, interactions, config);
+    gy_padded = model.data.padding.add.orient(gy, interactions.scale, config);
     % Then
     expected = get_output(instance);
     assertEqualData(gy_padded, expected.newgy_toroidal_y);

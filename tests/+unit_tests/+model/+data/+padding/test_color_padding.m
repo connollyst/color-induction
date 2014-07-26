@@ -12,7 +12,7 @@ function test_no_color_padding_if_disabled
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.color(data, interactions.color, config);
     % Then
     expected_colors = 4;
     assertColorSizes(padded, expected_colors);
@@ -26,7 +26,7 @@ function test_color_padding_to_2_colors
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.color(data, interactions.color, config);
     % Then
     expected_colors = actual_colors * 2;
     assertColorSizes(padded, expected_colors);
@@ -40,7 +40,7 @@ function test_color_padding_to_4_colors
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.color(data, interactions.color, config);
     % Then
     expected_colors = actual_colors * 2;
     assertColorSizes(padded, expected_colors);
@@ -54,7 +54,7 @@ function test_color_padding_to_6_colors
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.color(data, interactions.color, config);
     % Then
     expected_colors = actual_colors * 2;
     assertColorSizes(padded, expected_colors);
@@ -68,7 +68,7 @@ function test_color_padding_to_42_colors
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.color(data, interactions.color, config);
     % Then
     expected_colors = actual_colors * 2;
     assertColorSizes(padded, expected_colors);
@@ -77,10 +77,8 @@ end
 %% ASSERTIONS
 
 function assertColorSizes(padded, expected_colors)
-    for i=length(padded)
-        actual_colors = size(padded{i}, 3);
-        assertEqual(actual_colors, expected_colors, '');
-    end
+    actual_colors = size(padded, 3);
+    assertEqual(actual_colors, expected_colors, '');
 end
 
 %% UTILITIES

@@ -12,7 +12,7 @@ function test_no_scale_padding_if_disabled
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     actual_scales   = length(padded);
     expected_scales = n_scales;
@@ -38,7 +38,7 @@ function test_scale_padding_to_2_scales
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     actual_scales   = length(padded);
     expected_scales = interactions.scale.n_interactions;
@@ -53,7 +53,7 @@ function test_scale_padding_to_3_scales
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     actual_scales   = length(padded);
     expected_scales = interactions.scale.n_interactions;
@@ -68,7 +68,7 @@ function test_scale_padding_to_4_scales
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     actual_scales   = length(padded);
     expected_scales = interactions.scale.n_interactions;
@@ -83,7 +83,7 @@ function test_scale_padding_to_5_scales
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
-    padded          = model.data.padding.add(data, interactions, config);
+    padded          = model.data.padding.add.orient(data, interactions.scale, config);
     % Then
     actual_scales   = length(padded);
     expected_scales = interactions.scale.n_interactions;
