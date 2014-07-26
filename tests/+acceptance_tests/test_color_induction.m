@@ -35,9 +35,9 @@ function test_opponent_color_excitation
     % Given
     I = synthetic_image() * 0.5;
     config = configurations.double_opponent();
-    config.display.logging                = true;
-    config.display.plot                   = true;
-    config.display.play                   = true;
+    config.display.logging                = false;
+    config.display.plot                   = false;
+    config.display.play                   = false;
     config.image.type                     = 'bw';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
@@ -64,9 +64,9 @@ function test_opponent_color_inhibition
     % Given
     I = synthetic_image() * 0.5;
     config = configurations.double_opponent();
-    config.display.logging                = true;
-    config.display.plot                   = true;
-    config.display.play                   = true;
+    config.display.logging                = false;
+    config.display.plot                   = false;
+    config.display.play                   = false;
     config.image.type                     = 'bw';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
