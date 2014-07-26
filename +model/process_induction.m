@@ -44,9 +44,8 @@ end
 function [x, y] = initialize_xy(Iitheta, config)
 %INITIALIZE_XY Initialize the initial stimulus & inhibition to the system.
     
-    % x is initialized as the visual stimulus (p.192)
-    x = Iitheta{1}; % use first time frame
-    
+    % x is initialized as the first visual stimulus (p.192)
+    x = Iitheta{1};
     % y is initialized with zero activity
     y = model.utils.zeros(config);
 end
