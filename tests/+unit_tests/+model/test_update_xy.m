@@ -2,11 +2,9 @@ function test_suite = test_update_xy
   initTestSuite;
 end
 
-function ignored_test_no_color_excitation_with_zero_weight
+function test_no_color_excitation_with_zero_weight
     % Given
     [Iitheta, config]      = get_input();
-    config.display.logging = false;
-    config.display.plot    = false;
     configA = config;
     configA.zli.interaction.color.enabled           = false;
     configB = config;
@@ -21,11 +19,9 @@ function ignored_test_no_color_excitation_with_zero_weight
     assertEqualData(xA, xB);
 end
 
-function ignored_test_no_color_inhibition_with_zero_weight
+function test_no_color_inhibition_with_zero_weight
     % Given
     [Iitheta, config]      = get_input();
-    config.display.logging = false;
-    config.display.plot    = false;
     configA = config;
     configA.zli.interaction.color.enabled           = false;
     configB = config;
@@ -53,6 +49,8 @@ function [Iitheta, config] = get_input()
     I_in                   = lab2double(applycform(I_in, makecform('srgb2lab')));
     I_in                   = I_in(:,:,[1,2]);
     config                 = configurations.default();
+    config.display.logging = false;
+    config.display.plot    = false;
     config.image.transform = 'none';
     config.wave.n_scales   = 2;
     [Iitheta, ~, config]   = model.data.prepare_input(I_in, config);
