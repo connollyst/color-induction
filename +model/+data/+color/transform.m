@@ -7,6 +7,7 @@ function I_out = transform( I_in, config )
     switch config.image.transform
         case 'none'
             % Trust that the input data is already in an appropriate space..
+            logger.log('WARNING: not applying color transformation..', config);
             for i=1:length(I_in)
                 I_out{i} = im2double(I_in{i});
             end
