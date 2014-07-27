@@ -1,8 +1,13 @@
-function I_out = prepare_output(wavelet_out, residuals, config)
+function I_out = prepare_output(ON_OFF_in, ON_OFF_out, residuals, config)
 %PREPARE_OUTPUT Summary of this function goes here
 %   Detailed explanation goes here
-    O     = model.data.wavelet.decomposition_inverse(wavelet_out, residuals, config);
-    I_out = average_output(O, config);
+    if strcmp(config.zli.ON_OFF, 'separate')
+        % TODO I don't like this.. =\
+        config.image.n_channels = config.image.n_channels / 2;
+    end
+    wavelets_out = model.data.on_off.recover(ON_OFF_in, ON_OFF_out, config);
+    O            = model.data.wavelet.decomposition_inverse(wavelets_out, residuals, config);
+    I_out        = average_output(O, config);
 end
 
 function O = average_output(I, config)

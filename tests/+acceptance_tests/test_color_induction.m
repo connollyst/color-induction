@@ -16,7 +16,7 @@ function test_no_color_induction_with_zero_weights
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
-    config.zli.ON_OFF                     = 'opponent';
+    config.zli.ON_OFF                     = 'separate';
     configA = config;
     configA.zli.interaction.color.enabled = false;
     configB = config;
@@ -42,7 +42,7 @@ function test_opponent_color_excitation
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
-    config.zli.ON_OFF                     = 'opponent';
+    config.zli.ON_OFF                     = 'separate';
     configB.zli.interaction.color.enabled = true;
     configA = config;
     configB.zli.interaction.color.weight.excitation = 0.0;
@@ -71,7 +71,7 @@ function test_opponent_color_inhibition
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
-    config.zli.ON_OFF                     = 'opponent';
+    config.zli.ON_OFF                     = 'separate';
     configB.zli.interaction.color.enabled = true;
     configA = config;
     configB.zli.interaction.color.weight.excitation = 0.0;

@@ -9,7 +9,7 @@ function test_no_orient_padding_if_disabled
     n_scales        = 2;
     n_orients       = 1;
     scale_enabled   = false;
-    orient_enabled  = true;
+    orient_enabled  = false;
     config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);

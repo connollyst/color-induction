@@ -11,9 +11,9 @@ function [gx_final, gy_final] = process_induction(Iitheta, config)
     validate_input(config)
 
     % Initialize output membrane potentials
-    gx_final     = model.utils.cells(config);
-    gy_final     = model.utils.cells(config);
-    Iitheta      = model.data.normalization.normalize_input(Iitheta, config);
+    gx_final     = cell(config.zli.n_membr, 1);
+    gy_final     = cell(config.zli.n_membr, 1);
+    Iitheta      = model.data.normalization.normalize_input(Iitheta, config);   % TODO move to prepare input
     norm_masks   = model.data.normalization.get_masks(config);
     interactions = model.terms.get_interactions(config);
     [x, y]       = initialize_xy(Iitheta, config);
@@ -25,7 +25,6 @@ function [gx_final, gy_final] = process_induction(Iitheta, config)
             title  = ['Iteraction ',num2str(t),'x',num2str(t_iter)];
             [x, y] = model.update_xy(Iitheta{t}, x, y, norm_masks, interactions, config, title);
         end
-        % TODO we are bypassing initialization, no?
         gx_final{t} = model.terms.gx(x);
         gy_final{t} = model.terms.gy(y);
         logger.toc(config)
@@ -42,8 +41,6 @@ function validate_input(config)
 end
 
 function [x, y] = initialize_xy(Iitheta, config)
-%INITIALIZE_XY Initialize the initial stimulus & inhibition to the system.
-    
     % x is initialized as the first visual stimulus (p.192)
     x = Iitheta{1};
     % y is initialized with zero activity

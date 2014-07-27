@@ -1,4 +1,4 @@
-function [w, r, config] = prepare_input(I, config)
+function [ON_OFF_in, residuals, config] = prepare_input(I, config)
 %PREPARE_INPUT Takes initial input data and prepares it for processing.
 %   The input data is expected to be either a single image, or a sequence
 %   of images in a 1D cell array.
@@ -6,10 +6,15 @@ function [w, r, config] = prepare_input(I, config)
 %   w: the planes of the wavelet decomposition
 %   r: the residuals of the wavelet decomposition
 
-    I_cells    = model.data.utils.to_cells(I);
-    I_opponent = model.data.color.transform(I_cells, config);
-    config     = record_dimensions(I_opponent, config);
-    [w, r]     = model.data.wavelet.decomposition(I_opponent, config);
+    I_cells               = model.data.utils.to_cells(I);
+    I_opponent            = model.data.color.transform(I_cells, config);
+    config                = record_dimensions(I_opponent, config);
+    [wavelets, residuals] = model.data.wavelet.decomposition(I_opponent, config);
+    ON_OFF_in             = model.data.on_off.prepare(wavelets, config);
+    if strcmp(config.zli.ON_OFF, 'separate')
+        % EEK! this isn't right..?!
+        config.image.n_channels = config.image.n_channels * 2;
+    end
 end
 
 function config = record_dimensions(I, config)

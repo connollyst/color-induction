@@ -12,9 +12,9 @@ function I_out = apply(I_in, config)
 %          each pixel indicating the excitation at that row, column &
 %          channel.
 
-    start_time                    = tic;
-    [wavelets, residuals, config] = model.data.prepare_input(I_in, config);
-    wavelets_out                  = model.process_induction(wavelets, config);
-    I_out                         = model.data.prepare_output(wavelets_out, residuals, config);
+    start_time                     = tic;    
+    [ON_OFF_in, residuals, config] = model.data.prepare_input(I_in, config);
+    ON_OFF_out                     = model.process_induction(ON_OFF_in, config);
+    I_out                          = model.data.prepare_output(ON_OFF_in, ON_OFF_out, residuals, config);
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
