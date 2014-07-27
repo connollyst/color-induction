@@ -1,4 +1,4 @@
-function [ds,dc] = DODescriptor(img_path);
+function [ds,dc] = DODescriptor(im);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Color boundary/shape encoding by Double-Opponent(DO) descriptors
@@ -37,10 +37,8 @@ sigma = 0.225; %semi-contrast constant
 
 
 %% ------------------------------------------------------------------------
-%                      load and pre-processing images
+%                         pre-processing image
 %--------------------------------------------------------------------------
-im = imread(img_path);
-% im = imresize(im,0.8);%reduce image size if needed.
 if max(im(:))>1
     imscr = double(im)/255;
 else
