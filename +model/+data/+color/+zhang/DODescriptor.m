@@ -1,4 +1,4 @@
-function [ds,dc] = DODescriptor(im);
+function [ds,dc] = DODescriptor(im, config)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Color boundary/shape encoding by Double-Opponent(DO) descriptors
@@ -87,30 +87,32 @@ s = divNorm_do(s,k,sigma,numOrient);
 %                            visulization
 % -------------------------------------------------------------------------
 % visulize the DOS1 response
-channelName1 = {'R^+-G^-','R^+-C^-','Y^+-B^-','Wh','G^+-R^-','C^+-R^-','B^+-Y^-','Bl'}; 
-figure;
-pp = 1; % phase: 0 deg
-for jj = 1:numChannel
-    subplot(2,numChannel/2,jj); 
-    imagesc(max(ds(:,:,jj,:,pp),[],4)); %max over all orientation
-    axis image; axis off; title(channelName1{jj});
+if config.display.plot
+    channelName1 = {'R^+-G^-','R^+-C^-','Y^+-B^-','Wh','G^+-R^-','C^+-R^-','B^+-Y^-','Bl'}; 
+    figure;
+    pp = 1; % phase: 0 deg
+    for jj = 1:numChannel
+        subplot(2,numChannel/2,jj); 
+        imagesc(max(ds(:,:,jj,:,pp),[],4)); %max over all orientation
+        axis image; axis off; title(channelName1{jj});
+    end
+
+
+
+    % visulize the DOC1 response
+    channelName2 = {'R-G','R-C','Y-B','Wh-Bl'};
+    figure;
+    pp = 1; 
+    for jj = 1:numChannel/2
+        subplot(1,numChannel/2,jj); 
+        imagesc(max(dc(:,:,jj,:,pp),[],4)); %max over all orientation
+         axis image; axis off; title(channelName2{jj});
+    end
+
+
+    % visulize the DOedge response
+    % max over orientations
+    figure;imagesc(max(max(dc,[],4),[],3));axis image;
 end
-
-
-
-% visulize the DOC1 response
-channelName2 = {'R-G','R-C','Y-B','Wh-Bl'};
-figure;
-pp = 1; 
-for jj = 1:numChannel/2
-    subplot(1,numChannel/2,jj); 
-    imagesc(max(dc(:,:,jj,:,pp),[],4)); %max over all orientation
-     axis image; axis off; title(channelName2{jj});
-end
-
-
-% visulize the DOedge response
-% max over orientations
-figure;imagesc(max(max(dc,[],4),[],3));axis image;
 
 return

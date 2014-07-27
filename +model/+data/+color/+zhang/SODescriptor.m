@@ -1,4 +1,4 @@
-function s = SODescriptor(im);
+function s = SODescriptor(im, config)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Color region encoding by Single-Opponent(SO) descriptors
@@ -72,16 +72,17 @@ s = divNorm_so(s,k,sigma,numChannel);
 %% ------------------------------------------------------------------------
 %                            visulization
 % -------------------------------------------------------------------------
-% visulize SOS1 response    
-channelName = {'R^+-G^-','R^+-C^-','Y^+-B^-','Wh','G^+-R^-','C^+-R^-','B^+-Y^-','Bl'};
-figure;
-pp = 1;
-for jj = 1:numChannel
-    subplot(2,numChannel/2,jj); 
-    %average over all orientation for visulization
-    imagesc(mean(s(:,:,jj,:,pp),4)); title(channelName{jj});
-    axis image; axis off;
+% visulize SOS1 response
+if config.display.plot
+    channelName = {'R^+-G^-','R^+-C^-','Y^+-B^-','Wh','G^+-R^-','C^+-R^-','B^+-Y^-','Bl'};
+    figure;
+    pp = 1;
+    for jj = 1:numChannel
+        subplot(2,numChannel/2,jj); 
+        %average over all orientation for visulization
+        imagesc(mean(s(:,:,jj,:,pp),4)); title(channelName{jj});
+        axis image; axis off;
+    end
 end
-
 
 return
