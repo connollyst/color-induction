@@ -1,4 +1,4 @@
-function img_out = process_image(img, img_type, n_membr, varargin)
+function img_out = process_image(img, img_transform, n_membr, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -15,7 +15,7 @@ function img_out = process_image(img, img_type, n_membr, varargin)
 % 	If it is a temporal sequence of images with 'n_frames' frames (dynamical version),
 %   it has to be cell structure of two or three dimensional images with size {n_frames}(:,:,:).
 % 
-% img_type: the type of input images: 'bw', 'rgb'
+% img_transform: the type of transform to apply to the images: 'none', 'lab', 'zhang'
 % 
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
 % 
@@ -36,7 +36,7 @@ function img_out = process_image(img, img_type, n_membr, varargin)
         config.wave.n_scales = model.utils.calculate_n_scales(img, config);    
     end
     
-    config.image.type = img_type;
+    config.image.transform = img_transform;
     config.zli.n_membr = n_membr;	% number of membrane time constant
 
     img_out = model.apply(img, config);

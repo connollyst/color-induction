@@ -49,11 +49,11 @@ function [x_out, y_out] = update_xy(tIitheta, config)
 end
 
 function [Iitheta, config] = get_input()
-    I_in                 = little_peppers();
-    I_in                 = lab2double(applycform(I_in, makecform('srgb2lab')));
-    I_in                 = I_in(:,:,[1,2]);
-    config               = configurations.default();
-    config.image.type    = 'lab';
-    config.wave.n_scales = 2;
-    [Iitheta, ~, config] = model.data.prepare_input(I_in, config);
+    I_in                   = little_peppers();
+    I_in                   = lab2double(applycform(I_in, makecform('srgb2lab')));
+    I_in                   = I_in(:,:,[1,2]);
+    config                 = configurations.default();
+    config.image.transform = 'none';
+    config.wave.n_scales   = 2;
+    [Iitheta, ~, config]   = model.data.prepare_input(I_in, config);
 end

@@ -9,7 +9,7 @@ function ignored_test_3D_without_interactions
     config = configurations.disabled();
     config.display.logging                = false;
     config.display.plot                   = false;
-    config.image.type                     = 'bw';
+    config.image.transform                = 'none';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
