@@ -3,7 +3,7 @@ function zli = get_zli()
     zli = configurations.defaults.get_zli();
     
     % Treat the ON & OFF values as interacting opponents
-    zli.ON_OFF = 'opponent';
+    zli.ON_OFF = 'abs';
     
     % Configure opponet color interactions
     zli.interaction.color.enabled           = true;
