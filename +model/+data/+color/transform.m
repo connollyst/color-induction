@@ -18,6 +18,18 @@ function I_out = transform( I_in, config )
             for i=1:length(I_in)
                 I_out{i} = lab2double(applycform(I_in{i}, cform));
             end
+        case 'itti'
+            % Transform from RGB to L. Itti's IRGBY
+            logger.log('Converting RGB image to IRGBY (L. Itti, 1998)..', config);
+            for i=1:length(I_in)
+                [~, R, G, B, Y] = model.data.color.itti.IRGBY(I_in{i});
+                RGBY = zeros(size(R, 1), size(R, 2), 4);
+                RGBY(:,:,1) = R;
+                RGBY(:,:,2) = G;
+                RGBY(:,:,3) = B;
+                RGBY(:,:,4) = Y;
+                I_out{i} = RGBY;
+            end
         otherwise
             error('Unsupported image transform: %s',config.image.transform)
     end

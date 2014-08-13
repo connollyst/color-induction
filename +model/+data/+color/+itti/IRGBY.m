@@ -16,10 +16,10 @@ function [I, R, G, B, Y] = IRGBY(rgb)
     g = normalize(g, I);
     b = normalize(b, I);
 
-    R = utils.on(r - (g + b)/2);
-    G = utils.on(g - (r + b)/2);
-    B = utils.on(b - (r + g)/2);
-    Y = utils.on((r + g)/2 - abs(r - g)/2 - b);
+    R = on(r - (g + b)/2);
+    G = on(g - (r + b)/2);
+    B = on(b - (r + g)/2);
+    Y = on((r + g)/2 - abs(r - g)/2 - b);
 end
 
 function n = normalize(channel, I)
@@ -31,4 +31,9 @@ function n = normalize(channel, I)
     m = max(I(:)) / 10;
     I(I < m) = 1;
     n = channel./I;
+end
+
+function I_on = on( I )
+    I_on = I;
+    I_on(I_on < 0) = 0;
 end
