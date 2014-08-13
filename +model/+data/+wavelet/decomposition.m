@@ -8,7 +8,7 @@ function [wavelets, residuals] = decomposition(I, config)
     n_membr  = config.zli.n_membr;
     n_scales = config.wave.n_scales;
     
-    logger.log('Processing with %i scales\n', n_scales, config);
+    logger.log('Processing at %i scales with %s\n', n_scales, config.wave.transform, config);
     
     if n_scales < 1
         error('Cannot apply wavelet decomposition at %i scales.', n_scales)
