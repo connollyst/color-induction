@@ -20,7 +20,6 @@ function test_lab_transform
     assertEqualData(I_out, as_lab(I_in));
 end
 
-
 %% UTILITIES
 
 function [I, config] = get_input(transform)
