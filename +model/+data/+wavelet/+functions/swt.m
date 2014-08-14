@@ -1,5 +1,5 @@
-function [wavelets, residuals] = a_trous(image, scales)
-% Implementation of A Trous wavelet transform
+function [wavelets, residuals] = swt(image, config)
+% Implementation of A Trous stationary wavelet transform.
 %
 % inputs:
 %   image:  input image to be decomposed.
@@ -22,11 +22,12 @@ function [wavelets, residuals] = a_trous(image, scales)
     I_cols     = size(image, 1);
     I_rows     = size(image, 2);
     I_channels = size(image, 3);
+    n_scales   = config.wave.n_scales;
     
-	wavelets   = zeros(I_cols, I_rows, I_channels, scales);
-    residuals  = zeros(I_cols, I_rows, I_channels, scales);
+	wavelets   = zeros(I_cols, I_rows, I_channels, n_scales);
+    residuals  = zeros(I_cols, I_rows, I_channels, n_scales);
     
-    for s=1:scales
+    for s=1:n_scales
 		inv_energy         = 1/sum(h(:));
 		prod               = model.data.wavelet.functions.utils.symmetric_filtering(image, h) * inv_energy;  % blur
 		wavelets(:,:,:,s)  = image - prod;

@@ -5,7 +5,7 @@ end
 function test_no_replication_of_single_image
     n_membr = 1;
     I = make_I(1);
-    config = make_config(n_membr, 'DOo', 3);
+    config = make_config(n_membr, 'doo', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition(I, config);
     assertEqual(length(wavelets),  1);
     assertEqual(length(residuals), 1);

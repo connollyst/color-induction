@@ -1,4 +1,4 @@
-function [wavelets, residuals] = DWD_orient_undecimated(image, config)
+function [wavelets, residuals] = dwt(image, config)
 % Implementation of Mallate Discrete Wavelet Transform.
 %
 % inputs:

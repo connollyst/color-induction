@@ -1,4 +1,4 @@
-function rec = DWD_orient_undecimated_inverse(wavelets, residuals)
+function rec = dwt_inverse(wavelets, residuals)
     n_scales = size(residuals, 4);
     rec      = residuals(:,:,:,n_scales);
     for s = n_scales:-1:1

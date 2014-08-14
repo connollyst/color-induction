@@ -47,7 +47,7 @@ function config = get_config()
     % Infer number of scales
     config.wave.n_scales = 2;
     % Use the orientation wavelet decompositon
-    config.wave.transform = 'DWD_orient_undecimated';
+    config.wave.transform = 'dwt';
     % Don't transform, the data is already in L*a*b format
     config.image.transform = 'none';
     % Disable all data display

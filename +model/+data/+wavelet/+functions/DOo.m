@@ -1,4 +1,4 @@
-function [wavelets, residuals] = DOo(I, config)
+function [wavelets, residuals] = doo(I, config)
 %DOO Double opponent (Oriented) decomposition.
     cols     = size(I, 1);
     rows     = size(I, 2);

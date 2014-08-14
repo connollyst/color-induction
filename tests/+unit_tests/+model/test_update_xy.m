@@ -51,7 +51,7 @@ function [Iitheta, config] = get_input()
     config                 = configurations.default();
     config.display.logging = false;
     config.display.plot    = false;
-    config.image.transform = 'none';
+    config.image.transform = 'rgb';
     config.wave.n_scales   = 2;
     [Iitheta, ~, config]   = model.data.prepare_input(I_in, config);
 end

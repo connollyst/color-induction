@@ -2,9 +2,9 @@ function test_suite = test_transform
   initTestSuite;
 end
 
-function test_no_transform
+function test_rgb_transform
     % Given
-    [I_in, config] = get_input('none');
+    [I_in, config] = get_input('rgb');
     % When
     I_out = model.data.color.transform(I_in, config);
     % Then

@@ -2,7 +2,7 @@ function test_suite = test_decomposition_inverse
   initTestSuite;
 end
 
-function test_a_trous_data_structure
+function test_swt_data_structure
     n_membr     = 1;
     n_imgs      = 1;
     n_cols      = 20;
@@ -11,7 +11,7 @@ function test_a_trous_data_structure
     n_scales    = 3;
     n_orients   = 1;    % a trous is not an oriented decomposition
     n_residuals = 1;    % there is only ever one residual orientation
-    config = make_config(n_membr, 'a_trous', n_scales);
+    config = make_config(n_membr, 'swt', n_scales);
     [wavelets, residuals] = model.data.wavelet.decomposition(make_I(n_imgs), config);
     assertEqual(n_membr, length(wavelets));
     assertEqual(n_membr, length(residuals));
@@ -29,7 +29,7 @@ function test_a_trous_data_structure
     assertEqual(n_residuals, size(residual, 5));
 end
 
-function test_DWD_orient_undecimated_data_structure
+function test_dwt_data_structure
     n_membr     = 1;
     n_imgs      = 1;
     n_cols      = 20;
@@ -38,7 +38,7 @@ function test_DWD_orient_undecimated_data_structure
     n_scales    = 3;
     n_orients   = 3;    % 3 orientations: vertical, horizontal, & diagonal
     n_residuals = 1;    % there is only ever one residual orientation
-    config = make_config(n_membr, 'DWD_orient_undecimated', n_scales);
+    config = make_config(n_membr, 'dwt', n_scales);
     [wavelets, residuals] = model.data.wavelet.decomposition(make_I(n_imgs), config);
     assertEqual(n_membr, length(wavelets));
     assertEqual(n_membr, length(residuals));
@@ -56,17 +56,17 @@ function test_DWD_orient_undecimated_data_structure
     assertEqual(n_residuals, size(residual, 5));
 end
 
-function test_a_trous_inversion
+function test_swt_inversion
     img_in = im2double(imread('cameraman.tif'));
-    config = make_config(1, 'a_trous', 3);
+    config = make_config(1, 'swt', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition({ img_in }, config);
     img_out = model.data.wavelet.decomposition_inverse(wavelets, residuals, config);
     assertSame(img_in, img_out{1});
 end
 
-function test_DWD_orient_undecimated_inversion
+function test_dwt_inversion
     img_in = im2double(imread('cameraman.tif'));
-    config = make_config(1, 'DWD_orient_undecimated', 3);
+    config = make_config(1, 'dwt', 3);
     [wavelets, residuals] = model.data.wavelet.decomposition({ img_in }, config);
     img_out = model.data.wavelet.decomposition_inverse(wavelets, residuals, config);
     assertSame(img_in, img_out{1});
