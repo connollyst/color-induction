@@ -21,7 +21,7 @@ function [wavelets, residuals] = decomposition(I, config)
     
     transform = str2func(['model.data.wavelet.functions.', config.wave.transform]);
     for i=1:n_images
-        [wavelets{i}, residuals{i}] = transform(I{i}, n_scales);
+        [wavelets{i}, residuals{i}] = transform(I{i}, config);
     end
     
     % If necessary, replicate wavelet & residual planes

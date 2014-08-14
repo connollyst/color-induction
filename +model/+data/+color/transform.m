@@ -1,13 +1,18 @@
 function I_out = transform( I_in, config )
 %MODEL.DATA.COLOR.TRANSFORM
-%   Transform the input image to the appropriate color space.
-    
+%   Transform the input image to the specified colorspace.
+%
+%   Input
+%       I_in:   the input image, in RGB colorspace
+%       config: the model configuration
+%   Output
+%       I_out:  the output image, in the requested colorspace
+
     I_out = cell(size(I_in));
     
     switch config.image.transform
-        case 'none'
+        case 'rgb'
             % Trust that the input data is already in an appropriate space..
-            logger.log('WARNING: not applying color transformation..', config);
             for i=1:length(I_in)
                 I_out{i} = im2double(I_in{i});
             end

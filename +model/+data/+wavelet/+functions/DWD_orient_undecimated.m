@@ -1,4 +1,4 @@
-function [wavelets, residuals] = DWD_orient_undecimated(image, scales)
+function [wavelets, residuals] = DWD_orient_undecimated(image, config)
 % Implementation of Mallate Discrete Wavelet Transform.
 %
 % inputs:
@@ -19,11 +19,12 @@ function [wavelets, residuals] = DWD_orient_undecimated(image, scales)
     I_cols     = size(image, 1);
     I_rows     = size(image, 2);
     I_channels = size(image, 3);
+    n_scales   = config.wave.n_scales;
     
-    wavelets   = zeros(I_cols, I_rows, I_channels, scales, 3);
-    residuals  = zeros(I_cols, I_rows, I_channels, scales);
+    wavelets   = zeros(I_cols, I_rows, I_channels, n_scales, 3);
+    residuals  = zeros(I_cols, I_rows, I_channels, n_scales);
     
-    for s = 1:scales
+    for s = 1:n_scales
         orig_image   = image;
         inv_sum      = 1/sum(h);
         % Decimate image along horizontal direction
