@@ -12,7 +12,7 @@ function test_no_color_induction_with_zero_weights
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'lab';
+    config.image.transform                = 'rgb';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
@@ -38,7 +38,7 @@ function test_opponent_color_excitation
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'none';
+    config.image.transform                = 'rgb';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
@@ -56,6 +56,7 @@ function test_opponent_color_excitation
     % Then
     assertNegativesPeakLower(excited, normal);
     assertPositivesPeakHigher(excited, normal);
+    % FAILS: current implementation is lacking somewhere
     assertNegativesAverageLower(excited, normal);
     assertPositivesAverageHigher(excited, normal);
 end
@@ -67,7 +68,7 @@ function test_opponent_color_inhibition
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'none';
+    config.image.transform                = 'rgb';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
@@ -85,11 +86,13 @@ function test_opponent_color_inhibition
     % Then
     assertNegativesPeakLower(normal, excited);
     assertPositivesPeakHigher(normal, excited);
+    % FAILS: current implementation is lacking somewhere
     assertNegativesAverageLower(normal, excited);
     assertPositivesAverageHigher(normal, excited);
 end
 
 function I = synthetic_image()
+% Generate a simple image for testing: a flat square on a flat background.
     I = zeros(42, 42);
     I(11:end-11,11:end-11) = 1;
 end
