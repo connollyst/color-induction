@@ -1,5 +1,5 @@
-function [RGBY_v] = DOVertical(rgb, config)
-%DOVERTICAL Double Opponent (Vertical)
+function RGBY_v = do_vertical(rgb, config)
+%DO_VERTICAL Double Opponent (Vertical)
 %   Decomposes the RGB image into it's RGBY vertical opponent components.
 %
 %   Input
@@ -64,36 +64,23 @@ end
 function I_out = apply_top_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_top_middle(scale, config)      ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_bottom_middle(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_bottom_middle(scale, config)   ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_top_middle(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_top_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_top_middle(scale, config)    ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_middle(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_middle(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_top_middle(scale, config);
-    I_out = gaussian(color, filter());
-end
-
-function filtered = gaussian(img, filter)
-    % Add padding
-    pad_cols = ceil(size(img,1)/2);
-    pad_rows = ceil(size(img,2)/2);
-    padded   = padarray(img, [pad_cols, pad_rows], 'symmetric','both');
-    % Apply filter
-    padded_filtered = imfilter(padded, filter, 'same');
-    % Remove padding
-    cols = pad_cols+1:pad_cols+size(img,1);
-    rows = pad_rows+1:pad_rows+size(img,2);
-    filtered = padded_filtered(cols,rows);
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end

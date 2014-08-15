@@ -1,5 +1,5 @@
-function RGBY_h = DOHorizontal(rgb, config)
-%DOHORIZONTAL Double Opponent (Horizontal)
+function RGBY_h = do_horizontal(rgb, config)
+%DO_HORIZONTAL Double Opponent (Horizontal)
 %   Decomposes the RGB image into it's RGBY horizontal opponent components.
 %
 %   Input

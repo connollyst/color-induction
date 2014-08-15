@@ -1,5 +1,5 @@
-function RGBY_d = DODiagonal(rgb, config)
-%DODIAGONAL Double Opponent (Diagonal)
+function RGBY_d = do_diagonal(rgb, config)
+%DO_DIAGONAL Double Opponent (Diagonal)
 %   Decomposes the RGB image into it's RGBY diagonal opponent components.
 %
 %   Input
@@ -81,60 +81,47 @@ end
 function I_out = apply_top_left_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_top_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_bottom_right(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_top_right_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_top_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_bottom_left(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_right_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_bottom_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_top_left(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_left_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_bottom_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_top_right(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_top_left_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_top_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_right(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_top_right_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_top_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_left(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_right_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_top_left(scale, config);
-    I_out = gaussian(color, filter());
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end
 
 function I_out = apply_bottom_left_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_top_right(scale, config);
-    I_out = gaussian(color, filter());
-end
-
-function filtered = gaussian(img, filter)
-    % Add padding
-    pad_cols = ceil(size(img,1)/2);
-    pad_rows = ceil(size(img,2)/2);
-    padded   = padarray(img, [pad_cols, pad_rows], 'symmetric','both');
-    % Apply filter
-    padded_filtered = imfilter(padded, filter, 'same');
-    % Remove padding
-    cols = pad_cols+1:pad_cols+size(img,1);
-    rows = pad_rows+1:pad_rows+size(img,2);
-    filtered = padded_filtered(cols,rows);
+    I_out = model.data.convolutions.optimal_padded(color, filter());
 end

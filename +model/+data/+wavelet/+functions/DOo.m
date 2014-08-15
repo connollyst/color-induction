@@ -8,9 +8,9 @@ function [wavelets, residuals] = doo(I, config)
     wavelets   = zeros(cols, rows, channels, scales, 3);
     residuals  = zeros(cols, rows, channels, scales);
     
-    wavelets(:,:,:,:,1) = model.data.wavelet.functions.opponent.DOHorizontal(I, config);
-    wavelets(:,:,:,:,2) = model.data.wavelet.functions.opponent.DODiagonal(I, config);
-    wavelets(:,:,:,:,3) = model.data.wavelet.functions.opponent.DOVertical(I, config);
+    wavelets(:,:,:,:,1) = model.data.wavelet.functions.opponent.do_horizontal(I, config);
+    wavelets(:,:,:,:,2) = model.data.wavelet.functions.opponent.do_diagonal(I, config);
+    wavelets(:,:,:,:,3) = model.data.wavelet.functions.opponent.do_vertical(I, config);
     
     % TODO can we get residuals? what about Y?
 end
