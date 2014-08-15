@@ -75,7 +75,7 @@ function Iitheta = normalize_colors(Iitheta, config)
     for c=1:n_channels
         if normal_max(c)==normal_min(c)
             for t=1:n_membr
-                Iitheta{t}(:,:) = 1.02; % El minim segons Li1998
+                Iitheta{t}(:,:,c,:,:) = 1.02; % El minim segons Li1998
             end
         else
             for t=1:n_membr
@@ -110,7 +110,7 @@ function Iitheta = normalize_scales(Iitheta, config)
     for s=1:n_scales
         if normal_max(s)==normal_min(s)
             for t=1:n_membr
-                Iitheta{t}(:,:) = 1.02; % El minim segons Li1998
+                Iitheta{t}(:,:,:,s,:) = 1.02; % El minim segons Li1998
             end
         else
             for t=1:n_membr
