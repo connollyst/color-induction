@@ -64,36 +64,23 @@ end
 function rgb_out = apply_left_excitatory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_middle_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_middle_right(scale, config);
-    rgb_out = apply(color, filter);
+    rgb_out = model.data.convolutions.optimal_padded(color, filter);
 end
 
 function rgb_out = apply_right_excitatory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_middle_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_middle_left(scale, config);
-    rgb_out = apply(color, filter);
+    rgb_out = model.data.convolutions.optimal_padded(color, filter);
 end
 
 function rgb_out = apply_left_inhibitory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_middle_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_middle_right(scale, config);
-    rgb_out = apply(color, filter);
+    rgb_out = model.data.convolutions.optimal_padded(color, filter);
 end
 
 function rgb_out = apply_right_inhibitory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_middle_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_middle_left(scale, config);
-    rgb_out = apply(color, filter);
-end
-
-function filtered = apply(img, filter)
-    % Add padding
-    pad_cols = ceil(size(img,1)/2);
-    pad_rows = ceil(size(img,2)/2);
-    padded   = padarray(img, [pad_cols, pad_rows], 'symmetric','both');
-    % Apply filter
-    padded_filtered = imfilter(padded, filter, 'same');
-    % Remove padding
-    cols = pad_cols+1:pad_cols+size(img,1);
-    rows = pad_rows+1:pad_rows+size(img,2);
-    filtered = padded_filtered(cols,rows);
+    rgb_out = model.data.convolutions.optimal_padded(color, filter);
 end

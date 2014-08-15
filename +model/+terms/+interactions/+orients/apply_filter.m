@@ -62,10 +62,10 @@ function data_filtered = filter_data(data, filter_fft_s, shift_size, config)
     avoid_circshift_fft = config.compute.avoid_circshift_fft;
     if config.compute.use_fft
         % data is already in Fourier space
-        data_filtered = model.data.convolutions.optima_fft(data, filter_fft_s, shift_size, avoid_circshift_fft);
+        data_filtered = model.data.convolutions.optimal_fft(data, filter_fft_s, shift_size, avoid_circshift_fft);
     else
         % data is in the real data space
-        data_filtered = model.data.convolutions.optima(data, filter_fft_s, shift_size, 1, avoid_circshift_fft);
+        data_filtered = model.data.convolutions.optimal(data, filter_fft_s, shift_size, 1, avoid_circshift_fft);
     end
 end
 

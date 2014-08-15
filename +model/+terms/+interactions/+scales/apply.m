@@ -3,8 +3,7 @@ function interaction = apply(data, scale_interactions, config)
     if ~config.zli.interaction.scale.enabled
         interaction = data;
     else
-        interaction = model.data.convolutions.optima( ...
-                            data, scale_interactions.filter, 0, 0 ...
-                      );
+        filter = scale_interactions.filter;
+        interaction = model.data.convolutions.optimal(data, filter);
     end
 end

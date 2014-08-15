@@ -1,5 +1,5 @@
-function result = optima_fft(data_fft, filter_fft, shift_size, avoid_circshift_fft)
-%OPTIMA_FFT Apply the Fourier filter to the Fourier input data.
+function result = optimal_fft(data_fft, filter_fft, shift_size, avoid_circshift_fft)
+%OPTIMAL_FFT Apply the Fourier filter to the Fourier input data.
 %   The Fourier filter is applied to the Fourier data and then the inverse
 %   Fourier transform is applied to return the result.
 %

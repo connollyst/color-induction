@@ -54,7 +54,7 @@ function ei = apply_scale_interactions(gy, scale_interactions, config)
     else
         scale_filter        = scale_interactions.filter;
         avoid_circshift_fft = config.compute.avoid_circshift_fft;
-        ei = model.data.convolutions.optima(gy, scale_filter, 0, 0, avoid_circshift_fft);
+        ei = model.data.convolutions.optimal(gy, scale_filter, 0, 0, avoid_circshift_fft);
         ei = remove_extra_scales(ei, scale_interactions, config);
     end
 end
