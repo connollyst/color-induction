@@ -4,7 +4,7 @@ end
 
 function test_decomposition_dimensions
     n_scales = 5;
-    I = make_black_I();
+    I = little_peppers();
     config = make_config('doo', n_scales);
     [wavelets, ~] = model.data.wavelet.functions.doo(I, config);
     assertEqual(size(wavelets, 1),  size(I, 1));
@@ -47,7 +47,7 @@ end
 
 function test_signal_range_zero_to_one
     n_scales = 5;
-    I = little_peppers;
+    I = little_peppers();
     config = make_config('doo', n_scales);
     [wavelets, ~] = model.data.wavelet.functions.doo(I, config);
     for s=1:n_scales

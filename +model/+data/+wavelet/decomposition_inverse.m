@@ -6,8 +6,6 @@ function I_out = decomposition_inverse(wavelets, residuals, config)
     I_out   = cell(n_membr,1);
     inverse_transform = str2func(['model.data.wavelet.functions.',config.wave.transform,'_inverse']);
     for t=1:n_membr
-        wavelet  = wavelets{t};
-        residual = residuals{t};
-        I_out{t} = inverse_transform(wavelet, residual);
+        I_out{t} = inverse_transform(wavelets{t}, residuals{t});
     end
 end
