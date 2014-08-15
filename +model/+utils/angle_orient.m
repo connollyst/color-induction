@@ -6,6 +6,8 @@ function  theta = angle_orient(orient, transform)
             thetas = [pi/2 -pi/4 0 pi/4];
         case('dwt')
             thetas = [pi/2 -pi/4 0 pi/4];
+        case('doo')
+            thetas = [pi/2 -pi/4 0 pi/4];
         otherwise
             error('Invalid tranform: %s', transform);
     end
