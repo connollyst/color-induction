@@ -1,5 +1,5 @@
 function RGBY_h = do_horizontal(rgb, config)
-%DO_HORIZONTAL Double Opponent (Horizontal)
+%DO_HORIZONTAL Double Opponent (Horizontal) Decomposition
 %   Decomposes the RGB image into it's RGBY horizontal opponent components.
 %
 %   Input
@@ -61,26 +61,26 @@ function [l_surround, r_surround] = left_right_surround(color, scale, config)
     r_surround = model.data.utils.off(apply_right_inhibitory_filter(color, scale, config));
 end
 
-function rgb_out = apply_left_excitatory_filter(color, scale, config)
+function out = apply_left_excitatory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_middle_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_middle_right(scale, config);
-    rgb_out = model.data.convolutions.optimal_padded(color, filter);
+    out = model.data.convolutions.optimal_padded(color, filter);
 end
 
-function rgb_out = apply_right_excitatory_filter(color, scale, config)
+function out = apply_right_excitatory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_middle_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_middle_left(scale, config);
-    rgb_out = model.data.convolutions.optimal_padded(color, filter);
+    out = model.data.convolutions.optimal_padded(color, filter);
 end
 
-function rgb_out = apply_left_inhibitory_filter(color, scale, config)
+function out = apply_left_inhibitory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_middle_left(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_middle_right(scale, config);
-    rgb_out = model.data.convolutions.optimal_padded(color, filter);
+    out = model.data.convolutions.optimal_padded(color, filter);
 end
 
-function rgb_out = apply_right_inhibitory_filter(color, scale, config)
+function out = apply_right_inhibitory_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_middle_right(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_middle_left(scale, config);
-    rgb_out = model.data.convolutions.optimal_padded(color, filter);
+    out = model.data.convolutions.optimal_padded(color, filter);
 end

@@ -1,5 +1,5 @@
 function RGBY_v = do_vertical(rgb, config)
-%DO_VERTICAL Double Opponent (Vertical)
+%DO_VERTICAL Double Opponent (Vertical) Decomposition
 %   Decomposes the RGB image into it's RGBY vertical opponent components.
 %
 %   Input
@@ -61,26 +61,26 @@ function [t_surround, b_surround] = top_bottom_surround(color, scale, config)
     b_surround = model.data.utils.off(apply_bottom_surround_filter(color, scale, config));
 end
 
-function I_out = apply_top_center_filter(color, scale, config)
+function out = apply_top_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_top_middle(scale, config)      ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_bottom_middle(scale, config);
-    I_out = model.data.convolutions.optimal_padded(color, filter());
+    out = model.data.convolutions.optimal_padded(color, filter());
 end
 
-function I_out = apply_bottom_center_filter(color, scale, config)
+function out = apply_bottom_center_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.center_bottom_middle(scale, config)   ...
              - model.data.wavelet.functions.opponent.rf.oriented.center_top_middle(scale, config);
-    I_out = model.data.convolutions.optimal_padded(color, filter());
+    out = model.data.convolutions.optimal_padded(color, filter());
 end
 
-function I_out = apply_top_surround_filter(color, scale, config)
+function out = apply_top_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_top_middle(scale, config)    ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_middle(scale, config);
-    I_out = model.data.convolutions.optimal_padded(color, filter());
+    out = model.data.convolutions.optimal_padded(color, filter());
 end
 
-function I_out = apply_bottom_surround_filter(color, scale, config)
+function out = apply_bottom_surround_filter(color, scale, config)
     filter =   model.data.wavelet.functions.opponent.rf.oriented.surround_bottom_middle(scale, config) ...
              - model.data.wavelet.functions.opponent.rf.oriented.surround_top_middle(scale, config);
-    I_out = model.data.convolutions.optimal_padded(color, filter());
+    out = model.data.convolutions.optimal_padded(color, filter());
 end
