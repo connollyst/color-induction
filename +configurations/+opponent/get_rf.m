@@ -1,14 +1,17 @@
 function rf = get_rf()
 %CONFIGURATIONS.OPPONENT.GET_RF The opponent receptive field configs.
 
-    % The size of the filter, not the gaussian.
+    rf.single_enabled   = true;
+    rf.double_enabled   = true;
+    
+    % The size of the filter, not the gaussian itself.
     rf.size              = 50;
     
     % Single and double opponent receptive field configurations.
     % Note: excitation/inhibition generally refers to center/surround,
     %       respectively, though those terms aren't appropriate in double
     %       opponent cells.
-    % TODO ..neither is excitatory/inhibitory Sean
+    % TODO ..excitatory/inhibitory are terrible names too, Sean
     rf.excitation.weight = 0.5;
     rf.excitation.length = 1;
     rf.excitation.width  = 0.5;

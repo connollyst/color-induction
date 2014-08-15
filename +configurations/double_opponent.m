@@ -1,6 +1,6 @@
 function config = double_opponent()
-    config     = configurations.default();
-    config.rf  = configurations.opponent.get_rf();
-    config.zli = configurations.opponent.get_zli();
-    config.wave.transform = 'doo';
+    config = configurations.opponent();
+    config.rf.single_enabled = false;
+    config.rf.double_enabled = true;
+    config.wave.n_orients    = 3;
 end
