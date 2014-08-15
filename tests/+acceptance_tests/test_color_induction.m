@@ -35,9 +35,9 @@ function test_opponent_color_excitation
     % Given
     I = synthetic_image() * 0.5;
     config = configurations.double_opponent();
-    config.display.logging                = false;
-    config.display.plot                   = false;
-    config.display.play                   = false;
+    config.display.logging                = true;
+    config.display.plot                   = true;
+    config.display.play                   = true;
     config.image.transform                = 'rgb';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
@@ -82,19 +82,19 @@ function test_opponent_color_inhibition
     configB.zli.interaction.color.weight.inhibition = 0.3;
     % When
     normal  = model.apply(I, configA);
-    excited = model.apply(I, configB);
+    inhibited = model.apply(I, configB);
     % Then
-    assertNegativesPeakLower(normal, excited);
-    assertPositivesPeakHigher(normal, excited);
+    assertNegativesPeakLower(inhibited, normal);
+    assertPositivesPeakHigher(inhibited, normal);
     % FAILS: current implementation is lacking somewhere
-    assertNegativesAverageLower(normal, excited);
-    assertPositivesAverageHigher(normal, excited);
+    assertNegativesAverageLower(inhibited, normal);
+    assertPositivesAverageHigher(inhibited, normal);
 end
 
 function I = synthetic_image()
 % Generate a simple image for testing: a flat square on a flat background.
-    I = zeros(42, 42);
-    I(11:end-11,11:end-11) = 1;
+    I = zeros(42, 42, 3);
+    I(11:end-11,11:end-11,:) = 1;
 end
 
 function assertPositivesAverageHigher(test, reference)

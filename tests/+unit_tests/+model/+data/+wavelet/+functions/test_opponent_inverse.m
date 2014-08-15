@@ -1,4 +1,4 @@
-function test_suite = test_doo_inverse
+function test_suite = test_opponent_inverse
   initTestSuite;
 end
 
@@ -19,21 +19,21 @@ function test_image_recovery
     n_scales = 5;
     original = little_peppers();
     expected = model.data.wavelet.functions.opponent.rgby(original);
-    config   = make_config('doo', n_scales);
+    config   = make_config(n_scales);
     % When
-    [wavelets, residuals] = model.data.wavelet.functions.doo(original, config);
-    recovered = model.data.wavelet.functions.doo_inverse(wavelets, residuals);
+    [wavelets, residuals] = model.data.wavelet.functions.opponent(original, config);
+    recovered = model.data.wavelet.functions.opponent_inverse(wavelets, residuals);
     % Then (note: tolerant to floating point errors)
     assertElementsAlmostEqual(recovered, expected);
 end
 
 %% TEST UTILITIES
 
-function config = make_config(transform, n_scales)
+function config = make_config(n_scales)
     config = configurations.double_opponent();
     config.zli.n_membr     = 3;
     config.wave.n_scales   = n_scales;
-    config.wave.transform  = transform;
+    config.wave.transform  = 'opponent';
     config.display.logging = 0;
     config.display.plot    = 0;
 end
