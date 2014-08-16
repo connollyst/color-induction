@@ -28,10 +28,10 @@ end
 
 function assert_apply_model(channels)
     % Given
-    config   = get_config();
-    I        = get_input(channels);
+    I      = get_input(channels);
+    config = get_config(I);
     % When
-    actual   = model.apply(I, config);
+    actual = model.apply(I, config);
     % Then
     assertEqualData(actual,           get_expected_current(channels))
     assertElementsAlmostEqual(actual, get_expected_original(channels));
@@ -39,15 +39,16 @@ end
 
 %% TEST UTILITIES
 
-function config = get_config()
-    config = configurations.default();
+function config = get_config(I)
+    I_cols   = size(I, 1);
+    I_rows   = size(I, 2);
+    I_colors = size(I, 3);
+    n_scales = 2;
+    config   = regression_config(I_cols, I_rows, I_colors, n_scales);
     % Configure the original algorithm parameters
-    config.zli.interaction.color.enabled   = false;
-    config.zli.config.zli.add_neural_noise = false;
     config.zli.ON_OFF      = 'separate';
     config.zli.n_membr     = 3;
     % Configure the wavelet decompositon
-    config.wave.n_scales   = 2;
     config.wave.n_orients  = 3;
     config.wave.transform  = 'dwt';
     config.image.transform = 'rgb';
