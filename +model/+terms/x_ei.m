@@ -7,8 +7,8 @@ function x_ei = x_ei(gy_in, interactions, config)
 %   Output
 %       x_ei: excitatory-inhibitory term
 
-    % TODO it's sloppy that we don't get the data how we want it
     gy_padded = model.data.padding.add.orient(gy_in, interactions.scale, config);
+    % TODO it's sloppy that we don't get the data how we want it
     gy        = restructure_data(gy_padded, interactions, config);
     x_ei      = model.utils.zeros(config);
     
