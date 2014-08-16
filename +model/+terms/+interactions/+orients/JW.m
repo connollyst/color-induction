@@ -3,8 +3,10 @@ function J_W = JW(scale_interactions, config)
     n_orients = config.wave.n_orients;
     switch n_orients
         case 1
+            % No orientation sensitive cells: single opponent cells
             [J, W] = model.terms.interactions.orients.jw.nondirectional(scale_interactions, config);
         case 3
+            % Cell sensitivity at 3 orientations: double opponent cells
             [J, W] = model.terms.interactions.orients.jw.directional(scale_interactions, config);
         otherwise
             error('Cannot prepare J & W for n_orients = %i', n_orients)

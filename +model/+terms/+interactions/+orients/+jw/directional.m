@@ -7,7 +7,6 @@ function [J, W] = directional(scale_interactions, config)
     
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
-    transform  = config.wave.transform;
     
     [J, W] = deal(cell(n_scales, 1));
    
@@ -19,7 +18,7 @@ function [J, W] = directional(scale_interactions, config)
         for o=1:n_orients
             [J{s}(:,:,1,:,o), W{s}(:,:,1,:,o)] = ...
                 model.terms.interactions.orients.jw.utils.get_Jithetajtheta_v0_4( ...
-                    s, n_orients, o, scale_deltas(s), transform, config.zli ...
+                    s, n_orients, o, scale_deltas(s), config.zli ...
                 );
         end
     end

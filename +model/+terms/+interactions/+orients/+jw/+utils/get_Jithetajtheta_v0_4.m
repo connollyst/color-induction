@@ -1,7 +1,7 @@
-function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, K, orient, Delta, transform, zli)
+function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, K, orient, Delta, zli)
     K             = 4;
     pes_diag      = 0.5;
-    [J_exc,W_inh] = get_Jithetajtheta_v0_4_sub(scale,K,orient,Delta,transform, zli);
+    [J_exc,W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, zli);
     if orient == 1 || orient == 3
         % horizontal & vertical
         J_exc(:,:,2)     = (J_exc(:,:,2)     + J_exc(:,:,4))      * pes_diag;
@@ -9,7 +9,7 @@ function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, K, orient, Delta
     end
     if orient == 2
         % diagonal
-        [J_diag, W_diag] = get_Jithetajtheta_v0_4_sub(scale, K, 4, Delta, transform, zli);
+        [J_diag, W_diag] = get_Jithetajtheta_v0_4_sub(scale, K, 4, Delta, zli);
         J_exc(:,:,[1 3]) = (J_exc(:,:,[1 3]) + J_diag(:,:,[1 3])) * pes_diag;
         W_inh(:,:,[1 3]) = (W_inh(:,:,[1 3]) + W_diag(:,:,[1 3])) * pes_diag;
         J_exc(:,:,2)     = (J_exc(:,:,2)     + J_diag(:,:,4))     * pes_diag;
@@ -19,7 +19,8 @@ function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, K, orient, Delta
     W_inh_out = W_inh(:,:,1:3);
 end
 
-function [J_exc, W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, transform, zli)
+function [J_exc, W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, zli)
+    thetas       = [pi/2 -pi/4 0 pi/4];
     diameter     = 2*Delta+1; % maximum diameter of the area of influence
     J_exc        = zeros(diameter, diameter, K);
     W_inh        = zeros(diameter, diameter, K);
@@ -28,7 +29,7 @@ function [J_exc, W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, tr
     factor_scale = model.utils.scale2size(scale, zli.scale2size_type, zli.scale2size_epsilon);
     d            = model.utils.distance_xop(xx/factor_scale,yy/factor_scale,zli.dist_type)*zli.reduccio_JW;
     c            = complex(xx, yy);
-    theta        = model.utils.angle_orient(orient, transform);
+    theta        = thetas(orient);
 
     for o=1:K
         M_exc_conv = zeros(size(d));
@@ -38,7 +39,7 @@ function [J_exc, W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, tr
             J_exc(:,:,o) = 0;
             W_inh(:,:,o) = 0;
         else
-            thetap     = model.utils.angle_orient(o, transform);
+            thetap     = thetas(o);
             Dtheta     = model.utils.send_in_the_right_interval_pi_2(theta  - thetap);
             angline    = model.utils.send_in_the_right_interval_pi_2(angle(c));
             theta1     = model.utils.send_in_the_right_interval_pi_2(theta  - angline);
