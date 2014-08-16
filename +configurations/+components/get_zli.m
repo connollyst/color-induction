@@ -26,7 +26,7 @@ function zli = get_zli()
     zli.normal_input               = 4;             % rescaled maximum value of input data for Z.Li method
     zli.normal_output              = 2.0;           % rescaled maximum value of output data for Z.Li method
     zli.Delta                      = 15;            % maximum radius of the area of influence
-    zli.ON_OFF                     = 'separate';    % 'abs', 'square', or 'separate'
+    zli.ON_OFF                     = 'abs';         % 'abs', 'square', or 'separate'
     zli.boundary                   = 'mirror';      % 'mirror' or 'wrap'
     zli.normalization_power        = 2;             % power of the denominator in the normalization step
     zli.shift                      = 1;             % minimum value of input data for Z.Li method
@@ -36,10 +36,12 @@ function zli = get_zli()
                                                     % i.e. if =0 then residual will be processed (and its size will be wave.mida_min)
     zli.add_neural_noise           = false;
     
-    % Interaction configurations: yes/no
-    
-    zli.interaction.scale.enabled  = true;
+    % Interaction configurations: true/false
     zli.interaction.orient.enabled = true;
-    zli.interaction.color.enabled  = false;
+    zli.interaction.scale.enabled  = true;
+    zli.interaction.color.enabled  = true;
     
+    % Opponet color interactions weights
+    zli.interaction.color.weight.excitation = 0.01;  % TODO determine appropriate value
+    zli.interaction.color.weight.inhibition = 0.01;  % TODO determine appropriate value
 end
