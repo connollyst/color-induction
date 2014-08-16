@@ -4,7 +4,7 @@ end
 
 function test_no_color_excitation_with_zero_weight
     % Given
-    [Iitheta, config]      = get_input();
+    [Iitheta, config] = get_input();
     configA = config;
     configA.zli.interaction.color.enabled           = false;
     configB = config;
@@ -21,7 +21,7 @@ end
 
 function test_no_color_inhibition_with_zero_weight
     % Given
-    [Iitheta, config]      = get_input();
+    [Iitheta, config] = get_input();
     configA = config;
     configA.zli.interaction.color.enabled           = false;
     configB = config;
@@ -45,13 +45,11 @@ function [x_out, y_out] = update_xy(tIitheta, config)
 end
 
 function [Iitheta, config] = get_input()
-    I_in                   = little_peppers();
-    I_in                   = lab2double(applycform(I_in, makecform('srgb2lab')));
-    I_in                   = I_in(:,:,[1,2]);
-    config                 = configurations.default();
+    I_in                   = little_peppers;
+    config                 = configurations.double_opponent;
+    config.wave.n_scales   = 2;
+    config.image.transform = 'rgb';
     config.display.logging = false;
     config.display.plot    = false;
-    config.image.transform = 'rgb';
-    config.wave.n_scales   = 2;
     [Iitheta, ~, config]   = model.data.prepare_input(I_in, config);
 end

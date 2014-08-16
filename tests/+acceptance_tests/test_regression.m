@@ -41,14 +41,15 @@ end
 
 function config = get_config()
     config = configurations.default();
-    config.zli.n_membr = 3;
-    config.zli.config.zli.add_neural_noise = false;
+    % Configure the original algorithm parameters
     config.zli.interaction.color.enabled   = false;
-    % Infer number of scales
-    config.wave.n_scales = 2;
-    % Use the orientation wavelet decompositon
-    config.wave.transform = 'dwt';
-    % Don't transform the colorspace
+    config.zli.config.zli.add_neural_noise = false;
+    config.zli.ON_OFF      = 'separate';
+    config.zli.n_membr     = 3;
+    % Configure the wavelet decompositon
+    config.wave.n_scales   = 2;
+    config.wave.n_orients  = 3;
+    config.wave.transform  = 'dwt';
     config.image.transform = 'rgb';
     % Disable all data display
     config.display.logging = false;

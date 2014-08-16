@@ -160,7 +160,7 @@ end
 %% UTILITIES
 
 function config = get_config(n_cols, n_rows, n_scales, n_orients, scale_enabled, orient_enabled)
-    config = get_test_config(n_cols, n_rows, 2, n_scales);
+    config = test_config(n_cols, n_rows, 2, n_scales);
     config.wave.n_orients = n_orients;
     config.zli.interaction.scale.enabled = scale_enabled;
     config.zli.interaction.orient.enabled = orient_enabled;

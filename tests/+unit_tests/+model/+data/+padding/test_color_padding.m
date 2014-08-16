@@ -84,7 +84,7 @@ end
 %% UTILITIES
 
 function config = get_config(colors, color_enabled)
-    config = get_test_config(42, 42, colors, 2);
+    config = test_config(42, 42, colors, 2);
     config.zli.interaction.color.enabled = color_enabled;
     if color_enabled
         config.zli.interaction.color.weight.excitation = 0.1;

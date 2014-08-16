@@ -61,7 +61,7 @@ function [tIitheta, I_norm, x, y, x_ee, x_ei, y_ie, config] = get_input(instance
     x_ee     = input.x_ee;
     x_ei     = input.x_ei;
     y_ie     = input.y_ie;
-    config   = get_test_config(40, 40, 3, 2);
+    config   = regression_config(40, 40, 3, 2);
 end
 
 function expected = get_expected(instance)

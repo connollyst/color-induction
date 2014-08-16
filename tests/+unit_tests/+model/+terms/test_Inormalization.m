@@ -34,7 +34,7 @@ function [norm_masks, gx, interactions, config] = get_input(instance)
     input            = load(['data/input/update_xy_',instance,'.mat']);
     x                = input.x;
     gx               = model.terms.gx(x);
-    config           = get_test_config(40, 40, 3, 2);
+    config           = regression_config(40, 40, 3, 2);
     norm_masks       = model.data.normalization.get_masks(config);
     interactions     = model.terms.get_interactions(config);
 end

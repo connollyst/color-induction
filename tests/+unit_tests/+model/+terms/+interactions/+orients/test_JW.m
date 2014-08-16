@@ -114,3 +114,11 @@ function config = single_opponent_config()
     config.image.n_channels = 4;
     config.wave.n_scales    = 2;
 end
+
+function config = opponent_config()
+    config = configurations.opponent();
+    config.image.width      = 137;
+    config.image.height     = 42;
+    config.image.n_channels = 4;
+    config.wave.n_scales    = 2;
+end

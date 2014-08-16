@@ -67,7 +67,7 @@ function [gx, gy, interactions, config] = get_input(instance)
     y            = input.y;
     gx           = model.terms.gx(x);
     gy           = model.terms.gy(y);
-    config       = get_test_config(40, 40, 3, 2);
+    config       = regression_config(40, 40, 3, 2);
     interactions = model.terms.get_interactions(config);
 end
 
