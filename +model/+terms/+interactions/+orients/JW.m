@@ -9,15 +9,25 @@ function J_W = JW(scale_interactions, config)
     n_components = config.wave.n_components;
     [J, W] = deal(init_struct(scale_interactions, config));
     if config.rf.double
-        % Double opponent cells are sensitive to 
+        % Double opponent cells are sensitive to specific orientations
         [Jd, Wd] = model.terms.interactions.orients.jw.directional(scale_interactions, config);
         for s=1:n_scales
             J{s}(:, :, :, 1:n_orients, 1:n_orients) = Jd{s};
             W{s}(:, :, :, 1:n_orients, 1:n_orients) = Wd{s};
         end
+        if config.rf.single
+            % Double opponent cells also interact with single opponent cells
+            [Js, Ws] = model.terms.interactions.orients.jw.nondirectional(scale_interactions, config);
+            for s=1:n_scales
+                for o=1:n_orients
+                    J{s}(:, :, :, o, n_components) = Js{s};
+                    W{s}(:, :, :, o, n_components) = Ws{s};
+                end
+            end
+        end
     end
     if config.rf.single
-        % No orientation sensitive cells: single opponent cells
+        % Non-orientation sensitive cells: single opponent cells
         [Js, Ws] = model.terms.interactions.orients.jw.nondirectional(scale_interactions, config);
         for s=1:n_scales
             J{s}(:, :, :, n_components, n_components) = Js{s};
