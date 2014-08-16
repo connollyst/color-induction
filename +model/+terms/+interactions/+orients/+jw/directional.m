@@ -8,6 +8,11 @@ function [J, W] = directional(scale_interactions, config)
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     
+    if n_orients ~= 3
+        error(['Directoral J & W cannot be calculated for ', ...
+                num2str(n_orients), ' orientations.']);
+    end
+    
     [J, W] = deal(cell(n_scales, 1));
    
     for s=1:n_scales

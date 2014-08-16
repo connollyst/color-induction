@@ -1,8 +1,8 @@
 function rf = get_rf()
 %CONFIGURATIONS.OPPONENT.GET_RF The opponent receptive field configs.
     
-    rf.enabled.single  = true;
-    rf.enabled.double  = true;
+    rf.single          = true;
+    rf.double          = true;
     
     % The size of the filter, not the gaussian itself
     rf.size            = 50;

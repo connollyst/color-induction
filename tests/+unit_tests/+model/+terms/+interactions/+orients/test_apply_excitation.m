@@ -52,17 +52,17 @@ end
 
 function test_output_orient_dimension
     % Given
-    config           = get_config();
-    I_in             = model.utils.zeros(config);
-    interactions     = model.terms.get_interactions(config);
+    config              = get_config();
+    I_in                = model.utils.zeros(config);
+    interactions        = model.terms.get_interactions(config);
     % When
-    I_out            = model.terms.interactions.orients.apply_excitation( ...
-                        I_in, interactions, config ...
-                       );
+    I_out               = model.terms.interactions.orients.apply_excitation( ...
+                            I_in, interactions, config ...
+                          );
     % Then
-    actual_orients   = size(I_out, 5);
-    expected_orients = config.wave.n_orients;
-    assertEqual(expected_orients, actual_orients);
+    actual_components   = size(I_out, 5);
+    expected_components = config.wave.n_components;
+    assertEqual(expected_components, actual_components);
 end
 
 function config = get_config()

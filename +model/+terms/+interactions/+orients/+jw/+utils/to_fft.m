@@ -31,4 +31,3 @@ function [filter_fft] = to_fft(filter, scale_interactions, config)
         end
     end
 end
-

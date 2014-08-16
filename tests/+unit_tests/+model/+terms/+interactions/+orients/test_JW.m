@@ -88,12 +88,12 @@ function assertJorWDimensions(config, scale_interactions, JorW)
     assertEqual(actualLength, expectedLength);
     for s=1:config.wave.n_scales
         expectedDiameter = scale_interactions.diameters(s);
-        expectedOrientations = config.wave.n_orients;
+        expectedComponents = config.wave.n_components;
         assertEqual(size(JorW{s}, 1), expectedDiameter);
         assertEqual(size(JorW{s}, 2), expectedDiameter);
         assertEqual(size(JorW{s}, 3), 1);
-        assertEqual(size(JorW{s}, 4), expectedOrientations);
-        assertEqual(size(JorW{s}, 5), expectedOrientations);
+        assertEqual(size(JorW{s}, 4), expectedComponents);
+        assertEqual(size(JorW{s}, 5), expectedComponents);
     end
 end
 

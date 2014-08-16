@@ -8,7 +8,7 @@ function pdt = psi_delta_theta(config)
             b               = pi/2;
             delta_theta     = [0 a b; a 0 a ; b a 0];
             pdt = cos(abs(delta_theta)).^6;
-        case 1
+        case 0
             % Non-directional 
             pdt = 1;
         otherwise

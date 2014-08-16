@@ -59,7 +59,6 @@ function config = common_config(I)
     config.image.height                            = size(I, 2);
     config.image.n_channels                        = size(I, 3);
     config.wave.n_scales                           = 1;
-    config.wave.n_orients                          = 1;
     config.display.plot                            = false;
     config.display.logging                         = false;
     config.zli.interaction.orient.enabled          = false;

@@ -33,7 +33,6 @@ function config = make_config(n_scales)
     config = configurations.double_opponent();
     config.zli.n_membr     = 3;
     config.wave.n_scales   = n_scales;
-    config.wave.transform  = 'opponent';
     config.display.logging = 0;
     config.display.plot    = 0;
 end

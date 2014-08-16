@@ -4,4 +4,3 @@ function x_ee = apply_excitation(gx, interactions, config)
                 gx, filter, interactions, config ...
            );
 end
-

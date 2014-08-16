@@ -7,10 +7,9 @@ end
 function test_no_orient_padding_if_disabled
     % Given
     n_scales        = 2;
-    n_orients       = 1;
     scale_enabled   = false;
     orient_enabled  = false;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
@@ -25,31 +24,27 @@ end
 function test_orient_padding_for_20x20
     n_cols           = 20;
     n_rows           = 20;
-    n_orients        = 3;
-    check_orient_padding(n_cols, n_rows, n_orients)
+    check_orient_padding(n_cols, n_rows)
 end
 
 function test_orient_padding_for_30x40
     n_cols           = 30;
     n_rows           = 40;
-    n_orients        = 3;
-    check_orient_padding(n_cols, n_rows, n_orients)
+    check_orient_padding(n_cols, n_rows)
 end
 
 function test_orient_padding_for_137x42
     n_cols           = 137;
     n_rows           = 42;
-    n_orients        = 3;
-    check_orient_padding(n_cols, n_rows, n_orients)
+    check_orient_padding(n_cols, n_rows)
 end
 
 function test_error_padding_to_1_scales
     % Given
     n_scales        = 1;
-    n_orients       = 1;
     scale_enabled   = true;
     orient_enabled  = true;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = single_opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     % When/Then
     assertExceptionThrown(...
         @() model.terms.get_interactions(config), 'MODEL:scales'...
@@ -59,10 +54,9 @@ end
 function test_orient_padding_to_2_scales
     % Given
     n_scales        = 2;
-    n_orients       = 1;
     scale_enabled   = true;
     orient_enabled  = true;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = single_opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
@@ -76,10 +70,9 @@ end
 function test_orient_padding_to_3_scales
     % Given
     n_scales        = 3;
-    n_orients       = 1;
     scale_enabled   = true;
     orient_enabled  = true;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = single_opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
@@ -93,10 +86,9 @@ end
 function test_orient_padding_to_4_scales
     % Given
     n_scales        = 4;
-    n_orients       = 1;
     scale_enabled   = true;
     orient_enabled  = true;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = single_opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
@@ -110,10 +102,9 @@ end
 function test_orient_padding_to_5_scales
     % Given
     n_scales        = 5;
-    n_orients       = 1;
     scale_enabled   = true;
     orient_enabled  = true;
-    config          = get_config(42, 42, n_scales, n_orients, scale_enabled, orient_enabled);
+    config          = single_opponent_config(42, 42, n_scales, scale_enabled, orient_enabled);
     interactions    = model.terms.get_interactions(config);
     data            = model.utils.rand(config);
     % When
@@ -124,13 +115,12 @@ function test_orient_padding_to_5_scales
     assertEqual(actual_scales, expected_scales);
 end
 
-function check_orient_padding(n_cols, n_rows, n_orients)
+function check_orient_padding(n_cols, n_rows)
     % Given
     n_scales         = 2;
     orient_enabled   = true;
     scale_enabled    = true;
-    config           = get_config(n_cols, n_rows, n_scales, n_orients, ...
-                                            scale_enabled, orient_enabled);
+    config           = double_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
     interactions     = model.terms.get_interactions(config);
     data             = model.utils.rand(config);
     % When
@@ -159,9 +149,22 @@ end
 
 %% UTILITIES
 
-function config = get_config(n_cols, n_rows, n_scales, n_orients, scale_enabled, orient_enabled)
+function config = single_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
+    config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
+    config.wave.n_orients = 0;
+    config.rf.single = true;
+    config.rf.double = false;
+end
+
+function config = double_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
+    config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
+    config.wave.n_orients = 3;
+    config.rf.single = false;
+    config.rf.double = true;
+end
+
+function config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
     config = test_config(n_cols, n_rows, 2, n_scales);
-    config.wave.n_orients = n_orients;
     config.zli.interaction.scale.enabled = scale_enabled;
     config.zli.interaction.orient.enabled = orient_enabled;
     if scale_enabled
