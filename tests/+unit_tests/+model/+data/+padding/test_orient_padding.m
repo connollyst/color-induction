@@ -151,7 +151,7 @@ end
 
 function config = single_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
     config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
-    config.wave.n_orients = 0;
+    config.wave.n_orients = 1;
     config.rf.single = true;
     config.rf.double = false;
 end

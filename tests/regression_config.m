@@ -18,5 +18,4 @@ function config = regression_config(width, height, colors, scales)
     config.wave.transform                  = 'dwt';
     config.wave.n_scales                   = scales;
     config.wave.n_orients                  = 3;
-    config.wave.n_components               = 3;
 end

@@ -95,8 +95,8 @@ function test_double_opponent_J_interactions_horizontal
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
         assertNotEmpty(J(:,:,1,1,1), 'horizontal edges should excite horizontal edges');
-        assertNotEmpty(J(:,:,1,1,2), 'horizontal edges should excite diagonal edges');
-        assertEmpty(   J(:,:,1,1,3), 'horizontal edges shouldnt excite vertical edges');
+        assertNotEmpty(J(:,:,1,2,1), 'horizontal edges should excite diagonal edges');
+        assertEmpty(   J(:,:,1,3,1), 'horizontal edges shouldnt excite vertical edges');
     end
 end
 
@@ -105,9 +105,9 @@ function test_double_opponent_J_interactions_diagonal
     interactions = model.terms.get_interactions(config);
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
-        assertNotEmpty(J(:,:,1,2,1), 'diagonal edges should excite horizontal edges');
+        assertNotEmpty(J(:,:,1,1,2), 'diagonal edges should excite horizontal edges');
         assertNotEmpty(J(:,:,1,2,2), 'diagonal edges should excite diagonal edges');
-        assertNotEmpty(J(:,:,1,2,3), 'diagonal edges should excite vertical edges');
+        assertNotEmpty(J(:,:,1,3,2), 'diagonal edges should excite vertical edges');
     end
 end
 
@@ -116,8 +116,8 @@ function test_double_opponent_J_interactions_vertical
     interactions = model.terms.get_interactions(config);
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
-        assertEmpty(   J(:,:,1,3,1), 'vertical edges shouldnt excite horizontal edges');
-        assertNotEmpty(J(:,:,1,3,2), 'vertical edges should excite diagonal edges');
+        assertEmpty(   J(:,:,1,1,3), 'vertical edges shouldnt excite horizontal edges');
+        assertNotEmpty(J(:,:,1,2,3), 'vertical edges should excite diagonal edges');
         assertNotEmpty(J(:,:,1,3,3), 'vertical edges should excite vertical edges');
     end
 end
@@ -162,9 +162,9 @@ function test_single_and_double_opponent_J_interactions_horizontal
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
         assertNotEmpty(J(:,:,1,1,1), 'horizontal edges should excite horizontal edges');
-        assertNotEmpty(J(:,:,1,1,2), 'horizontal edges should excite diagonal edges');
-        assertEmpty(   J(:,:,1,1,3), 'horizontal edges shouldnt excite vertical edges');
-        assertNotEmpty(J(:,:,1,1,4), 'horizontal edges should excite non-edges');
+        assertNotEmpty(J(:,:,1,2,1), 'horizontal edges should excite diagonal edges');
+        assertEmpty(   J(:,:,1,3,1), 'horizontal edges shouldnt excite vertical edges');
+        assertNotEmpty(J(:,:,1,4,1), 'horizontal edges should excite non-edges');
     end
 end
 
@@ -173,10 +173,10 @@ function test_single_and_double_opponent_J_interactions_diagonal
     interactions = model.terms.get_interactions(config);
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
-        assertNotEmpty(J(:,:,1,2,1), 'diagonal edges should excite horizontal edges');
+        assertNotEmpty(J(:,:,1,1,2), 'diagonal edges should excite horizontal edges');
         assertNotEmpty(J(:,:,1,2,2), 'diagonal edges should excite diagonal edges');
-        assertNotEmpty(J(:,:,1,2,3), 'diagonal edges should excite vertical edges');
-        assertNotEmpty(J(:,:,1,2,4), 'diagonal edges should excite non-edges');
+        assertNotEmpty(J(:,:,1,3,2), 'diagonal edges should excite vertical edges');
+        assertNotEmpty(J(:,:,1,4,2), 'diagonal edges should excite non-edges');
     end
 end
 
@@ -185,10 +185,10 @@ function test_single_and_double_opponent_J_interactions_vertical
     interactions = model.terms.get_interactions(config);
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
-        assertEmpty(   J(:,:,1,3,1), 'vertical edges shouldnt excite horizontal edges');
-        assertNotEmpty(J(:,:,1,3,2), 'vertical edges should excite diagonal edges');
+        assertEmpty(   J(:,:,1,1,3), 'vertical edges shouldnt excite horizontal edges');
+        assertNotEmpty(J(:,:,1,2,3), 'vertical edges should excite diagonal edges');
         assertNotEmpty(J(:,:,1,3,3), 'vertical edges should excite vertical edges');
-        assertNotEmpty(J(:,:,1,3,4), 'vertical edges should excite non-edges');
+        assertNotEmpty(J(:,:,1,4,3), 'vertical edges should excite non-edges');
     end
 end
 
@@ -197,9 +197,9 @@ function test_single_and_double_opponent_J_interactions_nonedge
     interactions = model.terms.get_interactions(config);
     for s=1:config.wave.n_scales
         J = interactions.orient.JW.J{s};
-        assertEmpty(   J(:,:,1,4,1), 'non-edges shouldnt excite horizontal edges');
-        assertEmpty(   J(:,:,1,4,2), 'non-edges shouldnt excite diagonal edges');
-        assertEmpty(   J(:,:,1,4,3), 'non-edges shouldnt excite vertical edges');
+        assertEmpty(   J(:,:,1,1,4), 'non-edges shouldnt excite horizontal edges');
+        assertEmpty(   J(:,:,1,2,4), 'non-edges shouldnt excite diagonal edges');
+        assertEmpty(   J(:,:,1,3,4), 'non-edges shouldnt excite vertical edges');
         assertNotEmpty(J(:,:,1,4,4), 'non-edges should excite non-edges');
     end
 end
@@ -212,12 +212,12 @@ function assertJorWDimensions(config, scale_interactions, JorW)
     assertEqual(actualLength, expectedLength);
     for s=1:config.wave.n_scales
         expectedDiameter = scale_interactions.diameters(s);
-        expectedComponents = config.wave.n_components;
+        expectedOrientations = config.wave.n_orients;
         assertEqual(size(JorW{s}, 1), expectedDiameter);
         assertEqual(size(JorW{s}, 2), expectedDiameter);
         assertEqual(size(JorW{s}, 3), 1);
-        assertEqual(size(JorW{s}, 4), expectedComponents);
-        assertEqual(size(JorW{s}, 5), expectedComponents);
+        assertEqual(size(JorW{s}, 4), expectedOrientations);
+        assertEqual(size(JorW{s}, 5), expectedOrientations);
     end
 end
 

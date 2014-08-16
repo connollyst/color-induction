@@ -1,4 +1,11 @@
-function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, K, orient, Delta, zli)
+function [J_exc_out, W_inh_out] = get_Jithetajtheta_v0_4(scale, orient, Delta, zli)
+% Return the J (excitation) and W (inhibition) interaction maps from the
+% specified (reference) orientation to the others, at the given scale.
+% Note that this function is hard coded for the 3 directional orientations
+% and does not include non-oriented interactions.
+    if orient < 1 || orient > 3
+        error(['Invalid argument, orientations are between 1 and 3: ',orient]);
+    end
     K             = 4;
     pes_diag      = 0.5;
     [J_exc,W_inh] = get_Jithetajtheta_v0_4_sub(scale, K, orient, Delta, zli);

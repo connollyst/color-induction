@@ -5,11 +5,8 @@ function wave = get_wave()
     wave.transform    = 'opponent'; % decomposition function
                                     %  (corresponds to function in model.wavelet.functions)
                                     
-    wave.n_orients    = 3;          % number of orientations
-                                    %  (only applies to double opponent decompositions)
-                                    
-    wave.n_components = 4;          % number of decompositon components
-                                    %  (eg: 1 single & 3 orientations = 4 components)
+    wave.n_orients    = 4;          % number of orientations
+                                    %  (3 double opponent and 1 single opponent)
                                     
     wave.n_scales     = 0;          % number of decompositon scales
                                     % (if 0: code calculates it automatically)
