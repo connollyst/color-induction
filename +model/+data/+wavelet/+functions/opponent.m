@@ -56,7 +56,7 @@ function validate(I, config)
     end
     if config.rf.single && config.rf.double
         logger.log('Processing single & double opponent model.', config);
-        if n_orients ~= 3
+        if n_orients ~= 4
             error(['Expected 4 decomposition orientations for '         ...
                    'simultaneous single and double opponent model, '    ...
                    'found: ',num2str(n_orients)]);
