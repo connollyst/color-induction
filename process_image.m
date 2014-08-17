@@ -19,16 +19,19 @@ function img_out = process_image(img, img_transform, n_membr, varargin)
 % 
 % n_membr: number of membrane time constant considered in the computation (recommended to be > 15)
 % 
-% Note that internal parameters of the method can be modified in the get_default_parameters_NCZLd() routine
-% or below.
+% Note that internal parameters of the method can be modified in
+% configurations.default, or in your own configuration.
     
-    if length(varargin) == 1
-        % parameters for the differential equation (Euler integration scheme)
-        config_function_name = varargin{1};
-        config_function      = str2func(['configurations.',config_function_name]);
-        config               = config_function();
+    if isempty(varargin)
+        config = configurations.default;
     else
-        config = configurations.double_opponent();
+        if length(varargin) == 1
+            config_function_name = varargin{1};
+            config_function      = str2func(['configurations.',config_function_name]);
+            config               = config_function();
+        else
+            error('Invalid use: only one variable argument supported.');
+        end
     end
     
     if config.wave.n_scales == 0
