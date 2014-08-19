@@ -6,7 +6,7 @@ function I_out = prepare_output(ON_OFF_in, ON_OFF_out, residuals, config)
         config.image.n_channels = config.image.n_channels / 2;
     end
     wavelets_out = model.data.on_off.recover(ON_OFF_in, ON_OFF_out, config);
-    O            = model.data.wavelet.decomposition_inverse(wavelets_out, residuals, config);
+    O            = model.data.decomposition.invert(wavelets_out, residuals, config);
     I_out        = average_output(O, config);
 end
 
