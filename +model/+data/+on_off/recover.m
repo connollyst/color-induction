@@ -7,7 +7,7 @@ function data_out = recover(data_in, signal_out, config)
         case 'square'
             data_out = model.data.on_off.simple.recover(data_in, signal_out, config);
         case 'separate'
-            data_out = model.data.on_off.opponent.recover(data_in, signal_out, config);
+            data_out = model.data.on_off.separate.recover(data_in, signal_out, config);
         otherwise
             error('Invalid config.zli.ON_OFF: %s', config.zli.ON_OFF)
     end

@@ -33,7 +33,7 @@ function ON_OFF_in = process_ON_OFF_separately(Iitheta, config)
 %   We take the input data as and split the ON and OFF components of each
 %   color channel into independent color channels. If color interactions
 %   are disabled, the ON and OFF components do not interact.
-    ON_OFF_in = model.data.on_off.opponent.prepare(Iitheta, config);
+    ON_OFF_in = model.data.on_off.separate.prepare(Iitheta, config);
     % TODO this is migrated from PROCESS_ON_OFF_OPPONENT, I don't think
     %      it makes sense, depends on what we mean by ON and OFF..?
 end
