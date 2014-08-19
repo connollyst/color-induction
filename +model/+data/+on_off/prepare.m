@@ -1,39 +1,56 @@
 function ON_OFF_in = prepare(wavelets_in, config)
-%MODEL.DATA.ON_OFF.PREPARE Prepare the ON OFF aspect of the data.
+%MODEL.DATA.ON_OFF.PREPARE
+%   Preprocess the data to isolate/combine/separate the on & off signals.
+%   Formulae:
+%       on:         only take the on signal
+%       off:        only take the off signal (output is positive)
+%       abs:        take the absolute of both the on and off signal
+%       square:     square the on and off signal in each channel
+%       separate:   split the on and off signals into separate channels
     switch config.zli.ON_OFF
+        case 'on'
+            ON_OFF_in = prepare_on(wavelets_in, config);
+        case 'off'
+            ON_OFF_in = prepare_off(wavelets_in, config);
         case 'abs'
-            ON_OFF_in = process_ON_OFF_abs(wavelets_in, config);
+            ON_OFF_in = prepare_abs(wavelets_in, config);
         case 'square'
-            ON_OFF_in = process_ON_OFF_square(wavelets_in, config);
+            ON_OFF_in = prepare_square(wavelets_in, config);
         case 'separate'
-            ON_OFF_in = process_ON_OFF_separately(wavelets_in, config);
+            ON_OFF_in = prepare_separately(wavelets_in, config);
         otherwise
             error('Invalid config.zli.ON_OFF: %s', config.zli.ON_OFF)
     end
 end
 
-function ON_OFF_in = process_ON_OFF_abs(Iitheta, config)
-%PROCESS_ON_OFF_ABS Process the ON and OFF channels using absolute values.
-    ON_OFF_in = Iitheta;
+function ON_OFF_in = prepare_on(wavelets_in, config)
+    ON_OFF_in = cell(size(wavelets_in));
     for t=1:config.zli.n_membr
-        ON_OFF_in{t} = abs(Iitheta{t});
+        ON_OFF_in{t} = model.data.utils.on(wavelets_in);
     end
 end
 
-function ON_OFF_in = process_ON_OFF_square(Iitheta, config)
-%PROCESS_ON_OFF_SQUARE Process the ON and OFF components using square
-    ON_OFF_in = Iitheta;
+function ON_OFF_in = prepare_off(wavelets_in, config)
+    ON_OFF_in = cell(size(wavelets_in));
     for t=1:config.zli.n_membr
-        ON_OFF_in{t} = Iitheta{t}.*Iitheta{t};
+        ON_OFF_in{t} = model.data.utils.on(wavelets_in);
     end
 end
 
-function ON_OFF_in = process_ON_OFF_separately(Iitheta, config)
-%PROCESS_ON_OFF_SEPARATELY Process ON and OFF as independent channels.
-%   We take the input data as and split the ON and OFF components of each
-%   color channel into independent color channels. If color interactions
-%   are disabled, the ON and OFF components do not interact.
-    ON_OFF_in = model.data.on_off.separate.prepare(Iitheta, config);
-    % TODO this is migrated from PROCESS_ON_OFF_OPPONENT, I don't think
-    %      it makes sense, depends on what we mean by ON and OFF..?
+function ON_OFF_in = prepare_abs(wavelets_in, config)
+    ON_OFF_in = wavelets_in;
+    for t=1:config.zli.n_membr
+        ON_OFF_in{t} = abs(wavelets_in{t});
+    end
+end
+
+function ON_OFF_in = prepare_square(wavelets_in, config)
+    ON_OFF_in = wavelets_in;
+    for t=1:config.zli.n_membr
+        ON_OFF_in{t} = wavelets_in{t} .* wavelets_in{t};
+    end
+end
+
+function ON_OFF_in = prepare_separately(wavelets_in, config)
+    ON_OFF_in = model.data.on_off.separate.prepare(wavelets_in, config);
 end
