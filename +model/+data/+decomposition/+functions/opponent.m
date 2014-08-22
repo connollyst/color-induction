@@ -1,43 +1,43 @@
-function [components, residuals] = opponent(I, config)
+function [components, residuals] = opponent(rgb, config)
 %OPPONENT Image decomposition reflective of the chromatic and spatial
 %         opponent system in the primate striate cortex.
-    validate(I, config);
-    components = decompose(I, config);
-    residuals  = subtract(I, components, config);
+    validate(rgb, config);
+    components = decompose(rgb, config);
+    residuals  = subtract(rgb, components, config);
 end
 
-function components = decompose(I, config)
-    n_cols     = size(I, 1);
-    n_rows     = size(I, 2);
+function components = decompose(rgb, config)
+    n_cols     = size(rgb, 1);
+    n_rows     = size(rgb, 2);
     n_channels = 4;             % RGBY
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     components = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     switch n_orients
         case 1
-            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.so(I, config);
+            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.so(rgb, config);
         case 3
-            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.do_horizontal(I, config);
-            components(:,:,:,:,2) = model.data.decomposition.functions.opponent.do_diagonal(I, config);
-            components(:,:,:,:,3) = model.data.decomposition.functions.opponent.do_vertical(I, config);
+            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.do_horizontal(rgb, config);
+            components(:,:,:,:,2) = model.data.decomposition.functions.opponent.do_diagonal(rgb, config);
+            components(:,:,:,:,3) = model.data.decomposition.functions.opponent.do_vertical(rgb, config);
         case 4
-            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.do_horizontal(I, config);
-            components(:,:,:,:,2) = model.data.decomposition.functions.opponent.do_diagonal(I, config);
-            components(:,:,:,:,3) = model.data.decomposition.functions.opponent.do_vertical(I, config);
-            components(:,:,:,:,4) = model.data.decomposition.functions.opponent.so(I, config);
+            components(:,:,:,:,1) = model.data.decomposition.functions.opponent.do_horizontal(rgb, config);
+            components(:,:,:,:,2) = model.data.decomposition.functions.opponent.do_diagonal(rgb, config);
+            components(:,:,:,:,3) = model.data.decomposition.functions.opponent.do_vertical(rgb, config);
+            components(:,:,:,:,4) = model.data.decomposition.functions.opponent.so(rgb, config);
         otherwise
-            error(['Cannot decompose to ',num2str(n_orients),' opponent orientations']);
+            error(['Cannot decompose to ',num2str(n_orients),' opponent orientations.']);
     end
 end
 
-function residuals = subtract(I, components, config)
-    n_cols     = size(I, 1);
-    n_rows     = size(I, 2);
+function residuals = subtract(rgb, components, config)
+    n_cols     = size(rgb, 1);
+    n_rows     = size(rgb, 2);
     n_channels = 4;             % RGBY
     n_scales  = config.wave.n_scales;
     n_orients = config.wave.n_orients;
     residuals = zeros(n_cols, n_rows, n_channels, n_scales);
-    rgby      = model.data.decomposition.functions.opponent.rgby(I);
+    rgby      = model.data.decomposition.functions.opponent.rgby(rgb);
     for s=1:n_scales
         for o=1:n_orients
             rgby = rgby - components(:,:,:,s,o);

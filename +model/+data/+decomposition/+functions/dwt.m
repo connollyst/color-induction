@@ -1,13 +1,12 @@
 function [wavelets, residuals] = dwt(image, config)
 % Implementation of Mallate Discrete Wavelet Transform.
 %
-% inputs:
-%   image:  input image to be decomposed
-%   scales: # of wavelet scales
+% Input
+%   image:      input image to be decomposed
 %
-% outputs:
-%   wavelets: cell array of wavelet planes in 3 orientations
-%   residuals: cell array of residual planes
+% Output
+%   wavelets:   wavelet planes in 3 orientations
+%   residuals:  residual planes
 
     % 1D Gabor-like filter:
     h = [1./16., 1./4., 3./8., 1./4., 1./16.];
@@ -20,8 +19,9 @@ function [wavelets, residuals] = dwt(image, config)
     I_rows     = size(image, 2);
     I_channels = size(image, 3);
     n_scales   = config.wave.n_scales;
+    n_orients  = 3;     % horizontal, diagonal, & vertical
     
-    wavelets   = zeros(I_cols, I_rows, I_channels, n_scales, 3);
+    wavelets   = zeros(I_cols, I_rows, I_channels, n_scales, n_orients);
     residuals  = zeros(I_cols, I_rows, I_channels, n_scales);
     
     for s = 1:n_scales

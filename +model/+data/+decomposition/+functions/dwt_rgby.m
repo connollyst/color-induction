@@ -1,17 +1,43 @@
-function [wavelets, residuals] = dwt_rgby(rgb, config)
+function [signals, residuals] = dwt_rgby(rgb, config)
 % Implementation of Mallate Discrete Wavelet Transform, tailored for RGB
 % input and RGBY output.
 %
-% inputs:
-%   rgb:  input rgb to be decomposed
-%   scales: # of wavelet scales
+% Input
+%   rgb:        input rgb to be decomposed
+%   config:     the model configuration struct array
 %
-% outputs:
-%   wavelets: cell array of wavelet planes in 3 orientations
-%   residuals: cell array of residual planes
+% Output
+%   signals:    wavelet planes (input to the model)
+%   residuals:  residual planes (for output reconstruction)
+
     rgb  = im2double(rgb);
     rgby = rgb2rgby(rgb);
-    [wavelets, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+    switch config.wave.n_orients
+        case 1
+            % Single opponent cells only:
+            %  The wavelet decomposition residual planes are the cell
+            %  signals we want. The detail in the wavelet planes,
+            %  representing stimulus to double opponent cells, is kept as
+            %  the residuals used to reconstruct the output image.
+            [residuals, signals] = model.data.decomposition.functions.dwt(rgby, config);
+            % TODO residuals should be consolidated into 1 orientation, no?
+        case 3
+            % Double opponent cells only:
+            %  The wavelet signal serves as the double opponent cell input,
+            %  the residuals are used to reconstruct the image afterwards.
+            [signals, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+        case 4
+            % Single & double opponent cells:
+            %  To process both single and double opponent cells
+            %  simultaneously, we combine the wavelet planes (representing
+            %  double opponent cell responses) with the wavelet residual
+            %  planes (representing single opponent cell responses).
+            [do, so]  = model.data.decomposition.functions.dwt(rgby, config);
+            signals   = cat(5, do, so);
+            residuals = zeros(size(so));  % TODO maybe there are residuals?
+        otherwise
+            error(['Cannot decompose to ',num2str(n_orients),' DWT orientations.']);
+    end
 end
 
 function RGBY = rgb2rgby(rgb)
@@ -26,6 +52,7 @@ function RGBY = rgb2rgby(rgb)
     g = rgb(:,:,2,:,:);
     b = rgb(:,:,3,:,:);
     
+    % TODO if we had rgb at scales, we could construct center surrounds
     R = r - (g + b)/2;
     G = g - (r + b)/2;
     B = b - (r + g)/2;

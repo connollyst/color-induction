@@ -90,6 +90,32 @@ function test_higher_scales_contain_weaker_signal
     end
 end
 
+function test_single_and_double_opponent_dimensions_at_2_scales
+    n_scales = 2;
+    I = little_peppers();
+    config = make_config(n_scales);
+    config.wave.n_orients = 4;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    assertEqual(size(signal, 1),  size(I, 1));
+    assertEqual(size(signal, 2),  size(I, 2));
+    assertEqual(size(signal, 3),  4); % RGBY
+    assertEqual(size(signal, 4),  n_scales);
+    assertEqual(size(signal, 5),  4); % horizontal, diagonal, vertical, and non-oriented
+end
+
+function test_single_and_double_opponent_dimensions_at_3_scales
+    n_scales = 3;
+    I = little_peppers();
+    config = make_config(n_scales);
+    config.wave.n_orients = 4;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    assertEqual(size(signal, 1),  size(I, 1));
+    assertEqual(size(signal, 2),  size(I, 2));
+    assertEqual(size(signal, 3),  4); % RGBY
+    assertEqual(size(signal, 4),  n_scales);
+    assertEqual(size(signal, 5),  4); % horizontal, diagonal, vertical, and non-oriented
+end
+
 %% TEST UTILITIES
 
 function I = make_black_I()
