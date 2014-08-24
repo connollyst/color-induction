@@ -22,16 +22,13 @@ function img_out = process_image(img, img_transform, n_membr, varargin)
 % Note that internal parameters of the method can be modified in
 % configurations.default, or in your own configuration.
     
-    if isempty(varargin)
-        config = configurations.default;
-    else
-        if length(varargin) == 1
-            config_function_name = varargin{1};
-            config_function      = str2func(['configurations.',config_function_name]);
-            config               = config_function();
-        else
+    switch length(varargin)
+        case 0
+            config = configurations.default;
+        case 1
+            config = load_config(varargin{1});
+        otherwise
             error('Invalid use: only one variable argument supported.');
-        end
     end
     
     if config.wave.n_scales == 0
@@ -43,4 +40,9 @@ function img_out = process_image(img, img_transform, n_membr, varargin)
     config.zli.n_membr = n_membr;	% number of membrane time constant
 
     img_out = model.apply(img, config);
+end
+
+function config = load_config(config_function_name)
+    config_function      = str2func(['configurations.',config_function_name]);
+    config               = config_function();
 end
