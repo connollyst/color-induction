@@ -42,11 +42,11 @@ function RGBY = so(rgb, config)
 end
 
 function c = center(color, scale, config)
-    filter = model.data.wavelet.functions.opponent.rf.center(scale, config);
+    filter = model.data.decomposition.functions.opponent.rf.center(scale, config);
     c      = model.data.convolutions.optimal_padded(color, filter);
 end
 
 function s = surround(color, scale, config)
-    filter = model.data.wavelet.functions.opponent.rf.surround(scale, config);
+    filter = model.data.decomposition.functions.opponent.rf.surround(scale, config);
     s      = model.data.convolutions.optimal_padded(color, filter);
 end
