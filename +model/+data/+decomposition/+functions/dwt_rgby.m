@@ -19,10 +19,10 @@ function [signals, residuals] = dwt_rgby(rgb, config)
             %  signals we want. The detail in the wavelet planes,
             %  representing stimulus to double opponent cells, is kept as
             %  the residuals used to reconstruct the output image.
-            [activity, residuals_1] = model.data.decomposition.functions.dwt(rgby, config);
-            [signals, residuals_2]  = extract_so(residuals_1);
+            [activity, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+            [signals, residuals]  = extract_so(residuals);
             do                    = sum(activity, 5);
-            residuals = residuals_2 + do;
+            residuals             = residuals + do;
         case 3
             % Double opponent cells only:
             %  The wavelet signal serves as the double opponent cell input,

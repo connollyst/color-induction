@@ -17,7 +17,6 @@ function recovered = dwt_rgby_inverse(wavelets, residuals)
                     + wavelets(:,:,:,s,2)   ... % diagonal
                     + wavelets(:,:,:,s,3)   ... % vertical
                     + wavelets(:,:,:,s,4);      % non-oriented
-                figure(), imagesc(recovered(:,:));
         end
     end
 end
