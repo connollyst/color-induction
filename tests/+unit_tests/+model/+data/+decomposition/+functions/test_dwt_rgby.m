@@ -90,6 +90,76 @@ function test_higher_scales_contain_weaker_signal
     end
 end
 
+%% ASSERT OUTPUT VALUE RANGE
+
+function test_single_opponent_minimum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 1;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    min_signal = min(signal(:));
+    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+end
+
+function test_single_opponent_maximum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 1;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    max_signal = max(signal(:));
+    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+end
+
+function test_double_opponent_minimum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 3;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    min_signal = min(signal(:));
+    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+end
+
+function test_double_opponent_maximum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 3;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    max_signal = max(signal(:));
+    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+end
+
+function test_single_and_double_opponent_minimum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 4;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    min_signal = min(signal(:));
+    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+end
+
+function test_single_and_double_opponent_maximum_value
+    n_scales = 2;
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    config = make_config(n_scales);
+    config.wave.n_orients = 4;
+    [signal, ~] = model.data.decomposition.functions.dwt_rgby(I, config);
+    max_signal = max(signal(:));
+    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+end
+
+%% ASSERT OUTPUT MATRIX DIMENSIONS
+
 function test_single_and_double_opponent_dimensions_at_2_scales
     n_scales = 2;
     I = little_peppers();

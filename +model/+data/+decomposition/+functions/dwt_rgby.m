@@ -19,22 +19,26 @@ function [signals, residuals] = dwt_rgby(rgb, config)
             %  signals we want. The detail in the wavelet planes,
             %  representing stimulus to double opponent cells, is kept as
             %  the residuals used to reconstruct the output image.
-            [residuals, signals] = model.data.decomposition.functions.dwt(rgby, config);
-            % TODO residuals should be consolidated into 1 orientation, no?
+            [activity, residuals_1] = model.data.decomposition.functions.dwt(rgby, config);
+            [signals, residuals_2]  = extract_so(residuals_1);
+            do                    = sum(activity, 5);
+            residuals = residuals_2 + do;
         case 3
             % Double opponent cells only:
             %  The wavelet signal serves as the double opponent cell input,
             %  the residuals are used to reconstruct the image afterwards.
-            [signals, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+            [activity, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+            [signals, residuals]  = extract_do(activity, residuals);
         case 4
             % Single & double opponent cells:
             %  To process both single and double opponent cells
             %  simultaneously, we combine the wavelet planes (representing
             %  double opponent cell responses) with the wavelet residual
             %  planes (representing single opponent cell responses).
-            [do, so]  = model.data.decomposition.functions.dwt(rgby, config);
-            signals   = cat(5, do, so);
-            residuals = zeros(size(so));  % TODO maybe there are residuals?
+            [activity, residuals] = model.data.decomposition.functions.dwt(rgby, config);
+            [so, residuals]       = extract_so(residuals);
+            [do, residuals]       = extract_do(activity, residuals);
+            signals               = cat(5, do, so);
         otherwise
             error(['Cannot decompose to ',num2str(n_orients),' DWT orientations.']);
     end
@@ -62,4 +66,21 @@ function RGBY = rgb2rgby(rgb)
     RGBY(:,:,2,:,:) = G;
     RGBY(:,:,3,:,:) = B;
     RGBY(:,:,4,:,:) = Y;
+end
+
+function [do, do_residuals] = extract_do(activity, residuals)
+% The DWT includes both on and off activity for each channel. The double
+% opponent (DO) signal is just the on component. The off component needs to
+% be added back into the residuals.
+    do           = model.data.utils.on(activity);
+    activity_off = activity - do;
+    do_residuals = residuals + sum(activity_off, 5);
+end
+
+function [so, so_residuals] = extract_so(do_residuals)
+% The on component of the DWT residuals can be considered single opponent
+% (SO) signal. As we take this signal we update the residuals to reflect
+% the change.
+    so           = model.data.utils.on(do_residuals);
+    so_residuals = do_residuals - so;
 end
