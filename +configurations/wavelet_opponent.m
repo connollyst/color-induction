@@ -3,5 +3,5 @@ function config = wavelet_opponent()
     config.rf.single      = true;
     config.rf.double      = true;
     config.wave.n_orients = 4;  % DO and SO
-    config.wave.transform = 'dwt_rgby';
+    config.wave.transform = 'dwt';
 end
