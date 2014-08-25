@@ -12,7 +12,7 @@ function test_no_color_induction_with_zero_weights
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'rgb';
+    config.image.transform                = 'none';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
@@ -38,7 +38,7 @@ function test_opponent_color_excitation
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'rgb';
+    config.image.transform                = 'none';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
@@ -68,7 +68,7 @@ function test_opponent_color_inhibition
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'rgb';
+    config.image.transform                = 'none';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;

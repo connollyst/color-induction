@@ -12,6 +12,8 @@ function test_single_and_double_conversion_consistency
     assertEqualData(a, b);
 end
 
+%% ASSERT SINGLE OPPONENT RECOVERY
+
 function test_single_opponent_recovery_with_1_scale
     n_orients = 1;  % SO only
     n_scales  = 1;
@@ -29,6 +31,14 @@ function test_single_opponent_recovery_with_3_scales
     n_scales  = 3;
     assertRecovery(n_orients, n_scales)
 end
+
+function test_single_opponent_recovery_with_4_scales
+    n_orients = 1;  % SO only
+    n_scales  = 4;
+    assertRecovery(n_orients, n_scales)
+end
+
+%% ASSERT DOUBLE OPPONENT RECOVERY
 
 function test_double_opponent_recovery_with_1_scale
     n_orients = 3;  % DO only
@@ -48,6 +58,14 @@ function test_double_opponent_recovery_with_3_scales
     assertRecovery(n_orients, n_scales)
 end
 
+function test_double_opponent_recovery_with_4_scales
+    n_orients = 3;  % DO only
+    n_scales  = 4;
+    assertRecovery(n_orients, n_scales)
+end
+
+%% ASSERT SINGLE & DOUBLE OPPONENT RECOVERY
+
 function test_single_and_double_opponent_recovery_with_1_scale
     n_orients = 4;  % SO & DO
     n_scales  = 1;
@@ -65,6 +83,14 @@ function test_single_and_double_opponent_recovery_with_3_scales
     n_scales  = 3;
     assertRecovery(n_orients, n_scales)
 end
+
+function test_single_and_double_opponent_recovery_with_4_scales
+    n_orients = 4;  % SO & DO
+    n_scales  = 4;
+    assertRecovery(n_orients, n_scales)
+end
+
+%% TEST ASSERTIONS
 
 function assertRecovery(n_orients, n_scales)
     data     = load('tests/data/rgb_40_40_3.mat');

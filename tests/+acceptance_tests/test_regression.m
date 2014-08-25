@@ -51,7 +51,7 @@ function config = get_config(I)
     % Configure the wavelet decompositon
     config.wave.n_orients  = 3;
     config.wave.transform  = 'dwt';
-    config.image.transform = 'rgb';
+    config.image.transform = 'none';
     % Disable all data display
     config.display.logging = false;
     config.display.plot    = false;

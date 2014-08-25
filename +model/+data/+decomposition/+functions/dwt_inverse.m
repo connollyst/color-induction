@@ -7,7 +7,7 @@ function recovered = dwt_inverse(wavelets, residuals)
                 recovered = recovered       ...
                     + wavelets(:,:,:,s,1);      % non-oriented
             case 3
-                % TODO why is this sensitive to the order??
+                % TODO why is this sensitive to the order?? (floating rounding error)
                 recovered = recovered       ...
                     + wavelets(:,:,:,s,1)   ... % horizontal
                     + wavelets(:,:,:,s,3)   ... % vertical

@@ -97,7 +97,7 @@ function test_higher_scales_contain_weaker_signal
     end
 end
 
-%% ASSERT OUTPUT VALUE RANGE
+%% ASSERT OUTPUT VALUE RANGES
 
 function test_single_opponent_minimum_value
     n_scales = 2;
@@ -108,7 +108,7 @@ function test_single_opponent_minimum_value
     config.wave.n_orients = 1;
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
     min_signal = min(signal(:));
-    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
 end
 
 function test_single_opponent_maximum_value
@@ -132,7 +132,7 @@ function test_double_opponent_minimum_value
     config.wave.n_orients = 3;
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
     min_signal = min(signal(:));
-    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
 end
 
 function test_double_opponent_maximum_value
@@ -156,7 +156,7 @@ function test_single_and_double_opponent_minimum_value
     config.wave.n_orients = 4;
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
     min_signal = min(signal(:));
-    assertTrue(min_signal >= 0, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
 end
 
 function test_single_and_double_opponent_maximum_value
