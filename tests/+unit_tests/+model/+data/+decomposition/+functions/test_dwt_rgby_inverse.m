@@ -20,7 +20,7 @@ function test_single_opponent_recovery
     n_scales  = 1;
     data = load('tests/data/rgb_40_40_3.mat');
     original = data.img;
-    expected  = model.data.decomposition.functions.opponent.rgby(original);
+    expected  = model.data.color.rgb2rgby(original);
     config    = make_config(n_scales, n_orients);
     % When
     [decompositions, residuals] = model.data.decomposition.functions.dwt_rgby(original, config);

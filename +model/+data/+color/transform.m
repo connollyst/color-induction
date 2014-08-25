@@ -11,21 +11,26 @@ function I_out = transform( I_in, config )
     I_out = cell(size(I_in));
     
     switch config.image.transform
-        case 'rgb'
-            % Trust that the input data is already in an appropriate space..
+        case 'none'
+            % Use the image in the provided colorspace..
             for i=1:length(I_in)
                 I_out{i} = im2double(I_in{i});
             end
-        case 'lab'
-            % Transform from RGB to L*a*b
-            logger.log('Converting RGB image to L*a*b..', config);
-            cform = makecform('srgb2lab');
+        case 'rgb2lab'
+            % Transform from RGB to L*a*b..
+            logger.log('Converting RGB image to CIE L*a*b..', config);
             for i=1:length(I_in)
-                I_out{i} = lab2double(applycform(I_in{i}, cform));
+                I_out{i} = model.data.color.rgb2lab(I_in{i});
             end
-        case 'itti'
-            % Transform from RGB to L. Itti's IRGBY
-            logger.log('Converting RGB image to IRGBY (L. Itti, 1998)..', config);
+        case 'rgb2rgby'
+            % Transform from RGB to RGBY..
+            logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
+            for i=1:length(I_in)
+                I_out{i} = model.data.color.rgb2rgby(I_in{i});
+            end
+        case 'itti' %DEPRECATED
+            % Transform from RGB to L. Itti's RGBY..
+            logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
             for i=1:length(I_in)
                 [~, R, G, B, Y] = model.data.color.itti.IRGBY(I_in{i});
                 RGBY = zeros(size(R, 1), size(R, 2), 4);
