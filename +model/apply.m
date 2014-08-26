@@ -1,20 +1,19 @@
-function I_out = apply(I_in, config)
+function [I_out, out] = apply(I_in, config)
 %MODEL.APPLY
 %   Perform the wavelet decomposition, process the ON & OFF channels, and
 %   recover the output with an inverse wavelet transformation.
 %
-%   I:      The input image(s) of the format, for example: I{frame}(:,:,:)
+%   Input
+%       I:      The input image(s) of the format, for example:
+%               I{frame}(:,:,:)
 %
-%   I_out: The output data is a 3D cell array of 1) cell orientation
-%          preferences, 2) spatial frequency scales, and 3) membrane time
-%          steps.
-%          Each cell in the array has the dimensions of the original image,
-%          each pixel indicating the excitation at that row, column &
-%          channel.
+%   Output
+%       I_out:  The output 'perceptual image'
+%       out:    The output neuronal activity
 
-    start_time                     = tic;    
-    [ON_OFF_in, residuals, config] = model.data.prepare_input(I_in, config);
-    ON_OFF_out                     = model.process_induction(ON_OFF_in, config);
-    I_out                          = model.data.prepare_output(ON_OFF_in, ON_OFF_out, residuals, config);
+    start_time              = tic;    
+    [in, residuals, config] = model.data.prepare_input(I_in, config);
+    activity                = model.process_induction(in, config);
+    [out, I_out]            = model.data.prepare_output(in, activity, residuals, config);
     logger.log('Total elapsed time is %0.2f seconds.\n', toc(start_time), config);
 end
