@@ -2,7 +2,7 @@ function test_suite = test_dwt
   initTestSuite;
 end
 
-function test_decomposition_dimensions
+function test_dwt_decomposition_dimensions
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
@@ -15,7 +15,7 @@ function test_decomposition_dimensions
     assertEqual(size(decompositions, 5),  3); % horizontal, diagonal, vertical
 end
 
-function test_decomposition_values_when_black
+function test_dwt_decomposition_values_when_black
     n_scales = 3;
     I = make_black_I();
     I = model.data.color.rgb2rgby(I);
@@ -25,7 +25,7 @@ function test_decomposition_values_when_black
     assertEqual(min(decompositions(:)), 0);
 end
 
-function test_decomposition_values_when_white
+function test_dwt_decomposition_values_when_white
 % Tests for a bug seen with large receptive fields on small images.
     n_scales = 3;
     I = make_white_I();
@@ -36,7 +36,7 @@ function test_decomposition_values_when_white
     assertElementsAlmostEqual(min(decompositions(:)), 0);
 end
 
-function test_all_scales_contain_signal
+function test_dwt_all_scales_contain_signal
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
@@ -49,7 +49,7 @@ function test_all_scales_contain_signal
     end
 end
 
-function test_no_signal_for_synthetic_black_and_white_image
+function test_dwt_no_signal_for_synthetic_black_and_white_image
     n_scales = 1;
     I = make_synthetic_I();
     I = model.data.color.rgb2rgby(I);
@@ -62,7 +62,7 @@ function test_no_signal_for_synthetic_black_and_white_image
     end
 end
 
-function test_signal_for_synthetic_color_image
+function test_dwt_signal_for_synthetic_color_image
     n_scales = 1;
     I = make_synthetic_I();
     I(:,:,1) = I(:,:,1) * 0.7;
@@ -78,7 +78,7 @@ function test_signal_for_synthetic_color_image
     end
 end
 
-function test_higher_scales_contain_weaker_signal
+function test_dwt_higher_scales_contain_weaker_signal
     n_scales = 3;
     I = little_peppers;
     I = model.data.color.rgb2rgby(I);
@@ -99,81 +99,153 @@ end
 
 %% ASSERT OUTPUT VALUE RANGES
 
-function test_single_opponent_minimum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 1;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    min_signal = min(signal(:));
-    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+function test_dwt_single_opponent_lab_channel_1_minimum_value
+    n_orients =  1;
+    channel   =  1;
+    minimum   = -50;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
-function test_single_opponent_maximum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 1;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    max_signal = max(signal(:));
-    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+function test_dwt_single_opponent_lab_channel_2_minimum_value
+    n_orients =  1;
+    channel   =  2;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
-function test_double_opponent_minimum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 3;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    min_signal = min(signal(:));
-    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+function test_dwt_single_opponent_lab_channel_3_minimum_value
+    n_orients =  1;
+    channel   =  3;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
-function test_double_opponent_maximum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 3;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    max_signal = max(signal(:));
-    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+function test_dwt_single_opponent_lab_channel_1_maximum_value
+    n_orients =  1;
+    channel   =  1;
+    minimum   =  0;
+    maximum   =  50;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
-function test_single_and_double_opponent_minimum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 4;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    min_signal = min(signal(:));
-    assertTrue(min_signal >= -1, ['Expected minimum signal >= 0, was ',num2str(min_signal)])
+function test_dwt_single_opponent_lab_channel_2_maximum_value
+    n_orients =  1;
+    channel   =  2;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
-function test_single_and_double_opponent_maximum_value
-    n_scales = 2;
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 4;
-    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
-    max_signal = max(signal(:));
-    assertTrue(max_signal <= 1, ['Expected maximum signal <= 1, was ',num2str(max_signal)])
+function test_dwt_single_opponent_lab_channel_3_maximum_value
+    n_orients =  1;
+    channel   =  3;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_1_minimum_value
+    n_orients =  3;
+    channel   =  1;
+    minimum   = -50;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_2_minimum_value
+    n_orients =  3;
+    channel   =  2;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_3_minimum_value
+    n_orients =  3;
+    channel   =  3;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_1_maximum_value
+    n_orients =  3;
+    channel   =  1;
+    minimum   =  0;
+    maximum   =  50;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_2_maximum_value
+    n_orients =  3;
+    channel   =  2;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_double_opponent_lab_channel_3_maximum_value
+    n_orients =  3;
+    channel   =  3;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_1_minimum_value
+    n_orients =  4;
+    channel   =  1;
+    minimum   = -50;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_2_minimum_value
+    n_orients =  4;
+    channel   =  2;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_3_minimum_value
+    n_orients =  4;
+    channel   =  3;
+    minimum   = -Inf;
+    maximum   =  0;
+    assertMinimumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_1_maximum_value
+    n_orients =  4;
+    channel   =  1;
+    minimum   =  0;
+    maximum   =  50;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_2_maximum_value
+    n_orients =  4;
+    channel   =  2;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
+end
+
+function test_dwt_single_and_double_opponent_lab_channel_3_maximum_value
+    n_orients =  4;
+    channel   =  3;
+    minimum   =  0;
+    maximum   =  Inf;
+    assertMaximumValue(make_synthetic_lab, n_orients, channel, minimum, maximum);
 end
 
 %% ASSERT OUTPUT MATRIX DIMENSIONS
 
-function test_single_and_double_opponent_dimensions_at_2_scales
+function test_dwt_single_and_double_opponent_dimensions_at_2_scales
     n_scales = 2;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
@@ -187,7 +259,7 @@ function test_single_and_double_opponent_dimensions_at_2_scales
     assertEqual(size(signal, 5),  4); % horizontal, diagonal, vertical, and non-oriented
 end
 
-function test_single_and_double_opponent_dimensions_at_3_scales
+function test_dwt_single_and_double_opponent_dimensions_at_3_scales
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
@@ -199,6 +271,30 @@ function test_single_and_double_opponent_dimensions_at_3_scales
     assertEqual(size(signal, 3),  4); % RGBY
     assertEqual(size(signal, 4),  n_scales);
     assertEqual(size(signal, 5),  4); % horizontal, diagonal, vertical, and non-oriented
+end
+
+%% TEST ASSERTIONS
+
+function assertMinimumValue(I, n_orients, channel_i, expected_min, expected_max)
+    n_scales = 2;
+    config = make_config(n_scales);
+    config.wave.n_orients = n_orients;
+    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    channel = signal(:,:,channel_i,:,:);
+    min_signal = min(channel(:));
+    assertTrue(min_signal >= expected_min, ['Expected minimum signal >= ',num2str(expected_min),', was ',num2str(min_signal)]);
+    assertTrue(min_signal <= expected_max, ['Expected minimum signal <= ',num2str(expected_max),', was ',num2str(min_signal)]);
+end
+
+function assertMaximumValue(I, n_orients, channel_i, expected_min, expected_max)
+    n_scales = 2;
+    config = make_config(n_scales);
+    config.wave.n_orients = n_orients;
+    [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    channel = signal(:,:,channel_i,:,:);
+    min_signal = max(channel(:));
+    assertTrue(min_signal <= expected_max, ['Expected maximum signal <= ',num2str(expected_max),', was ',num2str(min_signal)]);
+    assertTrue(min_signal >= expected_min, ['Expected maximum signal >= ',num2str(expected_min),', was ',num2str(min_signal)]);
 end
 
 %% TEST UTILITIES
@@ -215,6 +311,18 @@ function I = make_synthetic_I()
 % A simple image for testing: a white square on a black background
     I = zeros(42, 42, 3);
     I(11:end-11,11:end-11,:) = 1;
+end
+
+function I = make_synthetic_lab()
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    I = model.data.color.rgb2lab(I);
+end
+
+function I = make_synthetic_rgby()
+    data = load('tests/data/rgb_40_40_3.mat');
+    I = data.img;
+    I = model.data.color.rgb2rgby(I);
 end
 
 function config = make_config(n_scales)

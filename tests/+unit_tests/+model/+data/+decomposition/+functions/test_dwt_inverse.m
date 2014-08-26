@@ -106,7 +106,7 @@ end
 %% TEST UTILITIES
 
 function config = make_config(n_scales, n_orients)
-    config = configurations.wavelet_opponent();
+    config = configurations.default();
     config.zli.n_membr     = 3;
     config.wave.n_orients  = n_orients;
     config.wave.n_scales   = n_scales;
