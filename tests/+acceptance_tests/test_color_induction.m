@@ -81,7 +81,7 @@ function test_opponent_color_inhibition
     configB.zli.interaction.color.weight.excitation = 0.0;
     configB.zli.interaction.color.weight.inhibition = 0.3;
     % When
-    normal  = model.apply(I, configA);
+    normal    = model.apply(I, configA);
     inhibited = model.apply(I, configB);
     % Then
     assertNegativesPeakLower(inhibited, normal);
@@ -89,6 +89,39 @@ function test_opponent_color_inhibition
     % FAILS: current implementation is lacking somewhere
     assertNegativesAverageLower(inhibited, normal);
     assertPositivesAverageHigher(inhibited, normal);
+end
+
+function test_lightness_contrast
+    % Given
+    width = 48;
+    A = test_image('lightness contrast A', width);
+    B = test_image('lightness contrast B', width);
+    config = configurations.double_opponent();
+    config.display.logging               = true;
+    config.display.plot                  = true;
+    config.display.play                  = true;
+    config.image.transform               = 'rgb2lab';
+    config.wave.n_scales                 = 2;
+    config.zli.n_membr                   = 5;
+    config.zli.n_iter                    = 10;
+    config.zli.ON_OFF                    = 'separate';
+    config.zli.interaction.color.enabled = false;
+    % When
+    [~, A_out] = model.apply(A, config);
+    [~, B_out] = model.apply(B, config);
+    % Then
+    third_width = floor(width/3);
+    inner_range = third_width:width-third_width;
+    A_inner_out = A_out(inner_range,inner_range,:);
+    B_inner_out = B_out(inner_range,inner_range,:);
+    A_lightness = sum(sum(A_inner_out(:,:,1))) / third_width^2;
+    B_lightness = sum(sum(B_inner_out(:,:,1))) / third_width^2;
+    assertTrue(A_lightness > B_lightness, ...
+               'Lightnes contrast: A should be lighter than B.');
+    assertTrue(A_lightness > 0, ...
+               'Lightnes contrast: A should be lightened.');
+    assertTrue(B_lightness < 0, ...
+               'Lightnes contrast: B should be darkened.');
 end
 
 function I = synthetic_image()
