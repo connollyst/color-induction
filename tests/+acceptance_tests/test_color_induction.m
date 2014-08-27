@@ -12,11 +12,11 @@ function test_no_color_induction_with_zero_weights
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'none';
+    config.image.transform                = 'rgb2lab';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
-    config.zli.ON_OFF                     = 'abs';
+    config.zli.ON_OFF                     = 'separate';
     configA = config;
     configA.zli.interaction.color.enabled = false;
     configB = config;
@@ -38,11 +38,11 @@ function test_opponent_color_excitation
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'none';
+    config.image.transform                = 'rgb2lab';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
-    config.zli.ON_OFF                     = 'abs';
+    config.zli.ON_OFF                     = 'separate';
     configB.zli.interaction.color.enabled = true;
     configA = config;
     configB.zli.interaction.color.weight.excitation = 0.0;
@@ -68,11 +68,11 @@ function test_opponent_color_inhibition
     config.display.logging                = false;
     config.display.plot                   = false;
     config.display.play                   = false;
-    config.image.transform                = 'none';
+    config.image.transform                = 'rgb2lab';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 5;
     config.zli.n_iter                     = 10;
-    config.zli.ON_OFF                     = 'abs';
+    config.zli.ON_OFF                     = 'separate';
     configB.zli.interaction.color.enabled = true;
     configA = config;
     configB.zli.interaction.color.weight.excitation = 0.0;
@@ -93,34 +93,35 @@ end
 
 function I = synthetic_image()
 % Generate a simple image for testing: a flat square on a flat background.
-    I = zeros(42, 42, 3);
-    I(11:end-11,11:end-11,:) = 1;
+    I = ones(42, 42, 3) * 0.2;      % some base signal in every channel
+    I(:,:,1) = 0.8;                 % strong red background
+    I(11:end-11,11:end-11,:) = 0.7; % light grey square in the center
 end
 
 function assertPositivesAverageHigher(test, reference)
-    test_mean      = mean(test(test > 0));
-    reference_mean = mean(reference(reference > 0));
+    test_mean      = mean(test(:));
+    reference_mean = mean(reference(:));
     assertTrue(test_mean > reference_mean, ...
                 'Mean of positive values should be higher than reference.');
 end
 
 function assertNegativesAverageLower(test, reference)
-    test_mean      = mean(test(test < 0));
-    reference_mean = mean(reference(reference < 0));
+    test_mean      = mean(test(:));
+    reference_mean = mean(reference(:));
     assertTrue(test_mean < reference_mean, ...
                 'Mean of negative values should be lower than reference.');
 end
 
 function assertPositivesPeakHigher(test, reference)
-    test_mean      = max(test(test > 0));
-    reference_mean = max(reference(reference > 0));
+    test_mean      = max(test(:));
+    reference_mean = max(reference(:));
     assertTrue(test_mean > reference_mean, ...
                 'Peak of positive values should be higher than reference.');
 end
 
 function assertNegativesPeakLower(test, reference)
-    test_mean      = min(test(test < 0));
-    reference_mean = min(reference(reference < 0));
+    test_mean      = min(test(:));
+    reference_mean = min(reference(:));
     assertTrue(test_mean < reference_mean, ...
                 'Peak of negative values should be lower than reference.');
 end
