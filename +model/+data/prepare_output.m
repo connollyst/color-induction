@@ -20,12 +20,14 @@ function [out, I_out] = prepare_output(wavelets_in, activity_out, residuals, con
 end
 
 function out = average_raw_output(activity_out, config)
-    out_avg    = average_output(activity_out, config);
-    out_total  = sum(sum(out_avg, 5), 4);
-    n_channels = size(out_total, 3);
-    odds       = 1:2:n_channels;
-    evens      = 2:2:n_channels;
-    out        = out_total(:,:,odds) - out_total(:,:,evens);
+    out_avg = average_output(activity_out, config);
+    out     = sum(sum(out_avg, 5), 4);
+    if strcmp(config.zli.ON_OFF, 'separate')
+        n_channels = size(out, 3);
+        odds       = 1:2:n_channels;
+        evens      = 2:2:n_channels;
+        out        = out(:,:,odds) - out(:,:,evens);
+    end
 end
 
 function O = average_output(I, config)
