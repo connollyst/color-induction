@@ -8,48 +8,51 @@ function test_no_color_induction_with_zero_weights
 % scenarios and expect the output to be the same.
     % Given
     I = little_peppers();
-    config = configurations.double_opponent();
+    config = configurations.default();
     config.display.logging                = false;
     config.display.plot                   = false;
-    config.display.play                   = false;
     config.image.transform                = 'rgb2lab';
     config.wave.n_scales                  = 2;
-    config.zli.n_membr                    = 3;
-    config.zli.n_iter                     = 3;
+    config.zli.n_membr                    = 2;
+    config.zli.n_iter                     = 2;
     config.zli.ON_OFF                     = 'separate';
-    config.zli.interaction.color.model = 'default';
     configA = config;
     configA.zli.interaction.color.enabled = false;
     configB = config;
     configB.zli.interaction.color.enabled = true;
+    configB.zli.interaction.color.model   = 'default';
     configB.zli.interaction.color.weight.excitation = 0;
     configB.zli.interaction.color.weight.inhibition = 0;
+    configC = config;
+    configC.zli.interaction.color.enabled = true;
+    configC.zli.interaction.color.model   = 'opponent';
+    configC.zli.interaction.color.weight.excitation = 0;
+    configC.zli.interaction.color.weight.inhibition = 0;
     % When
-    expected = model.apply(I, configA);
-    actual   = model.apply(I, configB);
+    A = model.apply(I, configA);
+    B = model.apply(I, configB);
+    C = model.apply(I, configC);
     % Then
-    assertEqualData(expected, actual);
+    assertEqualData(A, B);
+    assertEqualData(A, C);
 end
 
 function test_opponent_color_excitation
     % Given
     I = synthetic_image() * 0.5;
-    config = configurations.double_opponent();
+    config = configurations.default();
     config.display.logging               = false;
     config.display.plot                  = false;
-    config.display.play                  = false;
     config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 5;
-    config.zli.n_iter                    = 10;
+    config.zli.n_membr                   = 3;
+    config.zli.n_iter                    = 5;
     config.zli.ON_OFF                    = 'separate';
     config.zli.interaction.color.enabled = true;
     configA = config;
     configA.zli.interaction.color.weight.excitation = 0.0;
     configA.zli.interaction.color.weight.inhibition = 0.0;
     configB = config;
-    configB.display.plot                  = true;
-    configB.display.play                  = true;
     configB.zli.interaction.color.weight.excitation = 0.1;
     configB.zli.interaction.color.weight.inhibition = 0.0;
     % When
@@ -72,22 +75,21 @@ end
 function test_opponent_color_inhibition
     % Given
     I = synthetic_image() * 0.5;
-    config = configurations.double_opponent();
-    config.display.logging                = false;
-    config.display.plot                   = false;
-    config.display.play                   = false;
-    config.image.transform                = 'rgb2lab';
-    config.wave.n_scales                  = 2;
-    config.zli.n_membr                    = 5;
-    config.zli.n_iter                     = 10;
-    config.zli.ON_OFF                     = 'separate';
-    configB.zli.interaction.color.enabled = true;
+    config = configurations.default();
+    config.display.logging               = false;
+    config.display.plot                  = false;
+    config.image.transform               = 'rgb2lab';
+    config.wave.n_scales                 = 2;
+    config.zli.n_membr                   = 3;
+    config.zli.n_iter                    = 5;
+    config.zli.ON_OFF                    = 'separate';
+    config.zli.interaction.color.enabled = true;
     configA = config;
-    configB.zli.interaction.color.weight.excitation = 0.0;
-    configB.zli.interaction.color.weight.inhibition = 0.0;
+    configA.zli.interaction.color.weight.excitation = 0.0;
+    configA.zli.interaction.color.weight.inhibition = 0.0;
     configB = config;
     configB.zli.interaction.color.weight.excitation = 0.0;
-    configB.zli.interaction.color.weight.inhibition = 0.3;
+    configB.zli.interaction.color.weight.inhibition = 0.1;
     % When
     normal    = model.apply(I, configA);
     inhibited = model.apply(I, configB);
@@ -105,15 +107,14 @@ function test_opponent_color_inhibition
     end
 end
 
-function test_lightness_contrast
+function test_double_opponent_lightness_contrast
     % Given
     width = 48;
     A = test_image('lightness contrast A', width);
     B = test_image('lightness contrast B', width);
     config = configurations.double_opponent();
-    config.display.logging               = true;
-    config.display.plot                  = true;
-    config.display.play                  = true;
+    config.display.logging               = false;
+    config.display.plot                  = false;
     config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
@@ -138,16 +139,15 @@ function test_lightness_contrast
                'Lightnes contrast: B should be darkened.');
 end
 
-function test_crispening_effect
+function test_double_opponent_crispening_effect
     % Given
     width = 48;
     A = test_image('crispening effect A', width);
     B = test_image('crispening effect B', width);
     C = test_image('crispening effect C', width);
     config = configurations.double_opponent();
-    config.display.logging               = true;
-    config.display.plot                  = true;
-    config.display.play                  = true;
+    config.display.logging               = false;
+    config.display.plot                  = false;
     config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
@@ -158,7 +158,32 @@ function test_crispening_effect
     [~, A_out] = model.apply(A, config);
     [~, B_out] = model.apply(B, config);
     [~, C_out] = model.apply(C, config);
-    % Then
+    % Then we should see that the top and bottom colored squares are most
+    % noticeably different from each other when placed on a background
+    % whose color is between the squares' colors. This backround drives
+    % the squares colors' apart, while a black or white background drives
+    % the colors toward each other.
+    third_width    = floor(width/3);
+    inner_cols     = third_width:width-third_width;
+    inner_rows_one = inner_cols;
+    inner_rows_two = inner_rows_one+width;
+    A_out_one      = A_out(inner_rows_one, inner_cols, :);
+    A_out_two      = A_out(inner_rows_two, inner_cols, :);
+    B_out_one      = B_out(inner_rows_one, inner_cols, :);
+    B_out_two      = B_out(inner_rows_two, inner_cols, :);
+    C_out_one      = C_out(inner_rows_one, inner_cols, :);
+    C_out_two      = C_out(inner_rows_two, inner_cols, :);
+    A_mean_one     = mean(A_out_one(:));
+    A_mean_two     = mean(A_out_two(:));
+    B_mean_one     = mean(B_out_one(:));
+    B_mean_two     = mean(B_out_two(:));
+    C_mean_one     = mean(C_out_one(:));
+    C_mean_two     = mean(C_out_two(:));
+    A_mean_diff    = abs(A_mean_one - A_mean_two);
+    B_mean_diff    = abs(B_mean_one - B_mean_two);
+    C_mean_diff    = abs(C_mean_one - C_mean_two);
+    assertTrue(B_mean_diff > A_mean_diff);
+    assertTrue(B_mean_diff > C_mean_diff);
 end
 
 function I = synthetic_image()
