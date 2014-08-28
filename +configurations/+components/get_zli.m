@@ -42,6 +42,7 @@ function zli = get_zli()
     zli.interaction.color.enabled  = true;
     
     % Opponet color interactions weights
-    zli.interaction.color.weight.excitation = 0.01;  % TODO determine appropriate value
-    zli.interaction.color.weight.inhibition = 0.01;  % TODO determine appropriate value
+    zli.interaction.color.model    = 'opponent';   % 'default' or 'opponent'
+    zli.interaction.color.weight.excitation = 0.01;
+    zli.interaction.color.weight.inhibition = 0.01;
 end

@@ -15,12 +15,89 @@ function test_no_color_excitation_filter_when_disabled
     assertEqual(expected_filter, actual_filter);
 end
 
-%% TEST OPPONENT COLOR INTERACTIONS
+%% TEST DEFAULT COLOR EXCITATION FILTER
+
+function test_default_color_excitation_filter_with_1_color_channel
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'default';
+    config.zli.interaction.color.weight.excitation = 0.3;
+    config.image.n_channels                        = 1;
+    % When/Then
+    assertExceptionThrown(...
+        @() model.terms.interactions.colors.excitation_filter(config),...
+        'MODEL:uneven_opponent');
+end
+
+function test_default_color_excitation_filter_with_2_color_channels
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'default';
+    config.zli.interaction.color.weight.excitation = 0.2;
+    config.image.n_channels                        = 2;
+    % When
+    actual_filter = model.terms.interactions.colors.excitation_filter(config);
+    % Then
+    expected_length = 3;    % rounded up for symmetry
+    expected_weight = 0.2;
+    assertColorFilterSize(expected_length, actual_filter)
+    assertColorFilterValues(expected_length, expected_weight, actual_filter)
+end
+
+function test_default_color_excitation_filter_with_3_color_channels
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'default';
+    config.zli.interaction.color.weight.excitation = 0.1;
+    config.image.n_channels                        = 3;
+    % When/Then
+    assertExceptionThrown(...
+        @() model.terms.interactions.colors.excitation_filter(config),...
+        'MODEL:uneven_opponent');
+end
+
+function test_default_color_excitation_filter_with_4_color_channels
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'default';
+    config.zli.interaction.color.weight.excitation = 0.01;
+    config.image.n_channels                        = 4;
+    % When
+    actual_filter = model.terms.interactions.colors.excitation_filter(config);
+    % Then
+    expected_length = 5;   % rounded up for symmetry
+    expected_weight = 0.01;
+    assertColorFilterSize(expected_length, actual_filter)
+    assertColorFilterValues(expected_length, expected_weight, actual_filter)
+end
+
+function test_default_color_excitation_filter_with_42_color_channels
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'default';
+    config.zli.interaction.color.weight.excitation = 0.01;
+    config.image.n_channels                        = 42;
+    % When
+    actual_filter = model.terms.interactions.colors.excitation_filter(config);
+    % Then
+    expected_length = 43;   % rounded up for symmetry
+    expected_weight = 0.01;
+    assertColorFilterSize(expected_length, actual_filter)
+    assertColorFilterValues(expected_length, expected_weight, actual_filter)
+end
+
+%% TEST OPPONENT COLOR EXCITATION FILTER
 
 function test_opponent_color_excitation_filter_with_1_color_channel
     % Given
     config = struct();
     config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'opponent';
     config.zli.interaction.color.weight.excitation = 0.3;
     config.image.n_channels                        = 1;
     % When/Then
@@ -33,21 +110,20 @@ function test_opponent_color_excitation_filter_with_2_color_channels
     % Given
     config = struct();
     config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'opponent';
     config.zli.interaction.color.weight.excitation = 0.2;
     config.image.n_channels                        = 2;
-    % When
-    actual_filter = model.terms.interactions.colors.excitation_filter(config);
-    % Then
-    expected_length = 3;    % rounded up for symmetry
-    expected_weight = 0.2;
-    assertColorFilterSize(expected_length, actual_filter)
-    assertColorFilterValues(expected_length, expected_weight, actual_filter)
+    % When/Then
+    assertExceptionThrown(...
+        @() model.terms.interactions.colors.excitation_filter(config),...
+        'MODEL:InsufficientChannels');
 end
 
 function test_opponent_color_excitation_filter_with_3_color_channels
     % Given
     config = struct();
     config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'opponent';
     config.zli.interaction.color.weight.excitation = 0.1;
     config.image.n_channels                        = 3;
     % When/Then
@@ -56,17 +132,34 @@ function test_opponent_color_excitation_filter_with_3_color_channels
         'MODEL:uneven_opponent');
 end
 
+function test_opponent_color_excitation_filter_with_4_color_channels
+    % Given
+    config = struct();
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.01;
+    config.image.n_channels                        = 4;
+    % When
+    actual_filter = model.terms.interactions.colors.excitation_filter(config);
+    % Then
+    expected_length = 3;   % opponent removed
+    expected_weight = 0.01;
+    assertColorFilterSize(expected_length, actual_filter)
+    assertColorFilterValues(expected_length, expected_weight, actual_filter)
+end
+
 function test_opponent_color_excitation_filter_with_42_color_channels
     % Given
     config = struct();
     config.zli.interaction.color.enabled           = true;
-    config.zli.interaction.color.weight.excitation = 0.05;
+    config.zli.interaction.color.model             = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.01;
     config.image.n_channels                        = 42;
     % When
     actual_filter = model.terms.interactions.colors.excitation_filter(config);
     % Then
-    expected_length = 43;   % rounded up for symmetry
-    expected_weight = 0.05;
+    expected_length = 41;   % opponent removed
+    expected_weight = 0.01;
     assertColorFilterSize(expected_length, actual_filter)
     assertColorFilterValues(expected_length, expected_weight, actual_filter)
 end

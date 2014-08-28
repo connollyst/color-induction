@@ -18,7 +18,7 @@ function test_no_color_padding_if_disabled
     assertColorSizes(padded, expected_colors);
 end
 
-function test_color_padding_to_2_colors
+function test_default_color_padding_to_2_colors
     % Given
     actual_colors   = 2;
     color_enabled   = true;
@@ -32,7 +32,7 @@ function test_color_padding_to_2_colors
     assertColorSizes(padded, expected_colors);
 end
 
-function test_color_padding_to_4_colors
+function test_default_color_padding_to_4_colors
     % Given
     actual_colors   = 4;
     color_enabled   = true;
@@ -46,7 +46,7 @@ function test_color_padding_to_4_colors
     assertColorSizes(padded, expected_colors);
 end
 
-function test_color_padding_to_6_colors
+function test_default_color_padding_to_6_colors
     % Given
     actual_colors   = 6;
     color_enabled   = true;
@@ -60,7 +60,7 @@ function test_color_padding_to_6_colors
     assertColorSizes(padded, expected_colors);
 end
 
-function test_color_padding_to_42_colors
+function test_default_color_padding_to_42_colors
     % Given
     actual_colors   = 42;
     color_enabled   = true;
@@ -86,6 +86,7 @@ end
 function config = get_config(colors, color_enabled)
     config = test_config(42, 42, colors, 2);
     config.zli.interaction.color.enabled = color_enabled;
+    config.zli.interaction.color.model   = 'default';
     if color_enabled
         config.zli.interaction.color.weight.excitation = 0.1;
         config.zli.interaction.color.weight.inhibition = 0.2;

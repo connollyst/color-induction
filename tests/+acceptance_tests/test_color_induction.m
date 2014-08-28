@@ -17,6 +17,7 @@ function test_no_color_induction_with_zero_weights
     config.zli.n_membr                    = 3;
     config.zli.n_iter                     = 3;
     config.zli.ON_OFF                     = 'separate';
+    config.zli.interaction.color.model = 'default';
     configA = config;
     configA.zli.interaction.color.enabled = false;
     configB = config;
@@ -55,16 +56,17 @@ function test_opponent_color_excitation
     [~, normal]  = model.apply(I, configA);
     [~, excited] = model.apply(I, configB);
     % Then
-    % TODO these acceptance criteria aren't necessarily logical..
-    %      why would we expect more extremes?
-    %      what do we really expect when colors interact?
-    %      filter_equal with a center of 1 gives this result, but that adds
-    %      energy to the system, is that what we want??
-    assertNegativesPeakLower(excited, normal);
-    assertPositivesPeakHigher(excited, normal);
-    % FAILS: current implementation is lacking somewhere
-    assertNegativesAverageLower(excited, normal);
-    assertPositivesAverageHigher(excited, normal);
+    n_channels = size(normal, 3);
+    for c=1:n_channels
+        % With added excitation and no inhibition, we expect increased
+        % activity in all channels, in all directions..
+        test = excited(:,:,c);
+        reference = normal(:,:,c);
+        assertNegativesPeakLower(test, reference, ['channel=',num2str(c)]);
+        assertPositivesPeakHigher(test, reference, ['channel=',num2str(c)]);
+        assertNegativesAverageLower(test, reference, ['channel=',num2str(c)]);
+        assertPositivesAverageHigher(test, reference, ['channel=',num2str(c)]);
+    end
 end
 
 function test_opponent_color_inhibition
@@ -90,11 +92,17 @@ function test_opponent_color_inhibition
     normal    = model.apply(I, configA);
     inhibited = model.apply(I, configB);
     % Then
-    assertNegativesPeakLower(inhibited, normal);
-    assertPositivesPeakHigher(inhibited, normal);
-    % FAILS: current implementation is lacking somewhere
-    assertNegativesAverageLower(inhibited, normal);
-    assertPositivesAverageHigher(inhibited, normal);
+    n_channels = size(normal, 3);
+    for c=1:n_channels
+        % With added inhibition and no excitation, we expect reduced
+        % activity in all channels, in all directions..
+        test = inhibited(:,:,c);
+        reference = normal(:,:,c);
+        assertNegativesPeakLower(reference, test, ['channel=',num2str(c)]);
+        assertPositivesPeakHigher(reference, test, ['channel=',num2str(c)]);
+        assertNegativesAverageLower(reference, test, ['channel=',num2str(c)]);
+        assertPositivesAverageHigher(reference, test, ['channel=',num2str(c)]);
+    end
 end
 
 function test_lightness_contrast
@@ -160,30 +168,34 @@ function I = synthetic_image()
     I(11:end-11,11:end-11,:) = 0.7; % light grey square in the center
 end
 
-function assertPositivesAverageHigher(test, reference)
-    test_mean      = mean(test(:));
-    reference_mean = mean(reference(:));
+function assertPositivesAverageHigher(test, reference, message)
+    test_pos       = test(test > 0);
+    test_mean      = mean(test_pos(:));
+    reference_pos  = reference(reference > 0);
+    reference_mean = mean(reference_pos(:));
     assertTrue(test_mean > reference_mean, ...
-                'Mean of positive values should be higher than reference.');
+        ['Mean of positive values should be higher than reference: ',message]);
 end
 
-function assertNegativesAverageLower(test, reference)
-    test_mean      = mean(test(:));
-    reference_mean = mean(reference(:));
+function assertNegativesAverageLower(test, reference, message)
+    test_neg       = test(test < 0);
+    test_mean      = mean(test_neg(:));
+    reference_neg  = reference(reference < 0);
+    reference_mean = mean(reference_neg(:));
     assertTrue(test_mean < reference_mean, ...
-                'Mean of negative values should be lower than reference.');
+        ['Mean of negative values should be lower than reference: ',message]);
 end
 
-function assertPositivesPeakHigher(test, reference)
+function assertPositivesPeakHigher(test, reference, message)
     test_mean      = max(test(:));
     reference_mean = max(reference(:));
     assertTrue(test_mean > reference_mean, ...
-                'Peak of positive values should be higher than reference.');
+        ['Peak of positive values should be higher than reference: ',message]);
 end
 
-function assertNegativesPeakLower(test, reference)
+function assertNegativesPeakLower(test, reference, message)
     test_mean      = min(test(:));
     reference_mean = min(reference(:));
     assertTrue(test_mean < reference_mean, ...
-                'Peak of negative values should be lower than reference.');
+        ['Peak of negative values should be lower than reference: ',message]);
 end

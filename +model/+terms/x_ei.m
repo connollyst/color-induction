@@ -6,12 +6,8 @@ function x_ei = x_ei(gy_in, interactions, config)
 %       config:         the struct of algorithm configuration parameters
 %   Output
 %       x_ei: excitatory-inhibitory term
-
-    gy_padded = model.data.padding.add.orient(gy_in, interactions.scale, config);
-    % TODO it's sloppy that we don't get the data how we want it
-    gy        = restructure_data(gy_padded, interactions, config);
-    x_ei      = model.utils.zeros(config);
-    
+    x_ei = model.utils.zeros(config);
+    gy   = restructure_data(gy_in, interactions, config);
     for oc=1:config.wave.n_orients  % loop over the central (reference) orientation
         ei               = apply_scale_interactions(gy, interactions.scale, config);
         ei               = apply_color_interactions(ei, interactions.color, config);
@@ -20,9 +16,10 @@ function x_ei = x_ei(gy_in, interactions, config)
     end
 end
 
-function center = restructure_data(padded, interactions, config)
+function center = restructure_data(gy_in, interactions, config)
 %RESTRUCTURE_DATA Extract the centers of the padded image.
 %   TODO why pad the image in the first place??
+    gy_padded  = model.data.padding.add.orient(gy_in, interactions.scale, config);
     n_cols     = config.image.width;
     n_rows     = config.image.height;
     n_channels = config.image.n_channels;
@@ -30,7 +27,7 @@ function center = restructure_data(padded, interactions, config)
     n_orients  = config.wave.n_orients;
     center = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
     for s=1:n_scales
-        center(:,:,:,s,:) = extract_center(padded, s, interactions.scale, config);
+        center(:,:,:,s,:) = extract_center(gy_padded, s, interactions.scale, config);
     end
 end
 
@@ -52,6 +49,7 @@ function ei = apply_scale_interactions(gy, scale_interactions, config)
     if ~config.zli.interaction.scale.enabled
         ei = gy;
     else
+        % TODO Can we use model.terms.interactions.scales.apply()
         scale_filter        = scale_interactions.filter;
         avoid_circshift_fft = config.compute.avoid_circshift_fft;
         ei = model.data.convolutions.optimal(gy, scale_filter, 0, 0, avoid_circshift_fft);
@@ -88,15 +86,12 @@ function ei_out = apply_orient_interactions(ei_in, center_orient, orient_interac
 end
 
 function ei_out = apply_color_interactions(ei_in, color_interactions, config)
+% Process interactions between color channels
+% Note: colors interact in interneurons in the same manner as colors excite
+%       each other in 
     if ~config.zli.interaction.color.enabled
         ei_out = ei_in;
     else
-        % TODO what kind of interactions do we want?
-        ei_padded      = model.data.padding.add.color(ei_in, color_interactions, config);
-        n_interactions = color_interactions.n_interactions;
-        n_channels     = config.image.n_channels;
-        n_padding      = (n_interactions - n_channels) / 2;
-        center         = n_padding+1:n_padding+n_channels;
-        ei_out         = ei_padded(:,:,center,:,:);    % TODO implement interaction
+        ei_out = model.terms.interactions.colors.apply_excitation(ei_in, color_interactions, config);
     end
 end

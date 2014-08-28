@@ -4,15 +4,19 @@ function excitation = apply_excitation(data, color_interactions, config)
         excitation = data;
     else
         % TODO can/should we use use fft?
-        filter = color_interactions.excitation_filter;
-        switch config.zli.ON_OFF
-            case 'separate'
-                excitation = apply_opponent_filter(data, filter, config);
-            otherwise
-                % Activity in any color channel excites all others
+        color_model  = config.zli.interaction.color.model;
+        color_filter = color_interactions.excitation_filter;
+        switch color_model
+            case 'default'
+                % A color channel excites all others
                 data_padded       = model.data.padding.add.color(data, color_interactions, config);
-                excitation_padded = model.data.convolutions.optimal(data_padded, filter);
+                excitation_padded = model.data.convolutions.optimal(data_padded, color_filter);
                 excitation        = model.data.padding.remove.color(excitation_padded, color_interactions, config);
+            case 'opponent'
+                % A color channel excites all except it's opponent
+                excitation = apply_opponent_filter(data, color_filter, config);
+            otherwise
+                error('Unrecognized color interaction model: %s', color_model);
         end
     end
 end
