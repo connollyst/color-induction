@@ -127,6 +127,45 @@ function test_opponent_excitation_from_channel_4
     assertElementsAlmostEqual(I_out_mean_4, 1);
 end
 
+function test_opponent_excitation_with_6_channels
+    % Given
+    I_in         = zeros(64,64,6);
+    I_in(:,:,1)  = 1;
+    I_in(:,:,2)  = 0.1;
+    I_in(:,:,3)  = 0.3;
+    I_in(:,:,5)  = 1;
+    I_in(:,:,6)  = 0.7;
+    config       = get_config(I_in);
+    config.zli.interaction.color.enabled           = true;
+    config.zli.interaction.color.model             = 'opponent';
+    config.zli.interaction.color.weight.excitation = 0.1;
+    config.zli.interaction.color.weight.inhibition = 0.0;
+    interactions = model.terms.get_interactions(config);
+    % When
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
+    % Then
+    I_out_mean_1 = mean(mean(I_out(:,:,1)));
+    I_out_mean_2 = mean(mean(I_out(:,:,2)));
+    I_out_mean_3 = mean(mean(I_out(:,:,3)));
+    I_out_mean_4 = mean(mean(I_out(:,:,4)));
+    I_out_mean_5 = mean(mean(I_out(:,:,5)));
+    I_out_mean_6 = mean(mean(I_out(:,:,6)));
+    % Channel 1 should be the most active
+    %  (it started most active, and it's opponent is the least active)
+    assertTrue(I_out_mean_1 > I_out_mean_2);
+    assertTrue(I_out_mean_1 > I_out_mean_3);
+    assertTrue(I_out_mean_1 > I_out_mean_4);
+    assertTrue(I_out_mean_1 > I_out_mean_5);
+    assertTrue(I_out_mean_1 > I_out_mean_6);
+    % Channel 5 should be the next most active
+    %  (it had no excitation from channel 6, it's opponent)
+    assertTrue(I_out_mean_5 > I_out_mean_2);
+    assertTrue(I_out_mean_5 > I_out_mean_3);
+    assertTrue(I_out_mean_5 > I_out_mean_4);
+    assertTrue(I_out_mean_5 > I_out_mean_6);
+    
+end
+
 %% UTILITIES
 
 function config = get_config(I)

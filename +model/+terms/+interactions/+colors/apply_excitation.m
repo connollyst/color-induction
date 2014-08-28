@@ -35,17 +35,18 @@ function excitation = apply_opponent_filter(data, filter, config)
 end
 
 function temp = get_temp(data, channel)
-    opponent = get_opponent_index(channel);
     temp     = data;
     center   = size(temp, 3) / 2;
     % Remove the opponent channel, it isn't to be excited
+    opponent = get_opponent_index(channel);
     temp(:,:,opponent,:,:) = [];
-    % Put the channel being excited in the center
-    if channel < center || channel == center+1
-        temp(:,:,[channel, center],:,:)   = temp(:,:,[center, channel],:,:);
-    else
-        temp(:,:,[channel-1, center],:,:) = temp(:,:,[center, channel-1],:,:);
+    % If the main channel moved, update it's index
+    if opponent < channel
+        channel = channel - 1;
     end
+    % Put the channel being excited in the center
+    distance = center - channel;
+    temp = circshift(temp, [0 0 distance 0 0]);
 end
 
 function opponent = get_opponent_index(channel)
