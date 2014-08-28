@@ -31,26 +31,124 @@ end
 
 %% TEST OPPONENT COLOR INTERACTIONS
 
-function test_opponent_excitation
+function test_opponent_excitation_from_channel_1
     % Given
-    I_in         = little_pepperman();
+    I_in         = zeros(64,64,4);
+    I_in(:,:,1)  = 1;
     config       = opponent_config(I_in);
     interactions = model.terms.get_interactions(config);
     % When
     I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
     % Then
-    I_padded     = model.data.padding.add.color(I_in, interactions.color, config);
-    I_conv       = convn(I_padded, interactions.color.excitation_filter, 'same');
-    I_expected   = model.data.padding.remove.color(I_conv, interactions.color, config);
-    assertEqual(I_out, I_expected);
+    I_out_mean_1 = mean(mean(I_out(:,:,1)));
+    I_out_mean_2 = mean(mean(I_out(:,:,2)));
+    I_out_mean_3 = mean(mean(I_out(:,:,3)));
+    I_out_mean_4 = mean(mean(I_out(:,:,4)));
+    % Channel 1 should still be the most active
+    assertTrue(I_out_mean_1 > I_out_mean_2);
+    assertTrue(I_out_mean_1 > I_out_mean_3);
+    assertTrue(I_out_mean_1 > I_out_mean_4);
+    % Channel 2, it's oppenent, should be the least active
+    assertTrue(I_out_mean_2 < I_out_mean_3);
+    assertTrue(I_out_mean_2 < I_out_mean_4);
+    % Channel 1 should have given some excitation to channels 3 & 4
+    excitation_weight = config.zli.interaction.color.weight.excitation;
+    assertElementsAlmostEqual(I_out_mean_1, (1 - (excitation_weight * 2)));
+    assertElementsAlmostEqual(I_out_mean_2, 0);
+    assertElementsAlmostEqual(I_out_mean_3, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_4, excitation_weight);
+end
+
+function test_opponent_excitation_from_channel_2
+    % Given
+    I_in         = zeros(64,64,4);
+    I_in(:,:,2)  = 1;
+    config       = opponent_config(I_in);
+    interactions = model.terms.get_interactions(config);
+    % When
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
+    % Then
+    I_out_mean_1 = mean(mean(I_out(:,:,1)));
+    I_out_mean_2 = mean(mean(I_out(:,:,2)));
+    I_out_mean_3 = mean(mean(I_out(:,:,3)));
+    I_out_mean_4 = mean(mean(I_out(:,:,4)));
+    % Channel 1 should still be the most active
+    assertTrue(I_out_mean_2 > I_out_mean_1);
+    assertTrue(I_out_mean_2 > I_out_mean_3);
+    assertTrue(I_out_mean_2 > I_out_mean_4);
+    % Channel 2, it's oppenent, should be the least active
+    assertTrue(I_out_mean_1 < I_out_mean_3);
+    assertTrue(I_out_mean_1 < I_out_mean_4);
+    % Channel 1 should have given some excitation to channels 3 & 4
+    excitation_weight = config.zli.interaction.color.weight.excitation;
+    assertElementsAlmostEqual(I_out_mean_1, 0);
+    assertElementsAlmostEqual(I_out_mean_2, (1 - (excitation_weight * 2)));
+    assertElementsAlmostEqual(I_out_mean_3, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_4, excitation_weight);
+end
+
+function test_opponent_excitation_from_channel_3
+    % Given
+    I_in         = zeros(64,64,4);
+    I_in(:,:,3)  = 1;
+    config       = opponent_config(I_in);
+    interactions = model.terms.get_interactions(config);
+    % When
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
+    % Then
+    I_out_mean_1 = mean(mean(I_out(:,:,1)));
+    I_out_mean_2 = mean(mean(I_out(:,:,2)));
+    I_out_mean_3 = mean(mean(I_out(:,:,3)));
+    I_out_mean_4 = mean(mean(I_out(:,:,4)));
+    % Channel 1 should still be the most active
+    assertTrue(I_out_mean_3 > I_out_mean_1);
+    assertTrue(I_out_mean_3 > I_out_mean_2);
+    assertTrue(I_out_mean_3 > I_out_mean_4);
+    % Channel 2, it's oppenent, should be the least active
+    assertTrue(I_out_mean_4 < I_out_mean_1);
+    assertTrue(I_out_mean_4 < I_out_mean_2);
+    % Channel 1 should have given some excitation to channels 3 & 4
+    excitation_weight = config.zli.interaction.color.weight.excitation;
+    assertElementsAlmostEqual(I_out_mean_1, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_2, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_3, (1 - (excitation_weight * 2)));
+    assertElementsAlmostEqual(I_out_mean_4, 0);
+end
+
+function test_opponent_excitation_from_channel_4
+    % Given
+    I_in         = zeros(64,64,4);
+    I_in(:,:,4)  = 1;
+    config       = opponent_config(I_in);
+    interactions = model.terms.get_interactions(config);
+    % When
+    I_out        = model.terms.interactions.colors.apply_excitation(I_in, interactions.color, config);
+    % Then
+    I_out_mean_1 = mean(mean(I_out(:,:,1)));
+    I_out_mean_2 = mean(mean(I_out(:,:,2)));
+    I_out_mean_3 = mean(mean(I_out(:,:,3)));
+    I_out_mean_4 = mean(mean(I_out(:,:,4)));
+    % Channel 1 should still be the most active
+    assertTrue(I_out_mean_4 > I_out_mean_1);
+    assertTrue(I_out_mean_4 > I_out_mean_2);
+    assertTrue(I_out_mean_4 > I_out_mean_3);
+    % Channel 2, it's oppenent, should be the least active
+    assertTrue(I_out_mean_3 < I_out_mean_1);
+    assertTrue(I_out_mean_3 < I_out_mean_2);
+    % Channel 1 should have given some excitation to channels 3 & 4
+    excitation_weight = config.zli.interaction.color.weight.excitation;
+    assertElementsAlmostEqual(I_out_mean_1, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_2, excitation_weight);
+    assertElementsAlmostEqual(I_out_mean_3, 0);
+    assertElementsAlmostEqual(I_out_mean_4, (1 - (excitation_weight * 2)));
 end
 
 %% UTILITIES
 
 function config = opponent_config(I)
     config = common_config(I);
-    config.zli.interaction.color.weight.excitation = 0.5;
-    config.zli.interaction.color.weight.inhibition = 0.2;
+    config.zli.interaction.color.weight.excitation = 0.2;
+    config.zli.interaction.color.weight.inhibition = 0.1;
 end
 
 function config = common_config(I)
@@ -65,10 +163,3 @@ function config = common_config(I)
     config.zli.interaction.scale.enabled           = false;
     config.zli.interaction.color.enabled           = true;
 end
-
-% Tests:
-% assert no change if disabled
-% assert no change if 'default'
-% assert opponent pairs interact if 'opponent'
-% - assert that pairs do interact
-% - assert that non-pairs don't interact

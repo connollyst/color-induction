@@ -12,7 +12,7 @@ function color_filter = excitation_filter(config)
         % OPPONENT COLOR EXCITATION FILTER:
         % In an opponent color system, non-opponent channels excite
         % each other equally.
-        filter_size     = config.image.n_channels;
+        filter_size     = config.image.n_channels - 1;
         opponent_weight = config.zli.interaction.color.weight.excitation;
         color_filter    = model.terms.interactions.filter_equally(...
                                 filter_size, opponent_weight ...
