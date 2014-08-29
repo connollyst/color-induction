@@ -41,28 +41,29 @@ end
 %% LIGHTNESS CONTRAST TEST IMAGES
 
 function rgb = make_lightness_contrast_a(w)
-    rgb_outer = [ 55,  69,  87];
-    rgb_inner = [105, 132, 166];
-    rgb = squares(w, rgb_outer, rgb_inner);
+    hsv_outer = [340/360, 0.35, 0.52];
+    hsv_inner = [340/360, 0.35, 0.72];
+    hsv = squares(w, hsv_outer, hsv_inner);
+    rgb = hsv2rgb(hsv);
 end
 
 function rgb = make_lightness_contrast_b(w)
-    rgb_outer = [159, 200, 252];
-    rgb_inner = [105, 132, 166];
-    rgb = squares(w, rgb_outer, rgb_inner);
+    hsv_outer = [340/360, 0.35, 0.92];
+    hsv_inner = [340/360, 0.35, 0.72];
+    hsv = squares(w, hsv_outer, hsv_inner);
+    rgb = hsv2rgb(hsv);
 end
 
-function rgb = squares(width, rgb_outer, rgb_inner)
-    rgb                = zeros(width, width, 3);
-    rgb(:,:,1)         = rgb_outer(1);
-    rgb(:,:,2)         = rgb_outer(2);
-    rgb(:,:,3)         = rgb_outer(3);
+function hsv = squares(width, hsv_outer, hsv_inner)
+    hsv                = zeros(width, width, 3);
+    hsv(:,:,1)         = hsv_outer(1);
+    hsv(:,:,2)         = hsv_outer(2);
+    hsv(:,:,3)         = hsv_outer(3);
     third_width        = floor(width/3);
     inner              = third_width:width-third_width;
-    rgb(inner,inner,1) = rgb_inner(1);
-    rgb(inner,inner,2) = rgb_inner(2);
-    rgb(inner,inner,3) = rgb_inner(3);
-    rgb                = rgb / 255;
+    hsv(inner,inner,1) = hsv_inner(1);
+    hsv(inner,inner,2) = hsv_inner(2);
+    hsv(inner,inner,3) = hsv_inner(3);
 end
 
 %% CRISPENING EFFECT TEST IMAGES
