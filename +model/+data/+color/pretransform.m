@@ -10,7 +10,7 @@ function I_out = pretransform( I_in, config )
 
     I_out = cell(size(I_in));
     
-    switch config.image.transform
+    switch config.image.transform.pre
         case 'none'
             % Use the image in the provided colorspace..
             for i=1:length(I_in)
@@ -41,6 +41,6 @@ function I_out = pretransform( I_in, config )
                 I_out{i} = RGBY;
             end
         otherwise
-            error('Unsupported image transform: %s',config.image.transform)
+            error('Unsupported image pre-transform: %s',config.image.transform.pre)
     end
 end

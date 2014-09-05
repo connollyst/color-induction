@@ -86,11 +86,11 @@ end
 %% TEST UTILITIES
 
 function [I, config] = get_input(transform)
-    im                   = little_peppers();
-    config                 = configurations.default();
-    config.display.logging = false;
-    config.display.plot    = false;
-    config.image.transform = transform;
-    config.wave.n_scales   = 2;
+    im                         = little_peppers();
+    config                     = configurations.default();
+    config.display.logging     = false;
+    config.display.plot        = false;
+    config.image.transform.pre = transform;
+    config.wave.n_scales       = 2;
     I = { im };
 end

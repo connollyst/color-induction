@@ -46,12 +46,14 @@ function config = get_config(I)
     n_scales = 2;
     config   = regression_config(I_cols, I_rows, I_colors, n_scales);
     % Configure the original algorithm parameters
-    config.zli.ON_OFF      = 'separate';
-    config.zli.n_membr     = 3;
+    config.zli.ON_OFF           = 'separate';
+    config.zli.n_membr          = 3;
+    % Configure image color transformation
+    config.image.transform.pre  = 'none';
+    config.image.transform.post = 'none';
     % Configure the wavelet decompositon
-    config.wave.n_orients  = 3;
-    config.wave.transform  = 'dwt';
-    config.image.transform = 'none';
+    config.wave.n_orients       = 3;
+    config.wave.transform       = 'dwt';
     % Disable all data display
     config.display.logging = false;
     config.display.plot    = false;

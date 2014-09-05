@@ -45,11 +45,12 @@ function [x_out, y_out] = update_xy(tIitheta, config)
 end
 
 function [Iitheta, config] = get_input()
-    I_in                   = little_peppers;
-    config                 = configurations.double_opponent;
-    config.wave.n_scales   = 2;
-    config.image.transform = 'none';
-    config.display.logging = false;
-    config.display.plot    = false;
-    [Iitheta, ~, config]   = model.data.prepare_input(I_in, config);
+    I_in                        = little_peppers;
+    config                      = configurations.double_opponent;
+    config.wave.n_scales        = 2;
+    config.image.transform.pre  = 'none';
+    config.image.transform.post = 'none';
+    config.display.logging      = false;
+    config.display.plot         = false;
+    [Iitheta, ~, config]        = model.data.prepare_input(I_in, config);
 end
