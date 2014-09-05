@@ -164,7 +164,8 @@ function config = double_opponent_config(n_cols, n_rows, n_scales, scale_enabled
 end
 
 function config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
-    config = test_config(n_cols, n_rows, 2, n_scales);
+    n_channels = 4; % 2 pairs of opponent channels, eg: R, G, B, Y
+    config = test_config(n_cols, n_rows, n_channels, n_scales);
     config.zli.interaction.scale.enabled = scale_enabled;
     config.zli.interaction.orient.enabled = orient_enabled;
     if scale_enabled

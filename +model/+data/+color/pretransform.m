@@ -1,5 +1,5 @@
-function I_out = transform( I_in, config )
-%MODEL.DATA.COLOR.TRANSFORM
+function I_out = pretransform( I_in, config )
+%MODEL.DATA.COLOR.PRETRANSFORM
 %   Transform the input image to the specified colorspace.
 %
 %   Input
