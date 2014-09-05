@@ -1,4 +1,4 @@
-function [img_out, out] = process_image(img, img_transform, n_membr, varargin)
+function [img_out, out] = process_image(img, n_membr, varargin)
 % This code implements the computational model described in the paper
 % 
 % "A neurodynamical model of brightness induction in V1"
@@ -36,7 +36,6 @@ function [img_out, out] = process_image(img, img_transform, n_membr, varargin)
         config.wave.n_scales = model.utils.calculate_n_scales(img, config);    
     end
     
-    config.image.transform.pre = img_transform;
     config.zli.n_membr = n_membr;	% number of membrane time constant
 
     [img_out, out] = model.apply(img, config);

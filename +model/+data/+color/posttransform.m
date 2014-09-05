@@ -22,11 +22,11 @@ function [wavelets_out, residuals_out] = posttransform(wavelets_in, residuals_in
             logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
             wavelets_out  = cell(size(wavelets_in));
             residuals_out = cell(size(residuals_in));
-            n_cols     = config.image.width;
-            n_rows     = config.image.height;
-            n_channels = 4; % RGBY
-            n_scales   = config.wave.n_scales;
-            n_orients  = config.wave.n_orients;
+            n_cols        = size(wavelets_in{1}, 1);
+            n_rows        = size(wavelets_in{1}, 2);
+            n_channels    = 4; % RGBY
+            n_scales      = size(wavelets_in{1}, 4);
+            n_orients     = size(wavelets_in{1}, 5);
             for i=1:length(wavelets_in)
                 w_in  = wavelets_in{i};
                 r_in  = residuals_in{i};
@@ -47,6 +47,6 @@ function [wavelets_out, residuals_out] = posttransform(wavelets_in, residuals_in
                 % TODO are the residuals still valid for image recovery?
             end
         otherwise
-            error('Unsupported image pre-transform: %s',config.image.transform.pre)
+            error('Unsupported image post-transform: %s',config.image.transform.post)
     end
 end
