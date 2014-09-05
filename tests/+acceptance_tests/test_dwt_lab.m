@@ -1,4 +1,4 @@
-function test_suite = test_color_induction
+function test_suite = test_dwt_lab
   initTestSuite;
 end
 
@@ -12,6 +12,7 @@ function test_no_color_induction_with_zero_weights
     config.display.logging                = false;
     config.display.plot                   = false;
     config.image.transform.pre            = 'rgb2lab';
+    config.image.transform.post           = 'none';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 2;
     config.zli.n_iter                     = 2;
@@ -44,6 +45,7 @@ function test_opponent_color_excitation
     config.display.logging               = false;
     config.display.plot                  = false;
     config.image.transform.pre           = 'rgb2lab';
+    config.image.transform.post          = 'none';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 3;
     config.zli.n_iter                    = 5;
@@ -79,6 +81,7 @@ function test_opponent_color_inhibition
     config.display.logging               = false;
     config.display.plot                  = false;
     config.image.transform.pre           = 'rgb2lab';
+    config.image.transform.post          = 'none';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 3;
     config.zli.n_iter                    = 5;
@@ -116,6 +119,7 @@ function test_double_opponent_lightness_contrast
     config.display.logging               = false;
     config.display.plot                  = false;
     config.image.transform.pre           = 'rgb2lab';
+    config.image.transform.post          = 'none';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
     config.zli.n_iter                    = 10;
@@ -149,6 +153,7 @@ function test_double_opponent_crispening_effect
     config.display.logging               = false;
     config.display.plot                  = false;
     config.image.transform.pre           = 'rgb2lab';
+    config.image.transform.post          = 'none';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
     config.zli.n_iter                    = 10;
