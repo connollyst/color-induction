@@ -4,14 +4,64 @@ end
 
 %% ASSERT DATA FORMAT
 
-function test_none_transform_data_format
+function test_none_posttransform_data_format
+    % Given
+    [I_in, config]        = get_input('none', 'none');
+    I_opponent            = model.data.color.pretransform(I_in, config);
+    [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
+    % When
+    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
+    % Then
+    assertIsDouble(wavelets);
+    assertIsDouble(residuals);
+end
+
+function test_rgby_posttransform_data_format
     % Given
     [I_in, config]        = get_input('none', 'rgb2rgby');
     I_opponent            = model.data.color.pretransform(I_in, config);
     [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
     % When
-    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals);
+    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
     % Then
+    assertIsDouble(wavelets);
+    assertIsDouble(residuals);
+end
+
+%% ASSERT DIMENSIONS
+
+function test_none_transform_dimensions
+    % Given
+    [I_in, config]        = get_input('none', 'none');
+    n_cols                = size(I_in{1}, 1);
+    n_rows                = size(I_in{1}, 2);
+    n_channels            = size(I_in{1}, 3);
+    n_scales              = config.wave.n_scales;
+    n_orients             = config.wave.n_orients;
+    I_opponent            = model.data.color.pretransform(I_in, config);
+    [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
+    % When
+    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
+    % Then
+    assertDimensions(wavelets,  [n_cols, n_rows, n_channels, n_scales, n_orients]);
+    assertDimensions(residuals, [n_cols, n_rows, n_channels, n_scales]);
+end
+
+function test_rgb2rgby_transform_dimensions
+    % Given
+    [I_in, config]        = get_input('none', 'rgb2rgby');
+    n_cols                = size(I_in{1}, 1);
+    n_rows                = size(I_in{1}, 2);
+    n_channels            = 4; % R, G, B, & Y
+    n_scales              = config.wave.n_scales;
+    n_orients             = config.wave.n_orients;
+    I_opponent            = model.data.color.pretransform(I_in, config);
+    [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
+    % When
+    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
+    % Then
+    assertDimensions(wavelets,  [n_cols, n_rows, n_channels, n_scales, n_orients]);
+    assertDimensions(residuals, [n_cols, n_rows, n_channels, n_scales]);
 end
 
 %% TEST ASSERTIONS
