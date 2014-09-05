@@ -18,7 +18,8 @@ end
 
 function center = restructure_data(gy_in, interactions, config)
 %RESTRUCTURE_DATA Extract the centers of the padded image.
-%   TODO why pad the image in the first place??
+%   TODO why pad the image in the first place?? This is left over from the
+%        original algorithm & should be refactored out.
     gy_padded  = model.data.padding.add.orient(gy_in, interactions.scale, config);
     n_cols     = config.image.width;
     n_rows     = config.image.height;
