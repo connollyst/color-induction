@@ -22,10 +22,28 @@ function [wavelets_out, residuals_out] = posttransform(wavelets_in, residuals_in
             logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
             wavelets_out  = cell(size(wavelets_in));
             residuals_out = cell(size(residuals_in));
+            n_cols     = config.image.width;
+            n_rows     = config.image.height;
+            n_channels = 4; % RGBY
+            n_scales   = config.wave.n_scales;
+            n_orients  = config.wave.n_orients;
             for i=1:length(wavelets_in)
-                wavelets_out{i}  = model.data.color.rgb2rgby(wavelets_in{i});
-                % TODO model.data.color.rgb2rgby(wavelets_in{i}, wavelets_in{i+1});
-                residuals_out{i} = model.data.color.rgb2rgby(residuals_in{i});
+                w_in  = wavelets_in{i};
+                r_in  = residuals_in{i};
+                w_out = zeros(n_cols, n_rows, n_channels, n_scales-1, n_orients);
+                r_out = zeros(n_cols, n_rows, n_channels, n_scales-1);
+                for s=1:config.wave.n_scales-1
+                    for o=1:config.wave.n_orients
+                        w_in_center      = w_in(:,:,:,s,o);
+                        w_in_surround    = w_in(:,:,:,s+1,o);
+                        r_in_center      = r_in(:,:,:,s);
+                        r_in_surround    = r_in(:,:,:,s+1);
+                        w_out(:,:,:,s,o) = model.data.color.rgb2rgby(w_in_center, w_in_surround);
+                        r_out(:,:,:,s,o) = model.data.color.rgb2rgby(r_in_center, r_in_surround);
+                    end
+                end
+                wavelets_out{i}  = w_out;
+                residuals_out{i} = r_out;
                 % TODO are the residuals still valid for image recovery?
             end
         otherwise

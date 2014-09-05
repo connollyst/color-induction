@@ -81,10 +81,12 @@ end
 %% TEST UTILITIES
 
 function [I, config] = get_input(pretransform, posttransform)
-    im                          = little_peppers();
+    im                          = imread('peppers.png');
     config                      = configurations.default();
     config.display.logging      = false;
     config.display.plot         = false;
+    config.image.width          = size(im, 1);
+    config.image.height         = size(im, 2);
     config.image.transform.pre  = pretransform;
     config.image.transform.post = posttransform;
     config.wave.n_scales        = 2;

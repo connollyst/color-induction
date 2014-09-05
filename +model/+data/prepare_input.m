@@ -9,7 +9,7 @@ function [ON_OFF_in, residuals, config] = prepare_input(I, config)
     I_cells               = model.data.utils.to_cells(I);
     I_opponent            = model.data.color.pretransform(I_cells, config);
     [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
-    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals);
+    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
     config                = record_dimensions(wavelets, config);
     ON_OFF_in             = model.data.on_off.prepare(wavelets, config);
     if strcmp(config.zli.ON_OFF, 'separate')
