@@ -22,27 +22,25 @@ function RGBY = rgb2rgby(varargin)
 
     n_cols     = size(rgb_center, 1);
     n_rows     = size(rgb_center, 2);
-    n_channels = 4;                     % RGBY
-    n_scales   = size(rgb_center, 4);   % Supported, not required
-    n_orients  = size(rgb_center, 5);   % Supported, not required
+    n_channels = 4;             % RGBY
 
-    RGBY = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
+    RGBY = zeros(n_cols, n_rows, n_channels);
     
-    r_c = rgb_center(:,:,1,:,:);
-    g_c = rgb_center(:,:,2,:,:);
-    b_c = rgb_center(:,:,3,:,:);
+    r_c = rgb_center(:,:,1);
+    g_c = rgb_center(:,:,2);
+    b_c = rgb_center(:,:,3);
     
-    r_s = rgb_surround(:,:,1,:,:);
-    g_s = rgb_surround(:,:,2,:,:);
-    b_s = rgb_surround(:,:,3,:,:);
+    r_s = rgb_surround(:,:,1);
+    g_s = rgb_surround(:,:,2);
+    b_s = rgb_surround(:,:,3);
     
     R = r_c - (g_s + b_s)/2;
     G = g_c - (r_s + b_s)/2;
     B = b_c - (r_s + g_s)/2;
     Y = (r_c + g_c)/2 - abs(r_s - g_s)/2 - b_s;
 
-    RGBY(:,:,1,:,:) = R;
-    RGBY(:,:,2,:,:) = G;
-    RGBY(:,:,3,:,:) = B;
-    RGBY(:,:,4,:,:) = Y;
+    RGBY(:,:,1) = R;
+    RGBY(:,:,2) = G;
+    RGBY(:,:,3) = B;
+    RGBY(:,:,4) = Y;
 end
