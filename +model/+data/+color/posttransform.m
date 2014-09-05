@@ -32,15 +32,15 @@ function [wavelets_out, residuals_out] = posttransform(wavelets_in, residuals_in
                 r_in  = residuals_in{i};
                 w_out = zeros(n_cols, n_rows, n_channels, n_scales-1, n_orients);
                 r_out = zeros(n_cols, n_rows, n_channels, n_scales-1);
-                for s=1:config.wave.n_scales-1
+                for s=1:n_scales-1
                     for o=1:config.wave.n_orients
                         w_in_center      = w_in(:,:,:,s,o);
                         w_in_surround    = w_in(:,:,:,s+1,o);
-                        r_in_center      = r_in(:,:,:,s);
-                        r_in_surround    = r_in(:,:,:,s+1);
                         w_out(:,:,:,s,o) = model.data.color.rgb2rgby(w_in_center, w_in_surround);
-                        r_out(:,:,:,s,o) = model.data.color.rgb2rgby(r_in_center, r_in_surround);
                     end
+                    r_in_center      = r_in(:,:,:,s);
+                    r_in_surround    = r_in(:,:,:,s+1);
+                    r_out(:,:,:,s) = model.data.color.rgb2rgby(r_in_center, r_in_surround);
                 end
                 wavelets_out{i}  = w_out;
                 residuals_out{i} = r_out;

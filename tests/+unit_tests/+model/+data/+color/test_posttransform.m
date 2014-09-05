@@ -60,8 +60,8 @@ function test_rgb2rgby_transform_dimensions
     % When
     [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
     % Then
-    assertDimensions(wavelets,  [n_cols, n_rows, n_channels, n_scales, n_orients]);
-    assertDimensions(residuals, [n_cols, n_rows, n_channels, n_scales]);
+    assertDimensions(wavelets,  [n_cols, n_rows, n_channels, n_scales-1, n_orients]);
+    assertDimensions(residuals, [n_cols, n_rows, n_channels, n_scales-1]);
 end
 
 %% TEST ASSERTIONS
@@ -89,6 +89,6 @@ function [I, config] = get_input(pretransform, posttransform)
     config.image.height         = size(im, 2);
     config.image.transform.pre  = pretransform;
     config.image.transform.post = posttransform;
-    config.wave.n_scales        = 2;
+    config.wave.n_scales        = 4;
     I = { im };
 end
