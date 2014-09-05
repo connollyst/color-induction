@@ -5,4 +5,5 @@ function config = default()
     config.image   = configurations.components.get_image();
     config.compute = configurations.components.get_compute();
     config.display = configurations.components.get_display();
+    config.wave.n_scales = 3;
 end
