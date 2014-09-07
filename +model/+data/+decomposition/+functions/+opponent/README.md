@@ -1,4 +1,4 @@
-# MODEL.DATA.DECOMPOSITION.FUNCTIONS.OPPONENT
+# OPPONENT DECOMPOSITION FUNCTIONS
 
 This decomposition method attempts to directly simulate single and double
 opponent cells in the primary visual cortex by combining center & surround
