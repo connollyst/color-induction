@@ -30,7 +30,7 @@ end
 %% TEST UTILITIES
 
 function config = make_config(n_scales)
-    config = configurations.double_opponent();
+    config = configurations.default;
     config.zli.n_membr     = 3;
     config.wave.n_scales   = n_scales;
     config.display.logging = 0;

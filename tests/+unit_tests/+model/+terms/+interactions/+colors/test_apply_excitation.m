@@ -169,7 +169,7 @@ end
 %% UTILITIES
 
 function config = get_config(I)
-    config = configurations.double_opponent();
+    config                                         = configurations.default;
     config.image.width                             = size(I, 1);
     config.image.height                            = size(I, 2);
     config.image.n_channels                        = size(I, 3);

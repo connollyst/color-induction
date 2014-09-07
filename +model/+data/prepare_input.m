@@ -8,9 +8,8 @@ function [wavelets, residuals, config] = prepare_input(I, config)
 %   config:    the model configuration: it may be modified during this step
 %              as the input is being prepared
     I_cells               = model.data.utils.to_cells(I);
-    I_opponent            = model.data.color.pretransform(I_cells, config);
+    I_opponent            = model.data.color.transform(I_cells, config);
     [wavelets, residuals] = model.data.decomposition.apply(I_opponent, config);
-    [wavelets, residuals] = model.data.color.posttransform(wavelets, residuals, config);
     wavelets              = model.data.on_off.prepare(wavelets, config);
     % Update the configuration to reflect the prepared input:
     config                = record_dimensions(wavelets, config);

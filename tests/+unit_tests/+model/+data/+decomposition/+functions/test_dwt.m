@@ -2,12 +2,43 @@ function test_suite = test_dwt
   initTestSuite;
 end
 
-function test_dwt_decomposition_dimensions
+%% ASSERT DIMENSIONS
+
+function test_dwt_decomposition_dimensions_default
+    % Given
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
+    assertEqual(size(decompositions, 1),  size(I, 1));
+    assertEqual(size(decompositions, 2),  size(I, 2));
+    assertEqual(size(decompositions, 3),  4); % RGBY
+    assertEqual(size(decompositions, 4),  n_scales);
+    assertEqual(size(decompositions, 5),  4); % single & double opponent
+end
+
+function test_dwt_decomposition_dimensions_double_opponent
+    % Given
+    n_scales = 3;
+    I = little_peppers();
+    I = model.data.color.rgb2rgby(I);
+    config                 = configurations.double_opponent_lab;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
+    [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     assertEqual(size(decompositions, 1),  size(I, 1));
     assertEqual(size(decompositions, 2),  size(I, 2));
     assertEqual(size(decompositions, 3),  4); % RGBY
@@ -15,33 +46,80 @@ function test_dwt_decomposition_dimensions
     assertEqual(size(decompositions, 5),  3); % horizontal, diagonal, vertical
 end
 
+function test_dwt_decomposition_dimensions_single_opponent
+    % Given
+    n_scales = 3;
+    I = little_peppers();
+    I = model.data.color.rgb2rgby(I);
+    config                 = configurations.single_opponent_lab;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
+    [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
+    assertEqual(size(decompositions, 1),  size(I, 1));
+    assertEqual(size(decompositions, 2),  size(I, 2));
+    assertEqual(size(decompositions, 3),  4); % RGBY
+    assertEqual(size(decompositions, 4),  n_scales);
+    assertEqual(size(decompositions, 5),  1); % single opponent
+end
+
+%% ASSERT VALUE RANGES
+
 function test_dwt_decomposition_values_when_black
+    % Given
     n_scales = 3;
     I = make_black_I();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     assertEqual(max(decompositions(:)), 0);
     assertEqual(min(decompositions(:)), 0);
 end
 
 function test_dwt_decomposition_values_when_white
 % Tests for a bug seen with large receptive fields on small images.
+    % Given
     n_scales = 3;
     I = make_white_I();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     assertElementsAlmostEqual(max(decompositions(:)), 0);
     assertElementsAlmostEqual(min(decompositions(:)), 0);
 end
 
 function test_dwt_all_scales_contain_signal
+    % Given
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) ~= 0, ...
@@ -53,8 +131,15 @@ function test_dwt_no_signal_for_synthetic_black_and_white_image
     n_scales = 1;
     I = make_synthetic_I();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) == 0, ...
@@ -69,8 +154,15 @@ function test_dwt_signal_for_synthetic_color_image
     I(:,:,2) = I(:,:,2) * 0.3;
     I(:,:,3) = I(:,:,3) * 0.2;
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) ~= 0, ...
@@ -82,8 +174,15 @@ function test_dwt_higher_scales_contain_weaker_signal
     n_scales = 3;
     I = little_peppers;
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.transform  = 'dwt';
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     running_max = Inf;
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
@@ -246,12 +345,19 @@ end
 %% ASSERT OUTPUT MATRIX DIMENSIONS
 
 function test_dwt_single_and_double_opponent_dimensions_at_2_scales
+    % Given
     n_scales = 2;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 4;
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.n_orients  = 4;
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     assertEqual(size(signal, 1),  size(I, 1));
     assertEqual(size(signal, 2),  size(I, 2));
     assertEqual(size(signal, 3),  4); % RGBY
@@ -260,12 +366,19 @@ function test_dwt_single_and_double_opponent_dimensions_at_2_scales
 end
 
 function test_dwt_single_and_double_opponent_dimensions_at_3_scales
+    % Given
     n_scales = 3;
     I = little_peppers();
     I = model.data.color.rgb2rgby(I);
-    config = make_config(n_scales);
-    config.wave.n_orients = 4;
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.n_orients  = 4;
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     assertEqual(size(signal, 1),  size(I, 1));
     assertEqual(size(signal, 2),  size(I, 2));
     assertEqual(size(signal, 3),  4); % RGBY
@@ -276,10 +389,17 @@ end
 %% TEST ASSERTIONS
 
 function assertMinimumValue(I, n_orients, channel_i, expected_min, expected_max)
+    % Given
     n_scales = 2;
-    config = make_config(n_scales);
-    config.wave.n_orients = n_orients;
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.n_orients  = n_orients;
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     channel = signal(:,:,channel_i,:,:);
     min_signal = min(channel(:));
     assertTrue(min_signal >= expected_min, ['Expected minimum signal >= ',num2str(expected_min),', was ',num2str(min_signal)]);
@@ -287,10 +407,17 @@ function assertMinimumValue(I, n_orients, channel_i, expected_min, expected_max)
 end
 
 function assertMaximumValue(I, n_orients, channel_i, expected_min, expected_max)
+    % Given
     n_scales = 2;
-    config = make_config(n_scales);
-    config.wave.n_orients = n_orients;
+    config                 = configurations.default;
+    config.zli.n_membr     = 3;
+    config.wave.n_scales   = n_scales;
+    config.wave.n_orients  = n_orients;
+    config.display.logging = 0;
+    config.display.plot    = 0;
+    % When
     [signal, ~] = model.data.decomposition.functions.dwt(I, config);
+    % Then
     channel = signal(:,:,channel_i,:,:);
     min_signal = max(channel(:));
     assertTrue(min_signal <= expected_max, ['Expected maximum signal <= ',num2str(expected_max),', was ',num2str(min_signal)]);
@@ -319,14 +446,8 @@ function I = make_synthetic_lab()
     I = model.data.color.rgb2lab(I);
 end
 
-function I = make_synthetic_rgby()
-    data = load('tests/data/rgb_40_40_3.mat');
-    I = data.img;
-    I = model.data.color.rgb2rgby(I);
-end
-
 function config = make_config(n_scales)
-    config = configurations.double_opponent();
+    config                 = configurations.default;
     config.zli.n_membr     = 3;
     config.wave.n_scales   = n_scales;
     config.wave.transform  = 'dwt';

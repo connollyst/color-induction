@@ -1,6 +1,8 @@
 function [components, residuals] = opponent(rgb, config)
 %OPPONENT Image decomposition reflective of the chromatic and spatial
-%         opponent system in the primate striate cortex.
+%         opponent system in the primate striate cortex. Gaussians are used
+%         to model the receptive fields in the RGB channels and the signals
+%         are combined using the formula pur forth by L. Itti 1998.
     validate(rgb, config);
     components = decompose(rgb, config);
     residuals  = subtract(rgb, components, config);

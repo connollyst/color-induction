@@ -1,5 +1,5 @@
-function I_out = pretransform( I_in, config )
-%MODEL.DATA.COLOR.PRETRANSFORM
+function I_out = transform( I_in, config )
+%MODEL.DATA.COLOR.TRANSFORM
 %   Transform the input image to the specified colorspace.
 %
 %   Input
@@ -9,8 +9,8 @@ function I_out = pretransform( I_in, config )
 %       I_out:  the output image, in the requested colorspace
 
     I_out = cell(size(I_in));
-    
-    switch config.image.transform.pre
+    transform = config.image.transform;
+    switch transform
         case 'none'
             % Use the image in the provided colorspace..
             for i=1:length(I_in)
@@ -41,6 +41,6 @@ function I_out = pretransform( I_in, config )
                 I_out{i} = RGBY;
             end
         otherwise
-            error('Unsupported image pre-transform: %s',config.image.transform.pre)
+            error('Unsupported image pre-transform: %s', transform)
     end
 end

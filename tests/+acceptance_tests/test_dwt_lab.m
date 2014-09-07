@@ -7,12 +7,11 @@ function test_no_color_induction_with_zero_weights
 % the same as turning off interactions all together. Here we run both
 % scenarios and expect the output to be the same.
     % Given
-    I = little_peppers();
-    config = configurations.default();
+    I = little_peppers;
+    config                                = configurations.default;
     config.display.logging                = false;
     config.display.plot                   = false;
-    config.image.transform.pre            = 'rgb2lab';
-    config.image.transform.post           = 'none';
+    config.image.transform                = 'rgb2lab';
     config.wave.n_scales                  = 2;
     config.zli.n_membr                    = 2;
     config.zli.n_iter                     = 2;
@@ -40,12 +39,11 @@ end
 
 function test_opponent_color_excitation
     % Given
-    I = synthetic_image() * 0.5;
-    config = configurations.default();
+    I = synthetic_image * 0.5;
+    config                               = configurations.default;
     config.display.logging               = false;
     config.display.plot                  = false;
-    config.image.transform.pre           = 'rgb2lab';
-    config.image.transform.post          = 'none';
+    config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 3;
     config.zli.n_iter                    = 5;
@@ -76,12 +74,11 @@ end
 
 function test_opponent_color_inhibition
     % Given
-    I = synthetic_image() * 0.5;
-    config = configurations.default();
+    I = synthetic_image * 0.5;
+    config                               = configurations.default;
     config.display.logging               = false;
     config.display.plot                  = false;
-    config.image.transform.pre           = 'rgb2lab';
-    config.image.transform.post          = 'none';
+    config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 3;
     config.zli.n_iter                    = 5;
@@ -115,11 +112,10 @@ function test_double_opponent_lightness_contrast
     width = 48;
     A = test_image('lightness contrast A', width);
     B = test_image('lightness contrast B', width);
-    config = configurations.double_opponent();
+    config                               = configurations.double_opponent_lab;
     config.display.logging               = false;
     config.display.plot                  = false;
-    config.image.transform.pre           = 'rgb2lab';
-    config.image.transform.post          = 'none';
+    config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
     config.zli.n_iter                    = 10;
@@ -149,11 +145,10 @@ function test_double_opponent_crispening_effect
     A = test_image('crispening effect A', width);
     B = test_image('crispening effect B', width);
     C = test_image('crispening effect C', width);
-    config = configurations.double_opponent();
+    config                               = configurations.double_opponent_lab;
     config.display.logging               = false;
     config.display.plot                  = false;
-    config.image.transform.pre           = 'rgb2lab';
-    config.image.transform.post          = 'none';
+    config.image.transform               = 'rgb2lab';
     config.wave.n_scales                 = 2;
     config.zli.n_membr                   = 5;
     config.zli.n_iter                    = 10;
@@ -191,12 +186,16 @@ function test_double_opponent_crispening_effect
     assertTrue(B_mean_diff > C_mean_diff);
 end
 
+%% TEST UTILITIES
+
 function I = synthetic_image()
 % Generate a simple image for testing: a flat square on a flat background.
     I = ones(42, 42, 3) * 0.2;      % some base signal in every channel
     I(:,:,1) = 0.8;                 % strong red background
     I(11:end-11,11:end-11,:) = 0.7; % light grey square in the center
 end
+
+%% TEST ASSERTIONS
 
 function assertPositivesAverageHigher(test, reference, message)
     test_pos       = test(test > 0);

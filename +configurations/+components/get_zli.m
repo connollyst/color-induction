@@ -39,10 +39,10 @@ function zli = get_zli()
     % Interaction configurations: true/false
     zli.interaction.orient.enabled = true;
     zli.interaction.scale.enabled  = true;
-    zli.interaction.color.enabled  = true;
+    zli.interaction.color.enabled  = false;
     
     % Opponet color interactions weights
-    zli.interaction.color.model    = 'opponent';   % 'default' or 'opponent'
+    zli.interaction.color.model    = 'opponent';    % 'default' or 'opponent'
     zli.interaction.color.weight.excitation = 0.01;
     zli.interaction.color.weight.inhibition = 0.01;
 end

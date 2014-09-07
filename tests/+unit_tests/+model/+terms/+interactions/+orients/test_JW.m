@@ -232,7 +232,7 @@ end
 %% TEST UTILITIES
 
 function config = double_opponent_config()
-    config = configurations.double_opponent();
+    config = configurations.double_opponent_lab();
     config.image.width      = 137;
     config.image.height     = 42;
     config.image.n_channels = 4;
@@ -240,7 +240,7 @@ function config = double_opponent_config()
 end
 
 function config = single_opponent_config()
-    config = configurations.single_opponent();
+    config = configurations.single_opponent_lab();
     config.image.width      = 137;
     config.image.height     = 42;
     config.image.n_channels = 4;
@@ -248,7 +248,7 @@ function config = single_opponent_config()
 end
 
 function config = opponent_config()
-    config = configurations.default();
+    config = configurations.default_lab();
     config.image.width      = 137;
     config.image.height     = 42;
     config.image.n_channels = 4;

@@ -12,6 +12,10 @@ function rgb = test_image(name, width)
             rgb = make_crispening_effect_b(width);
         case 'crispening effect C'
             rgb = make_crispening_effect_c(width);
+        case 'isoluminant red green A'
+            rgb = make_isoluminant_red_green_a(width);
+        case 'isoluminant red green B'
+            rgb = make_isoluminant_red_green_b(width);
         otherwise
             error(['Unknown test image: ',name]);
     end
@@ -105,4 +109,20 @@ function rgb = double_squares(width, rgb_outer, rgb_inner_one, rgb_inner_two)
     rgb(inner_rows_two,inner_cols,2) = rgb_inner_two(2);
     rgb(inner_rows_two,inner_cols,3) = rgb_inner_two(3);
     rgb                              = rgb / 255;
+end
+
+%% ISOLUMINANT SQUARES
+
+function rgb = make_isoluminant_red_green_a(w)
+    hsv_outer = [360/360, 0.8, 0.90];
+    hsv_inner = [140/360, 0.8, 0.90];
+    hsv = squares(w, hsv_outer, hsv_inner);
+    rgb = hsv2rgb(hsv);
+end
+
+function rgb = make_isoluminant_red_green_b(w)
+    hsv_outer = [330/360, 0.8, 0.90];
+    hsv_inner = [140/360, 0.8, 0.90];
+    hsv = squares(w, hsv_outer, hsv_inner);
+    rgb = hsv2rgb(hsv);
 end

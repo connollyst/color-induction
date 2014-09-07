@@ -2,11 +2,37 @@ function test_suite = test_opponent
   initTestSuite;
 end
 
-function test_decomposition_dimensions
+%% ASSERT DIMENSIONS
+
+function test_decomposition_dimensions_default
+    % Given
     n_scales = 5;
     I = little_peppers();
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
+    assertEqual(size(decompositions, 1),  size(I, 1));
+    assertEqual(size(decompositions, 2),  size(I, 2));
+    assertEqual(size(decompositions, 3),  4); % RGBY
+    assertEqual(size(decompositions, 4),  n_scales);
+    assertEqual(size(decompositions, 5),  4); % double & single opponent
+end
+
+function test_decomposition_dimensions_double_opponent
+    % Given
+    n_scales = 5;
+    I = little_peppers();
+    config                 = configurations.double_opponent_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
+    [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     assertEqual(size(decompositions, 1),  size(I, 1));
     assertEqual(size(decompositions, 2),  size(I, 2));
     assertEqual(size(decompositions, 3),  4); % RGBY
@@ -14,30 +40,69 @@ function test_decomposition_dimensions
     assertEqual(size(decompositions, 5),  3); % horizontal, diagonal, vertical
 end
 
+function test_decomposition_dimensions_single_opponent
+    % Given
+    n_scales = 5;
+    I = little_peppers();
+    config                 = configurations.single_opponent_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
+    [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
+    assertEqual(size(decompositions, 1),  size(I, 1));
+    assertEqual(size(decompositions, 2),  size(I, 2));
+    assertEqual(size(decompositions, 3),  4); % RGBY
+    assertEqual(size(decompositions, 4),  n_scales);
+    assertEqual(size(decompositions, 5),  1); % single opponent
+end
+
+%% ASSERT VALUE RANGES
+
 function test_decomposition_values_when_black
+    % Given
     n_scales = 5;
     I = make_black_I();
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     assertEqual(max(decompositions(:)), 0);
     assertEqual(min(decompositions(:)), 0);
 end
 
 function test_decomposition_values_when_white
 % Tests for a bug seen with large receptive fields on small images.
+    % Given
     n_scales = 5;
     I = make_white_I();
-    config = make_config(n_scales);
+    % TODO this tests fails with configurations.default_rgby, why?
+    config                 = configurations.double_opponent_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     assertElementsAlmostEqual(max(decompositions(:)), 0);
     assertElementsAlmostEqual(min(decompositions(:)), 0);
 end
 
 function test_all_scales_contain_signal
+    % Given
     n_scales = 5;
     I = little_peppers();
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) ~= 0, ...
@@ -48,10 +113,16 @@ end
 function test_signal_for_synthetic_black_and_white_image
 % Note: If this test fails, it's probably because the excitation &
 %       inhibition receptive fields are exactly equal. Is that Ok?
+    % Given
     n_scales = 1;
     I = make_synthetic_I();
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) ~= 0, ...
@@ -60,13 +131,19 @@ function test_signal_for_synthetic_black_and_white_image
 end
 
 function test_signal_for_synthetic_color_image
+    % Given
     n_scales = 1;
     I = make_synthetic_I();
     I(:,:,1) = I(:,:,1) * 0.7;
     I(:,:,2) = I(:,:,2) * 0.3;
     I(:,:,3) = I(:,:,3) * 0.2;
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         assertTrue(max(scale(:)) ~= 0, ...
@@ -75,10 +152,16 @@ function test_signal_for_synthetic_color_image
 end
 
 function test_signal_range_zero_to_one
+    % Given
     n_scales = 5;
     I = little_peppers();
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         max_scale = max(scale(:));
@@ -93,10 +176,16 @@ function test_signal_range_zero_to_one
 end
 
 function test_higher_scales_contain_weaker_signal
+    % Given
     n_scales = 5;
     I = little_peppers;
-    config = make_config(n_scales);
+    config                 = configurations.default_rgby;
+    config.wave.n_scales   = n_scales;
+    config.display.logging = false;
+    config.display.plot    = false;
+    % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
+    % Then
     running_max = Inf;
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
@@ -124,13 +213,4 @@ function I = make_synthetic_I()
 % A simple image for testing: a white square on a black background
     I = zeros(42, 42, 3);
     I(11:end-11,11:end-11,:) = 1;
-end
-
-function config = make_config(n_scales)
-    config = configurations.double_opponent();
-    config.zli.n_membr     = 3;
-    config.wave.n_scales   = n_scales;
-    config.wave.transform  = 'opponent';
-    config.display.logging = 0;
-    config.display.plot    = 0;
 end
