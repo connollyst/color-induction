@@ -23,21 +23,16 @@ function RGBY = so(rgb, config)
         r_c = center(r, scale, config);
         g_c = center(g, scale, config);
         b_c = center(b, scale, config);
+        rgb_c = cat(3, r_c, g_c, b_c);
 
         r_s = surround(r, scale, config);
         g_s = surround(g, scale, config);
         b_s = surround(b, scale, config);
-
-        % Combine center surround signals to obtain color opponency..
-        R = model.data.utils.on(r_c - (g_s + b_s)/2);
-        G = model.data.utils.on(g_c - (r_s + b_s)/2);
-        B = model.data.utils.on(b_c - (r_s + g_s)/2);
-        Y = model.data.utils.on((r_c + g_c)/2 - abs(r_s - g_s)/2 - b_s);
+        rgb_s = cat(3, r_s, g_s, b_s);
         
-        RGBY(:,:,1,scale) = R;
-        RGBY(:,:,2,scale) = G;
-        RGBY(:,:,3,scale) = B;
-        RGBY(:,:,4,scale) = Y;
+        % TODO use center & surround of different scales
+        
+        RGBY(:,:,:,scale) = model.data.color.rgb2rgby(rgb_c, rgb_s);
     end
 end
 

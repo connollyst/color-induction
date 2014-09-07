@@ -43,4 +43,6 @@ function RGBY = rgb2rgby(varargin)
     RGBY(:,:,2) = G;
     RGBY(:,:,3) = B;
     RGBY(:,:,4) = Y;
+    
+    RGBY = model.data.utils.on(RGBY);
 end

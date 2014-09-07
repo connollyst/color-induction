@@ -26,27 +26,42 @@ function RGBY_d = do_diagonal(rgb, config)
         [g_tl_s, g_tr_s, g_br_s, g_bl_s] = surrounds(g, scale, config);
         [b_tl_s, b_tr_s, b_br_s, b_bl_s] = surrounds(b, scale, config);
 
+        rgb_tl_c = cat(3, r_tl_c, g_tl_c, b_tl_c);
+        rgb_tr_c = cat(3, r_tr_c, g_tr_c, b_tr_c);
+        rgb_br_c = cat(3, r_br_c, g_br_c, b_br_c);
+        rgb_bl_c = cat(3, r_bl_c, g_bl_c, b_bl_c);
+        
+        rgb_tl_s = cat(3, r_tl_s, g_tl_s, b_tl_s);
+        rgb_tr_s = cat(3, r_tr_s, g_tr_s, b_tr_s);
+        rgb_br_s = cat(3, r_br_s, g_br_s, b_br_s);
+        rgb_bl_s = cat(3, r_bl_s, g_bl_s, b_bl_s);
+        
+        RGBY_tl = model.data.color.rgb2rgby(rgb_tl_c, rgb_br_s);
+        RGBY_tr = model.data.color.rgb2rgby(rgb_tr_c, rgb_bl_s);
+        RGBY_br = model.data.color.rgb2rgby(rgb_br_c, rgb_tl_s);
+        RGBY_bl = model.data.color.rgb2rgby(rgb_bl_c, rgb_tr_s);
+        
         % Combine center surround signals to obtain color opponency..
         % TOP LEFT
-        R_tl = model.data.utils.on(r_tl_c - (g_br_s + b_br_s)/2);
-        G_tl = model.data.utils.on(g_tl_c - (r_br_s + b_br_s)/2);
-        B_tl = model.data.utils.on(b_tl_c - (r_br_s + g_br_s)/2);
-        Y_tl = model.data.utils.on((r_tl_c + g_tl_c)/2 - abs(r_br_s - g_br_s)/2 - b_br_s);
+        R_tl = RGBY_tl(:,:,1);
+        G_tl = RGBY_tl(:,:,2);
+        B_tl = RGBY_tl(:,:,3);
+        Y_tl = RGBY_tl(:,:,4);
         % TOP RIGHT
-        R_tr = model.data.utils.on(r_tr_c - (g_bl_s + b_bl_s)/2);
-        G_tr = model.data.utils.on(g_tr_c - (r_bl_s + b_bl_s)/2);
-        B_tr = model.data.utils.on(b_tr_c - (r_bl_s + g_bl_s)/2);
-        Y_tr = model.data.utils.on((r_tr_c + g_tr_c)/2 - abs(r_bl_s - g_bl_s)/2 - b_bl_s);
+        R_tr = RGBY_tr(:,:,1);
+        G_tr = RGBY_tr(:,:,2);
+        B_tr = RGBY_tr(:,:,3);
+        Y_tr = RGBY_tr(:,:,4);
         % BOTTOM RIGHT
-        R_br = model.data.utils.on(r_br_c - (g_tl_s + b_tl_s)/2);
-        G_br = model.data.utils.on(g_br_c - (r_tl_s + b_tl_s)/2);
-        B_br = model.data.utils.on(b_br_c - (r_tl_s + g_tl_s)/2);
-        Y_br = model.data.utils.on((r_br_c + g_br_c)/2 - abs(r_tl_s - g_tl_s)/2 - b_tl_s);
+        R_br = RGBY_br(:,:,1);
+        G_br = RGBY_br(:,:,2);
+        B_br = RGBY_br(:,:,3);
+        Y_br = RGBY_br(:,:,4);
         % BOTTOM LEFT
-        R_bl = model.data.utils.on(r_bl_c - (g_tr_s + b_tr_s)/2);
-        G_bl = model.data.utils.on(g_bl_c - (r_tr_s + b_tr_s)/2);
-        B_bl = model.data.utils.on(b_bl_c - (r_tr_s + g_tr_s)/2);
-        Y_bl = model.data.utils.on((r_bl_c + g_bl_c)/2 - abs(r_tr_s - g_tr_s)/2 - b_tr_s);
+        R_bl = RGBY_bl(:,:,1);
+        G_bl = RGBY_bl(:,:,2);
+        B_bl = RGBY_bl(:,:,3);
+        Y_bl = RGBY_bl(:,:,4);
 
         % Consolidate to get all diagonal color opponency..
         % TODO average? sum?

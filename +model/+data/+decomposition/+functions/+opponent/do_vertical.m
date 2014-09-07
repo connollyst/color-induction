@@ -26,16 +26,24 @@ function RGBY_v = do_vertical(rgb, config)
         [g_t_s, g_b_s] = top_bottom_surround(g, scale, config);
         [b_t_s, b_b_s] = top_bottom_surround(b, scale, config);
 
-        % Combine center surround signals to obtain color opponency..
-        R_t = model.data.utils.on(r_t_c - (g_b_s + b_b_s)/2);
-        G_t = model.data.utils.on(g_t_c - (r_b_s + b_b_s)/2);
-        B_t = model.data.utils.on(b_t_c - (r_b_s + g_b_s)/2);
-        Y_t = model.data.utils.on((r_t_c + g_t_c)/2 - abs(r_b_s - g_b_s)/2 - b_b_s);
+        rgb_t_c = cat(3, r_t_c, g_t_c, b_t_c);
+        rgb_b_c = cat(3, r_b_c, g_b_c, b_b_c);
+        
+        rgb_t_s = cat(3, r_t_s, g_t_s, b_t_s);
+        rgb_b_s = cat(3, r_b_s, g_b_s, b_b_s);
+        
+        RGBY_t = model.data.color.rgb2rgby(rgb_t_c, rgb_b_s);
+        RGBY_b = model.data.color.rgb2rgby(rgb_b_c, rgb_t_s);
+        
+        R_t = RGBY_t(:,:,1);
+        G_t = RGBY_t(:,:,2);
+        B_t = RGBY_t(:,:,3);
+        Y_t = RGBY_t(:,:,4);
 
-        R_b = model.data.utils.on(r_b_c - (g_t_s + b_t_s)/2);
-        G_b = model.data.utils.on(g_b_c - (r_t_s + b_t_s)/2);
-        B_b = model.data.utils.on(b_b_c - (r_t_s + g_t_s)/2);
-        Y_b = model.data.utils.on((r_b_c + g_b_c)/2 - abs(r_t_s - g_t_s)/2 - b_t_s);
+        R_b = RGBY_b(:,:,1);
+        G_b = RGBY_b(:,:,2);
+        B_b = RGBY_b(:,:,3);
+        Y_b = RGBY_b(:,:,4);
 
         % Consolidate to get all vertical color opponency..
         % TODO average? sum?

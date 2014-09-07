@@ -26,16 +26,24 @@ function RGBY_h = do_horizontal(rgb, config)
         [g_l_s, g_r_s] = left_right_surround(g, scale, config);
         [b_l_s, b_r_s] = left_right_surround(b, scale, config);
 
-        % Combine center surround signals to obtain color opponency..
-        R_l = model.data.utils.on(r_l_c - (g_r_s + b_r_s)/2);
-        G_l = model.data.utils.on(g_l_c - (r_r_s + b_r_s)/2);
-        B_l = model.data.utils.on(b_l_c - (r_r_s + g_r_s)/2);
-        Y_l = model.data.utils.on((r_l_c + g_l_c)/2 - abs(r_r_s - g_r_s)/2 - b_r_s);
+        rgb_l_c = cat(3, r_l_c, g_l_c, b_l_c);
+        rgb_r_c = cat(3, r_r_c, g_r_c, b_r_c);
+        
+        rgb_l_s = cat(3, r_l_s, g_l_s, b_l_s);
+        rgb_r_s = cat(3, r_r_s, g_r_s, b_r_s);
+        
+        RGBY_l = model.data.color.rgb2rgby(rgb_l_c, rgb_r_s);
+        RGBY_r = model.data.color.rgb2rgby(rgb_r_c, rgb_l_s);
+        
+        R_l = RGBY_l(:,:,1);
+        G_l = RGBY_l(:,:,2);
+        B_l = RGBY_l(:,:,3);
+        Y_l = RGBY_l(:,:,4);
 
-        R_r = model.data.utils.on(r_r_c - (g_l_s + b_l_s)/2);
-        G_r = model.data.utils.on(g_r_c - (r_l_s + b_l_s)/2);
-        B_r = model.data.utils.on(b_r_c - (r_l_s + g_l_s)/2);
-        Y_r = model.data.utils.on((r_r_c + g_r_c)/2 - abs(r_l_s - g_l_s)/2 - b_l_s);
+        R_r = RGBY_r(:,:,1);
+        G_r = RGBY_r(:,:,2);
+        B_r = RGBY_r(:,:,3);
+        Y_r = RGBY_r(:,:,4);
 
         % Consolidate to get all horizontal color opponency..
         % TODO average? sum?
