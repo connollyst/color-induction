@@ -8,8 +8,8 @@ function test_rgby_conversion
     % Given
     original = little_peppers();
     % When
-    a = model.data.decomposition.functions.opponent.rgby(original);
-    b = model.data.decomposition.functions.opponent.rgby(original);
+    a = model.data.color.rgb2rgby(original);
+    b = model.data.color.rgb2rgby(original);
     % Then
     assertEqualData(a, b);
 end
@@ -18,7 +18,7 @@ function test_image_recovery
     % Given
     n_scales = 5;
     original = little_peppers();
-    expected = model.data.decomposition.functions.opponent.rgby(original);
+    expected = model.data.color.rgb2rgby(original);
     config   = make_config(n_scales);
     % When
     [decompositions, residuals] = model.data.decomposition.functions.opponent(original, config);

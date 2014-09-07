@@ -3,11 +3,12 @@ function test_suite = test_dwt_inverse
 end
 
 function test_single_and_double_conversion_consistency
+% For these tests to function, rgb2rgby conversion needs to be consistent.
     % Given
     original  = little_peppers();
     % When
-    a = model.data.decomposition.functions.opponent.rgby(original);
-    b = model.data.decomposition.functions.opponent.rgby(original);
+    a = model.data.color.rgb2rgby(original);
+    b = model.data.color.rgb2rgby(original);
     % Then
     assertEqualData(a, b);
 end
