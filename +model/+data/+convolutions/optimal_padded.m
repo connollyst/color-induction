@@ -28,5 +28,5 @@ function result = optimal_padded(data, filter, varargin)
     % Remove padding
     cols_padding = cols_padding+1 : cols_padding+cols_data;
     rows_padding = rows_padding+1 : rows_padding+rows_data;
-    result = filtered(cols_padding,rows_padding);
+    result = filtered(cols_padding,rows_padding,:);
 end
