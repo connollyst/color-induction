@@ -1,4 +1,4 @@
-function test_suite = test_dwt_lab
+function test_suite = test_lab_dwt
   initTestSuite;
 end
 
