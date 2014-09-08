@@ -1,15 +1,15 @@
-function RGBY_d = do_diagonal(rgb, config)
+function LDRGBY_d = do_diagonal(rgb, config)
 %DO_DIAGONAL Double Opponent (Diagonal) Decomposition
 %   Decomposes the RGB image into it's RGBY diagonal opponent components.
 %
 %   Input
-%       rgb:    the original rgb image
-%       config: the model configuration
+%       rgb:        the original rgb image
+%       config:     the model configuration
 %   Output
-%       RGBY_h: the diagonal opponent color components in the format
-%               RGBY_h(column, row, color, scale)
+%       LDRGBY_d:   the diagonal opponent color components in the format
+%                   LDRGBY_d(column, row, color, scale)
 
-    RGBY_d = zeros(size(rgb,1), size(rgb,2), 4, config.wave.n_scales);
+    LDRGBY_d = zeros(size(rgb,1), size(rgb,2), 4, config.wave.n_scales);
 
     rgb = im2double(rgb);
     
@@ -36,44 +36,56 @@ function RGBY_d = do_diagonal(rgb, config)
         rgb_br_s = cat(3, r_br_s, g_br_s, b_br_s);
         rgb_bl_s = cat(3, r_bl_s, g_bl_s, b_bl_s);
         
-        RGBY_tl = model.data.color.rgb2rgby(rgb_tl_c, rgb_br_s);
-        RGBY_tr = model.data.color.rgb2rgby(rgb_tr_c, rgb_bl_s);
-        RGBY_br = model.data.color.rgb2rgby(rgb_br_c, rgb_tl_s);
-        RGBY_bl = model.data.color.rgb2rgby(rgb_bl_c, rgb_tr_s);
+        LDRGBY_tl = model.data.color.rgb2itti(rgb_tl_c, rgb_br_s);
+        LDRGBY_tr = model.data.color.rgb2itti(rgb_tr_c, rgb_bl_s);
+        LDRGBY_br = model.data.color.rgb2itti(rgb_br_c, rgb_tl_s);
+        LDRGBY_bl = model.data.color.rgb2itti(rgb_bl_c, rgb_tr_s);
         
         % Combine center surround signals to obtain color opponency..
         % TOP LEFT
-        R_tl = RGBY_tl(:,:,1);
-        G_tl = RGBY_tl(:,:,2);
-        B_tl = RGBY_tl(:,:,3);
-        Y_tl = RGBY_tl(:,:,4);
+        L_tl = LDRGBY_tl(:,:,1);
+        D_tl = LDRGBY_tl(:,:,2);
+        R_tl = LDRGBY_tl(:,:,3);
+        G_tl = LDRGBY_tl(:,:,4);
+        B_tl = LDRGBY_tl(:,:,5);
+        Y_tl = LDRGBY_tl(:,:,6);
         % TOP RIGHT
-        R_tr = RGBY_tr(:,:,1);
-        G_tr = RGBY_tr(:,:,2);
-        B_tr = RGBY_tr(:,:,3);
-        Y_tr = RGBY_tr(:,:,4);
+        L_tr = LDRGBY_tr(:,:,1);
+        D_tr = LDRGBY_tr(:,:,2);
+        R_tr = LDRGBY_tr(:,:,3);
+        G_tr = LDRGBY_tr(:,:,4);
+        B_tr = LDRGBY_tr(:,:,5);
+        Y_tr = LDRGBY_tr(:,:,6);
         % BOTTOM RIGHT
-        R_br = RGBY_br(:,:,1);
-        G_br = RGBY_br(:,:,2);
-        B_br = RGBY_br(:,:,3);
-        Y_br = RGBY_br(:,:,4);
+        L_br = LDRGBY_br(:,:,1);
+        D_br = LDRGBY_br(:,:,2);
+        R_br = LDRGBY_br(:,:,3);
+        G_br = LDRGBY_br(:,:,4);
+        B_br = LDRGBY_br(:,:,5);
+        Y_br = LDRGBY_br(:,:,6);
         % BOTTOM LEFT
-        R_bl = RGBY_bl(:,:,1);
-        G_bl = RGBY_bl(:,:,2);
-        B_bl = RGBY_bl(:,:,3);
-        Y_bl = RGBY_bl(:,:,4);
+        L_bl = LDRGBY_bl(:,:,1);
+        D_bl = LDRGBY_bl(:,:,2);
+        R_bl = LDRGBY_bl(:,:,3);
+        G_bl = LDRGBY_bl(:,:,4);
+        B_bl = LDRGBY_bl(:,:,5);
+        Y_bl = LDRGBY_bl(:,:,6);
 
         % Consolidate to get all diagonal color opponency..
         % TODO average? sum?
+        L_d = max(max(max(L_tl, L_tr), L_br), L_bl);
+        D_d = max(max(max(D_tl, D_tr), D_br), D_bl);
         R_d = max(max(max(R_tl, R_tr), R_br), R_bl);
         G_d = max(max(max(G_tl, G_tr), G_br), G_bl);
         B_d = max(max(max(B_tl, B_tr), B_br), B_bl);
         Y_d = max(max(max(Y_tl, Y_tr), Y_br), Y_bl);
 
-        RGBY_d(:,:,1,scale) = R_d;
-        RGBY_d(:,:,2,scale) = G_d;
-        RGBY_d(:,:,3,scale) = B_d;
-        RGBY_d(:,:,4,scale) = Y_d;
+        LDRGBY_d(:,:,1,scale) = L_d;
+        LDRGBY_d(:,:,2,scale) = D_d;
+        LDRGBY_d(:,:,3,scale) = R_d;
+        LDRGBY_d(:,:,4,scale) = G_d;
+        LDRGBY_d(:,:,5,scale) = B_d;
+        LDRGBY_d(:,:,6,scale) = Y_d;
     end
 end
 

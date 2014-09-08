@@ -1,15 +1,15 @@
-function RGBY_v = do_vertical(rgb, config)
+function LDRGBY_v = do_vertical(rgb, config)
 %DO_VERTICAL Double Opponent (Vertical) Decomposition
 %   Decomposes the RGB image into it's RGBY vertical opponent components.
 %
 %   Input
-%       rgb:    the original rgb image
-%       config: the model configuration
+%       rgb:      the original rgb image
+%       config:   the model configuration
 %   Output
-%       RGBY_h: the vertical opponent color components in the format
-%               RGBY_h(column, row, color, scale)
+%       LDRGBY_h: the vertical opponent color components in the format
+%                 LDRGBY_v(column, row, color, scale)
 
-    RGBY_v = zeros(size(rgb,1), size(rgb,2), 4, config.wave.n_scales);
+    LDRGBY_v = zeros(size(rgb,1), size(rgb,2), 4, config.wave.n_scales);
     
     rgb = im2double(rgb);
     
@@ -32,30 +32,38 @@ function RGBY_v = do_vertical(rgb, config)
         rgb_t_s = cat(3, r_t_s, g_t_s, b_t_s);
         rgb_b_s = cat(3, r_b_s, g_b_s, b_b_s);
         
-        RGBY_t = model.data.color.rgb2rgby(rgb_t_c, rgb_b_s);
-        RGBY_b = model.data.color.rgb2rgby(rgb_b_c, rgb_t_s);
+        LDRGBY_t = model.data.color.rgb2itti(rgb_t_c, rgb_b_s);
+        LDRGBY_b = model.data.color.rgb2itti(rgb_b_c, rgb_t_s);
         
-        R_t = RGBY_t(:,:,1);
-        G_t = RGBY_t(:,:,2);
-        B_t = RGBY_t(:,:,3);
-        Y_t = RGBY_t(:,:,4);
+        L_t = LDRGBY_t(:,:,1);
+        D_t = LDRGBY_t(:,:,2);
+        R_t = LDRGBY_t(:,:,3);
+        G_t = LDRGBY_t(:,:,4);
+        B_t = LDRGBY_t(:,:,5);
+        Y_t = LDRGBY_t(:,:,6);
 
-        R_b = RGBY_b(:,:,1);
-        G_b = RGBY_b(:,:,2);
-        B_b = RGBY_b(:,:,3);
-        Y_b = RGBY_b(:,:,4);
+        L_b = LDRGBY_b(:,:,1);
+        D_b = LDRGBY_b(:,:,2);
+        R_b = LDRGBY_b(:,:,3);
+        G_b = LDRGBY_b(:,:,4);
+        B_b = LDRGBY_b(:,:,5);
+        Y_b = LDRGBY_b(:,:,6);
 
         % Consolidate to get all vertical color opponency..
         % TODO average? sum?
+        L_v = max(L_t, L_b);
+        D_v = max(D_t, D_b);
         R_v = max(R_t, R_b);
         G_v = max(G_t, G_b);
         B_v = max(B_t, B_b);
         Y_v = max(Y_t, Y_b);
 
-        RGBY_v(:,:,1,scale) = R_v;
-        RGBY_v(:,:,2,scale) = G_v;
-        RGBY_v(:,:,3,scale) = B_v;
-        RGBY_v(:,:,4,scale) = Y_v;
+        LDRGBY_v(:,:,1,scale) = L_v;
+        LDRGBY_v(:,:,2,scale) = D_v;
+        LDRGBY_v(:,:,3,scale) = R_v;
+        LDRGBY_v(:,:,4,scale) = G_v;
+        LDRGBY_v(:,:,5,scale) = B_v;
+        LDRGBY_v(:,:,6,scale) = Y_v;
     end
 end
 

@@ -22,23 +22,11 @@ function I_out = transform( I_in, config )
             for i=1:length(I_in)
                 I_out{i} = model.data.color.rgb2lab(I_in{i});
             end
-        case 'rgb2rgby'
+        case 'rgb2itti'
             % Transform from RGB to RGBY..
-            logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
+            logger.log('Converting RGB image to LDRGBY (L. Itti, 1998)..', config);
             for i=1:length(I_in)
-                I_out{i} = model.data.color.rgb2rgby(I_in{i});
-            end
-        case 'itti' %DEPRECATED
-            % Transform from RGB to L. Itti's RGBY..
-            logger.log('Converting RGB image to RGBY (L. Itti, 1998)..', config);
-            for i=1:length(I_in)
-                [~, R, G, B, Y] = model.data.color.itti.IRGBY(I_in{i});
-                RGBY = zeros(size(R, 1), size(R, 2), 4);
-                RGBY(:,:,1) = R;
-                RGBY(:,:,2) = G;
-                RGBY(:,:,3) = B;
-                RGBY(:,:,4) = Y;
-                I_out{i} = RGBY;
+                I_out{i} = model.data.color.rgb2itti(I_in{i});
             end
         otherwise
             error('Unsupported image pre-transform: %s', transform)

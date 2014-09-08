@@ -15,11 +15,11 @@ function test_decomposition_dimensions_default
     % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
     % Then
-    assertEqual(size(decompositions, 1),  size(I, 1));
-    assertEqual(size(decompositions, 2),  size(I, 2));
-    assertEqual(size(decompositions, 3),  4); % RGBY
-    assertEqual(size(decompositions, 4),  n_scales);
-    assertEqual(size(decompositions, 5),  4); % double & single opponent
+    assertEqual(size(decompositions, 1), size(I, 1));
+    assertEqual(size(decompositions, 2), size(I, 2));
+    assertEqual(size(decompositions, 3), 6); % LDRGBY
+    assertEqual(size(decompositions, 4), n_scales);
+    assertEqual(size(decompositions, 5), 4); % double & single opponent
 end
 
 function test_decomposition_dimensions_double_opponent
@@ -33,11 +33,11 @@ function test_decomposition_dimensions_double_opponent
     % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
     % Then
-    assertEqual(size(decompositions, 1),  size(I, 1));
-    assertEqual(size(decompositions, 2),  size(I, 2));
-    assertEqual(size(decompositions, 3),  4); % RGBY
-    assertEqual(size(decompositions, 4),  n_scales);
-    assertEqual(size(decompositions, 5),  3); % horizontal, diagonal, vertical
+    assertEqual(size(decompositions, 1), size(I, 1));
+    assertEqual(size(decompositions, 2), size(I, 2));
+    assertEqual(size(decompositions, 3), 6); % LDRGBY
+    assertEqual(size(decompositions, 4), n_scales);
+    assertEqual(size(decompositions, 5), 3); % horizontal, diagonal, vertical
 end
 
 function test_decomposition_dimensions_single_opponent
@@ -51,46 +51,14 @@ function test_decomposition_dimensions_single_opponent
     % When
     [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
     % Then
-    assertEqual(size(decompositions, 1),  size(I, 1));
-    assertEqual(size(decompositions, 2),  size(I, 2));
-    assertEqual(size(decompositions, 3),  4); % RGBY
-    assertEqual(size(decompositions, 4),  n_scales);
-    assertEqual(size(decompositions, 5),  1); % single opponent
+    assertEqual(size(decompositions, 1), size(I, 1));
+    assertEqual(size(decompositions, 2), size(I, 2));
+    assertEqual(size(decompositions, 3), 6); % LDRGBY
+    assertEqual(size(decompositions, 4), n_scales);
+    assertEqual(size(decompositions, 5), 1); % single opponent
 end
 
 %% ASSERT VALUE RANGES
-
-function test_decomposition_values_when_black
-    % Given
-    n_scales = 5;
-    I = make_black_I();
-    config                 = configurations.default_rgby;
-    config.wave.n_scales   = n_scales;
-    config.display.logging = false;
-    config.display.plot    = false;
-    % When
-    [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
-    % Then
-    assertEqual(max(decompositions(:)), 0);
-    assertEqual(min(decompositions(:)), 0);
-end
-
-function test_decomposition_values_when_white
-% Tests for a bug seen with large receptive fields on small images.
-    % Given
-    n_scales = 5;
-    I = make_white_I();
-    % TODO this tests fails with configurations.default_rgby, why?
-    config                 = configurations.double_opponent_rgby;
-    config.wave.n_scales   = n_scales;
-    config.display.logging = false;
-    config.display.plot    = false;
-    % When
-    [decompositions, ~] = model.data.decomposition.functions.opponent(I, config);
-    % Then
-    assertElementsAlmostEqual(max(decompositions(:)), 0);
-    assertElementsAlmostEqual(min(decompositions(:)), 0);
-end
 
 function test_all_scales_contain_signal
     % Given
@@ -190,10 +158,10 @@ function test_higher_scales_contain_weaker_signal
     for s=1:n_scales
         scale = decompositions(:,:,:,s,:);
         current_max = max(scale(:));
-        assertTrue(current_max < running_max,   ...
-                    ['Expected signal in scale ', num2str(s),   ...
-                     ' greater than ', num2str(s-1),            ...
-                     ', was ', num2str(current_max),            ...
+        assertTrue(current_max < running_max,  ...
+                    ['Expected signal in scale ', num2str(s),  ...
+                     ' greater than ', num2str(s-1),           ...
+                     ', was ', num2str(current_max),           ...
                      ' compared to ', num2str(running_max)      ...
                      ]);
     end

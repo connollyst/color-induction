@@ -1,4 +1,4 @@
-function RGBY = so(rgb, config)
+function LDRGBY = so(rgb, config)
 %SO Single Opponent Decomposition
 %   Decomposes the RGB image into it's RGBY opponent components. Unlike the
 %   double opponent decompositions, here there is no spatial opponency
@@ -11,7 +11,7 @@ function RGBY = so(rgb, config)
 %       RGBY_h: the horizontal opponent color components in the format
 %               RGBY_h(column, row, color, scale)
 
-    RGBY = zeros(size(rgb,1), size(rgb,2), 4, config.wave.n_scales);
+    LDRGBY = zeros(size(rgb,1), size(rgb,2), 6, config.wave.n_scales);
     
     rgb = im2double(rgb);
     
@@ -32,7 +32,7 @@ function RGBY = so(rgb, config)
         
         % TODO use center & surround of different scales
         
-        RGBY(:,:,:,scale) = model.data.color.rgb2rgby(rgb_c, rgb_s);
+        LDRGBY(:,:,:,scale) = model.data.color.rgb2itti(rgb_c, rgb_s);
     end
 end
 

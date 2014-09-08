@@ -11,7 +11,7 @@ end
 function components = decompose(rgb, config)
     n_cols     = size(rgb, 1);
     n_rows     = size(rgb, 2);
-    n_channels = 4;             % RGBY
+    n_channels = 6;     % LDRGBY
     n_scales   = config.wave.n_scales;
     n_orients  = config.wave.n_orients;
     components = zeros(n_cols, n_rows, n_channels, n_scales, n_orients);
@@ -35,11 +35,11 @@ end
 function residuals = subtract(rgb, components, config)
     n_cols     = size(rgb, 1);
     n_rows     = size(rgb, 2);
-    n_channels = 4;             % RGBY
+    n_channels = 6;             % LDRGBY
     n_scales  = config.wave.n_scales;
     n_orients = config.wave.n_orients;
     residuals = zeros(n_cols, n_rows, n_channels, n_scales);
-    rgby      = model.data.color.rgb2rgby(rgb);
+    rgby      = model.data.color.rgb2itti(rgb);
     for s=1:n_scales
         for o=1:n_orients
             rgby = rgby - components(:,:,:,s,o);

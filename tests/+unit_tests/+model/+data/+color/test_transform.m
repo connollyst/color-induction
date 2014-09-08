@@ -22,9 +22,9 @@ function test_rgb2lab_data_format
     assertIsDouble(I_out);
 end
 
-function test_rgb2rgby_data_format
+function test_rgb2itti_data_format
     % Given
-    [I_in, config] = get_input('rgb2rgby');
+    [I_in, config] = get_input('rgb2itti');
     % When
     I_out = model.data.color.transform(I_in, config);
     % Then
@@ -57,12 +57,12 @@ function test_rgb2lab_transform_dimensions
     assertDimensions(I_out, [n_cols, n_rows, n_channels]);
 end
 
-function test_rgb2rgby_transform_dimensions
+function test_rgb2itti_transform_dimensions
     % Given
-    [I_in, config] = get_input('rgb2rgby');
+    [I_in, config] = get_input('rgb2itti');
     n_cols     = size(I_in{1}, 1);
     n_rows     = size(I_in{1}, 2);
-    n_channels = 4; % R, G, B, & Y
+    n_channels = 6; % L, D, R, G, B, & Y
     % When
     I_out = model.data.color.transform(I_in, config);
     % Then

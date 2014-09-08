@@ -2,6 +2,10 @@ function rgb = test_image(name, width)
     switch name
         case 'default'
             rgb = make_default(width);
+        case 'black & white'
+            rgb = make_black_and_white(width);
+        case 'dark & light'
+            rgb = make_dark_and_light(width);
         case 'lightness contrast A'
             rgb = make_lightness_contrast_a(width);
         case 'lightness contrast B'
@@ -42,6 +46,24 @@ function rgb = make_default(w)
     rgb(c, c, [1,3]) = 1;
 end
 
+function rgb = make_black_and_white(w)
+    h     = w/2;
+    white = [1 1 1];
+    black = [0 0 0];
+    left  = squares(h, white, black);
+    right = squares(h, black, white);
+    rgb   = cat(2, left, right);
+end
+
+function rgb = make_dark_and_light(w)
+    h     = w/2;
+    light = [0.8 0.8 0.8];
+    dark  = [0.2 0.2 0.2];
+    left  = squares(h, light, dark);
+    right = squares(h, dark, light);
+    rgb   = cat(2, left, right);
+end
+
 %% LIGHTNESS CONTRAST TEST IMAGES
 
 function rgb = make_lightness_contrast_a(w)
@@ -56,18 +78,6 @@ function rgb = make_lightness_contrast_b(w)
     hsv_inner = [340/360, 0.35, 0.72];
     hsv = squares(w, hsv_outer, hsv_inner);
     rgb = hsv2rgb(hsv);
-end
-
-function hsv = squares(width, hsv_outer, hsv_inner)
-    hsv                = zeros(width, width, 3);
-    hsv(:,:,1)         = hsv_outer(1);
-    hsv(:,:,2)         = hsv_outer(2);
-    hsv(:,:,3)         = hsv_outer(3);
-    third_width        = floor(width/3);
-    inner              = third_width:width-third_width;
-    hsv(inner,inner,1) = hsv_inner(1);
-    hsv(inner,inner,2) = hsv_inner(2);
-    hsv(inner,inner,3) = hsv_inner(3);
 end
 
 %% CRISPENING EFFECT TEST IMAGES
@@ -125,4 +135,18 @@ function rgb = make_isoluminant_red_green_b(w)
     hsv_inner = [140/360, 0.8, 0.90];
     hsv = squares(w, hsv_outer, hsv_inner);
     rgb = hsv2rgb(hsv);
+end
+
+%% UTILITIES
+
+function vals = squares(width, outer_vals, inner_vals)
+    vals                = zeros(width, width, 3);
+    vals(:,:,1)         = outer_vals(1);
+    vals(:,:,2)         = outer_vals(2);
+    vals(:,:,3)         = outer_vals(3);
+    third_width        = floor(width/3);
+    inner              = third_width:width-third_width;
+    vals(inner,inner,1) = inner_vals(1);
+    vals(inner,inner,2) = inner_vals(2);
+    vals(inner,inner,3) = inner_vals(3);
 end
