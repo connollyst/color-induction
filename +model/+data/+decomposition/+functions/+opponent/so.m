@@ -8,8 +8,8 @@ function LDRGBY = so(rgb, config)
 %       rgb:    the original rgb image
 %       config: the model configuration
 %   Output
-%       RGBY_h: the horizontal opponent color components in the format
-%               RGBY_h(column, row, color, scale)
+%       LDRGBY: the single opponent color components in the format
+%               LDRGBY(column, row, color, scale)
 
     LDRGBY = zeros(size(rgb,1), size(rgb,2), 6, config.wave.n_scales);
     
@@ -19,19 +19,19 @@ function LDRGBY = so(rgb, config)
     g = rgb(:,:,2);
     b = rgb(:,:,3);
     
-    for scale=1:config.wave.n_scales
+    for s=1:config.wave.n_scales
+        % Starting with scale 2 better matches how DWT behaves
+        scale = s+1;
+        % TODO apply to all 3 channels at once?
         r_c = center(r, scale, config);
         g_c = center(g, scale, config);
         b_c = center(b, scale, config);
         rgb_c = cat(3, r_c, g_c, b_c);
-
+        % TODO use center & surround of different scales
         r_s = surround(r, scale, config);
         g_s = surround(g, scale, config);
         b_s = surround(b, scale, config);
         rgb_s = cat(3, r_s, g_s, b_s);
-        
-        % TODO use center & surround of different scales
-        
         LDRGBY(:,:,:,scale) = model.data.color.rgb2itti(rgb_c, rgb_s);
     end
 end
