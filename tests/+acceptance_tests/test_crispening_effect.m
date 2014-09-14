@@ -16,10 +16,14 @@ function test_itti
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = false;
     % When
-    [~, B_out] = model.apply(B, config);
     [~, A_out] = model.apply(A, config);
+    [~, B_out] = model.apply(B, config);
     [~, C_out] = model.apply(C, config);
     % Then
+    % TODO this fails because the assertion is insufficient; the
+    %      differences between the boxes is clear, but the background (due
+    %      to the single opponent signal) drowns that out. We should remove
+    %      the full mean in each channel before getting the A/B difference.
     assertCrispeningEffect(A_out, B_out, C_out, width);
 end
 
@@ -81,6 +85,18 @@ function assertCrispeningEffect(A, B, C, width)
     inner_cols     = third_width:width-third_width;
     inner_rows_one = inner_cols;
     inner_rows_two = inner_rows_one+width;
+    n_channels     = size(A, 3);
+    for c=1:n_channels
+        Ac = A(:,:,c);
+        Bc = B(:,:,c);
+        Cc = C(:,:,c);
+        Ac_mean = mean(Ac(:));
+        Bc_mean = mean(Bc(:));
+        Cc_mean = mean(Cc(:));
+        A(:,:,c) = Ac - Ac_mean;
+        B(:,:,c) = Bc - Bc_mean;
+        C(:,:,c) = Cc - Cc_mean;
+    end
     A_one          = A(inner_rows_one, inner_cols, :);
     A_two          = A(inner_rows_two, inner_cols, :);
     B_one          = B(inner_rows_one, inner_cols, :);
