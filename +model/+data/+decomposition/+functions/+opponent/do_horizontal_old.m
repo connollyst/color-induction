@@ -1,4 +1,4 @@
-function LDRGBY_h = do_horizontal(rgb, config)
+function LDRGBY_h = do_horizontal_old(rgb, config)
 %DO_HORIZONTAL Double Opponent (Horizontal) Decomposition
 %   Decomposes the RGB image into it's RGBY horizontal opponent components.
 %
@@ -16,15 +16,15 @@ function LDRGBY_h = do_horizontal(rgb, config)
     r = rgb(:,:,1);
     g = rgb(:,:,2);
     b = rgb(:,:,3);
-    
     for scale=1:config.wave.n_scales
-        [r_l_c, r_r_c] = left_right_center(r, scale, config);
-        [g_l_c, g_r_c] = left_right_center(g, scale, config);
-        [b_l_c, b_r_c] = left_right_center(b, scale, config);
+        
+        [r_l_c, r_r_c] = left_and_right_ON(r, scale, config);
+        [g_l_c, g_r_c] = left_and_right_ON(g, scale, config);
+        [b_l_c, b_r_c] = left_and_right_ON(b, scale, config);
 
-        [r_l_s, r_r_s] = left_right_surround(r, scale, config);
-        [g_l_s, g_r_s] = left_right_surround(g, scale, config);
-        [b_l_s, b_r_s] = left_right_surround(b, scale, config);
+        [r_l_s, r_r_s] = left_and_right_OFF(r, scale, config);
+        [g_l_s, g_r_s] = left_and_right_OFF(g, scale, config);
+        [b_l_s, b_r_s] = left_and_right_OFF(b, scale, config);
 
         rgb_l_c = cat(3, r_l_c, g_l_c, b_l_c);
         rgb_r_c = cat(3, r_r_c, g_r_c, b_r_c);
@@ -35,49 +35,19 @@ function LDRGBY_h = do_horizontal(rgb, config)
         LDRGBY_l = model.data.color.rgb2itti(rgb_l_c, rgb_r_s);
         LDRGBY_r = model.data.color.rgb2itti(rgb_r_c, rgb_l_s);
         
-        L_l = LDRGBY_l(:,:,1);
-        D_l = LDRGBY_l(:,:,2);
-        R_l = LDRGBY_l(:,:,3);
-        G_l = LDRGBY_l(:,:,4);
-        B_l = LDRGBY_l(:,:,5);
-        Y_l = LDRGBY_l(:,:,6);
-
-        L_r = LDRGBY_r(:,:,1);
-        D_r = LDRGBY_r(:,:,2);
-        R_r = LDRGBY_r(:,:,3);
-        G_r = LDRGBY_r(:,:,4);
-        B_r = LDRGBY_r(:,:,5);
-        Y_r = LDRGBY_r(:,:,6);
-
         % Consolidate to get all horizontal color opponency..
-        % TODO average? sum?
-        L_h = max(L_l, L_r);
-        D_h = max(D_l, D_r);
-        R_h = max(R_l, R_r);
-        G_h = max(G_l, G_r);
-        B_h = max(B_l, B_r);
-        Y_h = max(Y_l, Y_r);
-        
-        LDRGBY_h(:,:,1,scale) = L_h;
-        LDRGBY_h(:,:,2,scale) = D_h;
-        LDRGBY_h(:,:,3,scale) = R_h;
-        LDRGBY_h(:,:,4,scale) = G_h;
-        LDRGBY_h(:,:,5,scale) = B_h;
-        LDRGBY_h(:,:,6,scale) = Y_h;
-        
-        % TODO simplify to:
-        % RGBY_h(:,:,:,scale) = max(LDRGBY_l, LDRGBY_r);
+        LDRGBY_h(:,:,:,scale) = max(LDRGBY_l, LDRGBY_r);
     end
 end
 
-function [l_center, r_center] = left_right_center(color, scale, config)
-    l_center = model.data.utils.on(apply_left_excitatory_filter(color, scale, config));
-    r_center = model.data.utils.on(apply_right_excitatory_filter(color, scale, config));
+function [l_ON, r_ON] = left_and_right_ON(color, scale, config)
+    l_ON = model.data.utils.on(apply_left_excitatory_filter(color, scale, config));
+    r_ON = model.data.utils.on(apply_right_excitatory_filter(color, scale, config));
 end
 
-function [l_surround, r_surround] = left_right_surround(color, scale, config)
-    l_surround = model.data.utils.off(apply_left_inhibitory_filter(color, scale, config));
-    r_surround = model.data.utils.off(apply_right_inhibitory_filter(color, scale, config));
+function [l_OFF, r_OFF] = left_and_right_OFF(color, scale, config)
+    l_OFF = model.data.utils.off(apply_left_inhibitory_filter(color, scale, config));
+    r_OFF = model.data.utils.off(apply_right_inhibitory_filter(color, scale, config));
 end
 
 function out = apply_left_excitatory_filter(color, scale, config)

@@ -11,9 +11,9 @@ function rf = get_rf()
     rf.center.weight   = 1;
     rf.center.length   = 1;
     rf.center.width    = 0.5;
-    rf.center.offset   = 5;
-    rf.surround.weight = 0.95; % Lennie & Haake
+    rf.center.offset   = 0.25;
+    rf.surround.weight = 1; % Lennie & Haake
     rf.surround.length = 1;
     rf.surround.width  = 0.5;
-    rf.surround.offset = 5; 
+    rf.surround.offset = 0.25;
 end
