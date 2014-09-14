@@ -131,51 +131,6 @@ function test_double_opponent_lightness_contrast
                'Lightnes contrast: B should be darkened.');
 end
 
-function test_double_opponent_crispening_effect
-    % Given
-    width = 48;
-    A = test_image('crispening effect A', width);
-    B = test_image('crispening effect B', width);
-    C = test_image('crispening effect C', width);
-    config                               = configurations.double_opponent_rgby;
-    config.display.logging               = false;
-    config.display.plot                  = false;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 5;
-    config.zli.n_iter                    = 10;
-    config.zli.interaction.color.enabled = false;
-    % When
-    [~, A_out] = model.apply(A, config);
-    [~, B_out] = model.apply(B, config);
-    [~, C_out] = model.apply(C, config);
-    % Then we should see that the top and bottom colored squares are most
-    % noticeably different from each other when placed on a background
-    % whose color is between the squares' colors. This backround drives
-    % the squares colors' apart, while a black or white background drives
-    % the colors toward each other.
-    third_width    = floor(width/3);
-    inner_cols     = third_width:width-third_width;
-    inner_rows_one = inner_cols;
-    inner_rows_two = inner_rows_one+width;
-    A_out_one      = A_out(inner_rows_one, inner_cols, :);
-    A_out_two      = A_out(inner_rows_two, inner_cols, :);
-    B_out_one      = B_out(inner_rows_one, inner_cols, :);
-    B_out_two      = B_out(inner_rows_two, inner_cols, :);
-    C_out_one      = C_out(inner_rows_one, inner_cols, :);
-    C_out_two      = C_out(inner_rows_two, inner_cols, :);
-    A_mean_one     = mean(A_out_one(:));
-    A_mean_two     = mean(A_out_two(:));
-    B_mean_one     = mean(B_out_one(:));
-    B_mean_two     = mean(B_out_two(:));
-    C_mean_one     = mean(C_out_one(:));
-    C_mean_two     = mean(C_out_two(:));
-    A_mean_diff    = abs(A_mean_one - A_mean_two);
-    B_mean_diff    = abs(B_mean_one - B_mean_two);
-    C_mean_diff    = abs(C_mean_one - C_mean_two);
-    assertTrue(B_mean_diff > A_mean_diff);
-    assertTrue(B_mean_diff > C_mean_diff);
-end
-
 %% TEST UTILITIES
 
 function I = synthetic_image()
