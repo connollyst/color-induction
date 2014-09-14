@@ -19,9 +19,9 @@ function LDRGBY = so(rgb, config)
     g = rgb(:,:,2);
     b = rgb(:,:,3);
     
-    for s=1:config.wave.n_scales
-        % Starting with scale 2 better matches how DWT behaves
-        scale = s+1;
+    for scale=1:config.wave.n_scales
+        % TODO Starting with scale 2 better matches how DWT behaves
+        % scale = s+1;
         % TODO apply to all 3 channels at once?
         r_c = center(r, scale, config);
         g_c = center(g, scale, config);
