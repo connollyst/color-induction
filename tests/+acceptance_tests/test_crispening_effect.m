@@ -15,9 +15,10 @@ function test_itti
     config.zli.n_membr                   = 5;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = false;
+    config.zli.normal_type               = 'dims';
     % When
-    [~, A_out] = model.apply(A, config);
     [~, B_out] = model.apply(B, config);
+    [~, A_out] = model.apply(A, config);
     [~, C_out] = model.apply(C, config);
     % Then
     % TODO this fails because the assertion is insufficient; the
@@ -83,8 +84,8 @@ function assertCrispeningEffect(A, B, C, width)
 % other.
     third_width    = floor(width/3);
     inner_cols     = third_width:width-third_width;
-    inner_rows_one = inner_cols;
-    inner_rows_two = inner_rows_one+width;
+    inner_rows_one = inner_cols-5;
+    inner_rows_two = inner_rows_one+width+5;
     n_channels     = size(A, 3);
     for c=1:n_channels
         Ac = A(:,:,c);
