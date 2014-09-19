@@ -84,37 +84,32 @@ function assertCrispeningEffect(A, B, C, width)
 % other.
     third_width    = floor(width/3);
     inner_cols     = third_width:width-third_width;
-    inner_rows_one = inner_cols-5;
-    inner_rows_two = inner_rows_one+width+5;
-    n_channels     = size(A, 3);
-    for c=1:n_channels
-        Ac = A(:,:,c);
-        Bc = B(:,:,c);
-        Cc = C(:,:,c);
-        Ac_mean = mean(Ac(:));
-        Bc_mean = mean(Bc(:));
-        Cc_mean = mean(Cc(:));
-        A(:,:,c) = Ac - Ac_mean;
-        B(:,:,c) = Bc - Bc_mean;
-        C(:,:,c) = Cc - Cc_mean;
-    end
+    inner_rows_one = inner_cols;
+    inner_rows_two = inner_rows_one+width;
     A_one          = A(inner_rows_one, inner_cols, :);
     A_two          = A(inner_rows_two, inner_cols, :);
     B_one          = B(inner_rows_one, inner_cols, :);
     B_two          = B(inner_rows_two, inner_cols, :);
     C_one          = C(inner_rows_one, inner_cols, :);
     C_two          = C(inner_rows_two, inner_cols, :);
-    A_mean_one     = mean(A_one(:));
-    A_mean_two     = mean(A_two(:));
-    B_mean_one     = mean(B_one(:));
-    B_mean_two     = mean(B_two(:));
-    C_mean_one     = mean(C_one(:));
-    C_mean_two     = mean(C_two(:));
-    A_mean_diff    = abs(A_mean_one - A_mean_two);
-    B_mean_diff    = abs(B_mean_one - B_mean_two);
-    C_mean_diff    = abs(C_mean_one - C_mean_two);
+    [~, A_mean_one, ~] = channel_stats(A_one);
+    [~, A_mean_two, ~] = channel_stats(A_two);
+    [~, B_mean_one, ~] = channel_stats(B_one);
+    [~, B_mean_two, ~] = channel_stats(B_two);
+    [~, C_mean_one, ~] = channel_stats(C_one);
+    [~, C_mean_two, ~] = channel_stats(C_two);
+    A_mean_diff = abs(A_mean_one - A_mean_two);
+    B_mean_diff = abs(B_mean_one - B_mean_two);
+    C_mean_diff = abs(C_mean_one - C_mean_two);
     assertTrue(B_mean_diff > A_mean_diff, ...
                 'Test image B should show a greater difference than A.');
     assertTrue(B_mean_diff > C_mean_diff, ...
                 'Test image B should show a greater difference than C.');
 end
+
+function [minimum, average, maximum] = channel_stats(I)
+    minimum = min(I(:));
+    average = mean(I(:));
+    maximum = max(I(:));
+end
+
