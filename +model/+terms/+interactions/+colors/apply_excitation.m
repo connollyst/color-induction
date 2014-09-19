@@ -22,7 +22,7 @@ function excitation = apply_excitation(data, color_interactions, config)
 end
 
 function excitation = apply_opponent_filter(data, filter, config)
-% Activity in any opponent color channel excites all others
+% Activity in any color channel excites all others, except its opponent.
     n_channels = config.image.n_channels;
     excitation = zeros(size(data));
     for channel=1:n_channels
@@ -35,6 +35,8 @@ function excitation = apply_opponent_filter(data, filter, config)
 end
 
 function temp = get_temp(data, channel)
+% Returns a reformatted matrix with the channel to be excited in the
+% center, and its opponent removed.
     temp     = data;
     center   = size(temp, 3) / 2;
     % Remove the opponent channel, it isn't to be excited

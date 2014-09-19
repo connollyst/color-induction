@@ -42,6 +42,9 @@ function zli = get_zli()
     zli.interaction.color.enabled  = false;
     
     % Opponet color interactions weights
+    
+    zli.interaction.orient.to_so   = 1;             % weight for SO -> DO interactions (delta theta)
+    zli.interaction.orient.from_so = 1;             % weight for DO -> SO interactions (delta theta)
     zli.interaction.color.model    = 'opponent';    % 'default' or 'opponent'
     zli.interaction.color.weight.excitation = 0.01;
     zli.interaction.color.weight.inhibition = 0.01;

@@ -8,17 +8,32 @@ function J_W = JW(scale_interactions, config)
         % Both single & double opponent cells:
         % Single opponent cells have no orientation sensitivity.
         % Double opponent cells are sensitive to specific orientations.
-        [J,  W]  = deal(init_struct(scale_interactions, config));
-        [Jd, Wd] = model.terms.interactions.orients.jw.directional(scale_interactions, config);
-        [Js, Ws] = model.terms.interactions.orients.jw.nondirectional(scale_interactions, config);
+        do = 1:3;
+        so = 4;
+        do_to_so = config.zli.interaction.orient.to_so;
+        so_to_do = config.zli.interaction.orient.from_so;
+        [J,  W]    = deal(init_struct(scale_interactions, config));
+        [Jdo, Wdo] = model.terms.interactions.orients.jw.directional(scale_interactions, config);
+        [Jso, Wso] = model.terms.interactions.orients.jw.nondirectional(scale_interactions, config);
         for s=1:config.wave.n_scales
-            J{s}(:, :, :, 1:3, 1:3) = Jd{s};
-            W{s}(:, :, :, 1:3, 1:3) = Wd{s};
+            % DO -> DO excitation (bowtie)
+            J{s}(:, :, :, do, do) = Jdo{s};
+            W{s}(:, :, :, do, do) = Wdo{s};
         end
         for s=1:config.wave.n_scales
             for o=1:config.wave.n_orients
-                J{s}(:, :, :, 4, o) = Js{s};
-                W{s}(:, :, :, 4, o) = Ws{s};
+                if o == so
+                    % SO -> SO excitation (gaussian)
+                    J{s}(:, :, :, so, so) = Jso{s};
+                    W{s}(:, :, :, so, so) = Wso{s};
+                    % DO -> SO excitation (gaussian)
+                    J{s}(:, :, :, do, so) = repmat(Jso{s} * do_to_so, [1, 1, length(do)]);
+                    W{s}(:, :, :, do, so) = repmat(Wso{s} * do_to_so, [1, 1, length(do)]);
+                else
+                    % SO -> SO excitation (gaussian)
+                    J{s}(:, :, :, so, o) = Jso{s} * so_to_do;
+                    W{s}(:, :, :, so, o) = Wso{s} * so_to_do;
+                end
             end
         end
     else
