@@ -11,7 +11,7 @@ function I_norm = Inormalization(gx, norm_mask, scale_interactions, config)
     inv_den   = norm_mask.inv_den;
     gx_padded = model.data.padding.add.orient(gx, scale_interactions, config);
     
-    if config.rf.single && config.rf.double
+    if config.rf.so.enabled && config.rf.do.enabled
         % If we are processing both SO and DO, normalize them separately..
         DO_norm = get_normalization(gx_padded, 1:3, norm_mask, scale_interactions, config);
         SO_norm = get_normalization(gx_padded, 4,   norm_mask, scale_interactions, config);

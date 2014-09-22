@@ -22,7 +22,6 @@ function LDRGBY = so(rgb, config)
     for scale=1:config.wave.n_scales
         % TODO Starting with scale 2 better matches how DWT behaves
         % scale = s+1;
-        % TODO apply to all 3 channels at once?
         r_c = center(r, scale, config);
         g_c = center(g, scale, config);
         b_c = center(b, scale, config);
@@ -32,16 +31,16 @@ function LDRGBY = so(rgb, config)
         g_s = surround(g, scale, config);
         b_s = surround(b, scale, config);
         rgb_s = cat(3, r_s, g_s, b_s);
-        LDRGBY(:,:,:,scale) = model.data.color.rgb2itti(rgb_c, rgb_s);
+        LDRGBY(:,:,:,scale) = model.data.rf.transform(rgb_c, rgb_s, config);
     end
 end
 
 function c = center(color, scale, config)
-    filter = model.data.decomposition.functions.opponent.rf.center(scale, config);
+    filter = model.data.rf.center(scale, config);
     c      = model.data.convolutions.optimal_padded(color, filter);
 end
 
 function s = surround(color, scale, config)
-    filter = model.data.decomposition.functions.opponent.rf.surround(scale, config);
+    filter = model.data.rf.surround(scale, config);
     s      = model.data.convolutions.optimal_padded(color, filter);
 end

@@ -1,10 +1,10 @@
 function J_W = JW(scale_interactions, config)
 %JW Return J (excitation) & W (inhibition) masks defined by Z. Li 1999.
-    if ~config.rf.single && ~config.rf.double
+    if ~config.rf.so.enabled && ~config.rf.do.enabled
         error(['Cannot prepare J & W when both single and double ', ...
                'receptive fields are disabled.']);
     end
-    if config.rf.single && config.rf.double
+    if config.rf.so.enabled && config.rf.do.enabled
         % Both single & double opponent cells:
         % Single opponent cells have no orientation sensitivity.
         % Double opponent cells are sensitive to specific orientations.
@@ -37,7 +37,7 @@ function J_W = JW(scale_interactions, config)
             end
         end
     else
-        if config.rf.double
+        if config.rf.do.enabled
             % Only double opponent cells: sensitive to specific orientations
             [J, W] = model.terms.interactions.orients.jw.directional(scale_interactions, config);
         else

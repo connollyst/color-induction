@@ -2,7 +2,7 @@ function LDRGBY = irgb2itti(varargin)
 %RGB2RGBY Light, Dark, Red, Green, Blue, Yellow color transform.
 %   Separate RGB image into intensity (I), red (R), green (G), blue (B),
 %   and yellow (Y) components according to the transformations defined in
-%   Itti L, Kock C, Niebur E (1998) A model of saliency-based visual
+%   Itti L, Koch C, Niebur E (1998) A model of saliency-based visual
 %   attention for rapid scene analysis. IEEE Transactions on Pattern
 %   Analysis and Machiene Intelligence 20:1254-1259
 %

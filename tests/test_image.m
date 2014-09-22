@@ -97,7 +97,7 @@ function rgb = make_crispening_effect_b(w)
 end
 
 function rgb = make_crispening_effect_c(w)
-    rgb_outer     = [255, 255, 255];
+    rgb_outer     = [200, 200, 200];
     rgb_inner_one = [114, 134, 117];
     rgb_inner_two = [ 99, 118, 101];
     rgb = double_squares(w, rgb_outer, rgb_inner_one, rgb_inner_two);

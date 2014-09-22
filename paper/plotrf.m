@@ -1,4 +1,4 @@
-function plotrf()
+function plotRF()
     close all
     %plotso(1, 1.0, 0.5, 1.0, 0.5, 32, 32)
     plotso(2, 1.0, 0.5, 0.4, 0.5, 18, 46)
@@ -13,15 +13,15 @@ end
 function plotso(i, c_weight, c_width, s_weight, s_width, g, r)
     % CONFIGURATION
     config = configurations.default;
-    config.rf.size            = 50;
-    config.rf.center.width    = c_width;
-    config.rf.center.weight   = c_weight;
-    config.rf.surround.width  = s_width;
-    config.rf.surround.weight = s_weight;
+    config.rf.so.size            = 50;
+    config.rf.so.center.width    = c_width;
+    config.rf.so.center.weight   = c_weight;
+    config.rf.so.surround.width  = s_width;
+    config.rf.so.surround.weight = s_weight;
     
     % RECEPTIVE FIELDS
-    c = model.data.decomposition.functions.opponent.rf.center(4, config);
-    s = model.data.decomposition.functions.opponent.rf.surround(4, config);
+    c = model.data.rf.center(4, config);
+    s = model.data.rf.surround(4, config);
     
     % PLOT
     red   = [255  83  83]/255;
@@ -41,18 +41,18 @@ end
 function plotdo(i, c_weight, c_length, c_width, s_weight, s_length, s_width, offset, g, r)
     % CONFIGURATION
     config = configurations.default;
-    config.rf.center.weight   = c_weight;
-    config.rf.center.length   = c_length;
-    config.rf.center.width    = c_width;
-    config.rf.center.offset   = offset;
-    config.rf.surround.weight = s_weight;
-    config.rf.surround.length = s_length;
-    config.rf.surround.width  = s_width;
-    config.rf.surround.offset = offset;
+    config.rf.do.center.weight   = c_weight;
+    config.rf.do.center.length   = c_length;
+    config.rf.do.center.width    = c_width;
+    config.rf.do.center.offset   = offset;
+    config.rf.do.surround.weight = s_weight;
+    config.rf.do.surround.length = s_length;
+    config.rf.do.surround.width  = s_width;
+    config.rf.do.surround.offset = offset;
     
     % RECEPTIVE FIELDS
-    c = model.data.decomposition.functions.opponent.rf.oriented.center_middle_left(2, config);
-    s = model.data.decomposition.functions.opponent.rf.oriented.surround_middle_right(2, config);
+    c = model.data.rf.oriented.center_middle_left(2, config);
+    s = model.data.rf.oriented.surround_middle_right(2, config);
     
     % PLOT
     red   = [255  83  83]/255;
@@ -71,15 +71,15 @@ end
 function plotdog(i, c_weight, c_width, s_weight, s_width, g, r)
     % CONFIGURATION
     config = configurations.default;
-    config.rf.size            = 500;
-    config.rf.center.width    = c_width;
-    config.rf.center.weight   = c_weight;
-    config.rf.surround.width  = s_width;
-    config.rf.surround.weight = s_weight;
+    config.rf.do.size            = 500;
+    config.rf.do.center.width    = c_width;
+    config.rf.do.center.weight   = c_weight;
+    config.rf.do.surround.width  = s_width;
+    config.rf.do.surround.weight = s_weight;
     
     % RECEPTIVE FIELDS
-    c = model.data.decomposition.functions.opponent.rf.center(4, config);
-    s = model.data.decomposition.functions.opponent.rf.surround(4, config);
+    c = model.data.rf.center(4, config);
+    s = model.data.rf.surround(4, config);
     
     % PLOT
     red   = [255  83  83]/255;

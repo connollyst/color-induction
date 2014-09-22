@@ -14,12 +14,27 @@ function test_rgby_conversion
     assertEqualData(a, b);
 end
 
-function test_image_recovery
+function test_image_recovery_with_rgb2itti
     % Given
     n_scales = 5;
     original = little_peppers();
     expected = model.data.color.rgb2itti(original);
     config   = make_config(n_scales);
+    config.rf.method = 'rgb2itti';
+    % When
+    [decompositions, residuals] = model.data.decomposition.functions.opponent(original, config);
+    recovered = model.data.decomposition.functions.opponent_inverse(decompositions, residuals);
+    % Then (note: tolerant to floating point errors)
+    assertElementsAlmostEqual(recovered, expected);
+end
+
+function test_image_recovery_with_rgb2opp
+    % Given
+    n_scales = 5;
+    original = little_peppers();
+    expected = model.data.color.rgb2opp(original);
+    config   = make_config(n_scales);
+    config.rf.method = 'rgb2opp';
     % When
     [decompositions, residuals] = model.data.decomposition.functions.opponent(original, config);
     recovered = model.data.decomposition.functions.opponent_inverse(decompositions, residuals);

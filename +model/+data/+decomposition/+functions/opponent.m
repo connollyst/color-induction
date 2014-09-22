@@ -36,15 +36,15 @@ function residuals = subtract(rgb, components, config)
     n_cols     = size(rgb, 1);
     n_rows     = size(rgb, 2);
     n_channels = 6;             % LDRGBY
-    n_scales  = config.wave.n_scales;
-    n_orients = config.wave.n_orients;
-    residuals = zeros(n_cols, n_rows, n_channels, n_scales);
-    rgby      = model.data.color.rgb2itti(rgb);
+    n_scales   = config.wave.n_scales;
+    n_orients  = config.wave.n_orients;
+    residuals  = zeros(n_cols, n_rows, n_channels, n_scales);
+    LDRGBY     = model.data.rf.transform(rgb, config);
     for s=1:n_scales
         for o=1:n_orients
-            rgby = rgby - components(:,:,:,s,o);
+            LDRGBY = LDRGBY - components(:,:,:,s,o);
         end
-        residuals(:,:,:,s) = rgby;
+        residuals(:,:,:,s) = LDRGBY;
     end
 end
 
@@ -56,7 +56,7 @@ function validate(I, config)
     if n_channels ~= 3
         error('Expected RGB input image for opponent color processing.');
     end
-    if config.rf.single && config.rf.double
+    if config.rf.so.enabled && config.rf.do.enabled
         logger.log('Processing single & double opponent model.', config);
         if n_orients ~= 4
             error(['Expected 4 decomposition orientations for '         ...
@@ -64,14 +64,14 @@ function validate(I, config)
                    'found: ',num2str(n_orients)]);
         end
     else
-        if config.rf.single
+        if config.rf.so.enabled
             logger.log('Processing single opponent model.', config);
             if n_orients ~= 1
                 error(['Expected 1 decomposition orientations for '     ...
                        'single opponent model, found: ',num2str(n_orients)]);
             end
         else
-            if config.rf.double
+            if config.rf.do.enabled
                 logger.log('Processing double opponent model.', config);
                 if n_orients ~= 3
                     error(['Expected 3 decomposition orientations for ' ...

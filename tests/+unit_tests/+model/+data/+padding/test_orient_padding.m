@@ -152,15 +152,15 @@ end
 function config = single_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
     config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
     config.wave.n_orients = 1;
-    config.rf.single = true;
-    config.rf.double = false;
+    config.rf.so.enabled = true;
+    config.rf.do.enabled = false;
 end
 
 function config = double_opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)
     config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled);
     config.wave.n_orients = 3;
-    config.rf.single = false;
-    config.rf.double = true;
+    config.rf.so.enabled = false;
+    config.rf.do.enabled = true;
 end
 
 function config = opponent_config(n_cols, n_rows, n_scales, scale_enabled, orient_enabled)

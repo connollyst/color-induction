@@ -75,8 +75,8 @@ function test_excitation_within_DO_when_SO_connections_are_disabled
     config.zli.interaction.so_to_do = 0;
     config.zli.interaction.do_to_so = 0;
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
     I_in              = model.utils.zeros(config);
     I_in(:,:,:,:,1:3) = 1;
     interactions  = model.terms.get_interactions(config);
@@ -96,8 +96,8 @@ function test_excitation_within_SO_when_DO_connections_are_disabled
     config.zli.interaction.so_to_do = 0;
     config.zli.interaction.do_to_so = 0;
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
     I_in              = model.utils.zeros(config);
     I_in(:,:,:,:,4) = 1;
     interactions  = model.terms.get_interactions(config);
@@ -119,8 +119,8 @@ function test_no_excitation_from_DO_to_SO_when_connections_disabled
     config.zli.interaction.orient.to_so   = 0;  % expect no excitation
     config.zli.interaction.orient.from_so = 1;
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
     I_in              = model.utils.zeros(config);
     I_in(:,:,:,:,1:3) = 1;
     interactions  = model.terms.get_interactions(config);
@@ -140,9 +140,9 @@ function test_no_excitation_from_SO_to_DO_when_connections_disabled
     config.zli.interaction.orient.to_so   = 1;
     config.zli.interaction.orient.from_so = 0;  % expect no excitation
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
-    I_in              = model.utils.zeros(config);
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
+    I_in            = model.utils.zeros(config);
     I_in(:,:,1,1,4) = 1;
     I_in(:,:,2,1,4) = 2;
     I_in(:,:,3,1,4) = 3;
@@ -168,8 +168,8 @@ function test_excitation_from_DO_to_SO_by_weight
     config.zli.interaction.orient.to_so   = 0.5;    % expect 50% excitation
     config.zli.interaction.orient.from_so = 0;
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
     I_in              = model.utils.zeros(config);
     I_in(:,:,1,1,3) = 1;
     I_in(:,:,2,1,3) = 2;
@@ -197,8 +197,8 @@ function test_excitation_from_SO_to_DO_by_weight
     config.zli.interaction.orient.to_so   = 0;
     config.zli.interaction.orient.from_so = 0.5;    % expect 50% excitation
     config.wave.n_orients = 4;
-    config.rf.single  = true;
-    config.rf.double  = true;
+    config.rf.so.enabled  = true;
+    config.rf.do.enabled  = true;
     I_in              = model.utils.zeros(config);
     I_in(:,:,1,1,4) = 1;
     I_in(:,:,2,1,4) = 2;
