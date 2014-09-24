@@ -12,7 +12,7 @@ function test_itti
     config.display.logging               = false;
     config.display.plot                  = true;
     config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 5;
+    config.zli.n_membr                   = 10;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = false;
     config.zli.normal_type               = 'dims';
