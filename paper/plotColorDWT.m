@@ -1,11 +1,11 @@
-function plotColor
+function plotColorDWT
     I_scale = 1;
     I = im2double(imresize(imread('peppers.png'), I_scale));
     % CONFIGURATION
     config = configurations.default;
     config.wave.n_scales  = 3;
     % DECOMPOSE
-    [wavelets, ~] = model.data.decomposition.functions.opponent(I, config);
+    [wavelets, ~] = model.data.decomposition.functions.dwt(I, config);
     % PLOT
     do_plot( 1, 'Lso s=1',   wavelets(:,:,1,1,4));
     do_plot( 2, 'Dso s=1',   wavelets(:,:,2,1,4));

@@ -46,7 +46,7 @@ function plotJW
 end
 
 function do_plot(i, clims, data)
-    cmap = hot;
+    cmap = gray;
     cmap(length(cmap),:) = [ 1 1 1 ];
     figure(i), colormap(cmap), imagesc(-data, clims)
     % Remove ticks
