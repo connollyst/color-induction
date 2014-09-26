@@ -1,4 +1,4 @@
-function test_suite = test_rings
+function test_suite = test_thesis
   initTestSuite;
 end
 
@@ -13,8 +13,8 @@ function test_crispening_effect_dwt
     config                               = configurations.default_lab;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = false;
     config.zli.normal_type               = 'dims';
@@ -47,8 +47,8 @@ function test_crispening_effect_opp
     config                               = configurations.default_rgby;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = false;
     config.zli.normal_type               = 'dims';
@@ -83,8 +83,8 @@ function test_bars_dwt
     config                               = configurations.default_lab;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -113,8 +113,8 @@ function test_bars_opp
     config                               = configurations.default_rgby;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -141,13 +141,13 @@ end
 %% TEST CHROMATIC INDUCTION IN GRADIENT EXAMPLE
 
 function test_gradient_dwt
-    I = imresize(imread('tests/data/input/test_gradient.png'), 0.5);
-    mask = im2double(imresize(imread('tests/data/input/test_gradient_mask.png'), 0.5));
+    I = imresize(imread('tests/data/input/test_gradient.png'), 0.3);
+    mask = im2double(imresize(imread('tests/data/input/test_gradient_mask.png'), 0.3));
     config                               = configurations.default_lab;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -171,13 +171,13 @@ function test_gradient_dwt
 end
 
 function test_gradient_opp
-    I = imresize(imread('tests/data/input/test_gradient.png'), 0.5);
-    mask = im2double(imresize(imread('tests/data/input/test_gradient_mask.png'), 0.5));
+    I = imresize(imread('tests/data/input/test_gradient.png'), 0.3);
+    mask = im2double(imresize(imread('tests/data/input/test_gradient_mask.png'), 0.3));
     config                               = configurations.default_rgby;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -210,8 +210,8 @@ function test_rings_a_dwt
     config                               = configurations.default_lab;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -229,8 +229,8 @@ function test_rings_a_opp
     config                               = configurations.default_rgby;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -251,8 +251,8 @@ function test_neon_rings_dwt
     config                               = configurations.default_lab;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.wave.n_scales                 = 3;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -271,7 +271,7 @@ function test_neon_rings_opp
     config                               = configurations.default_rgby;
     config.display.logging               = false;
     config.display.plot                  = true;
-    config.wave.n_scales                 = 2;
+    config.wave.n_scales                 = 3;
     config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
