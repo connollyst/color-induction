@@ -1,8 +1,8 @@
 function plotRFSO()
-    clf
+% PLOT SINGLE-OPPONENT RECEPTIVE FIELDS
     config = configurations.default;
-    % PLOT SINGLE-OPPONENT RECEPTIVE FIELDS
-    dof = figure(1); set(dof, 'name', 'Double-Opponent Receptive Fields (Default)')
+    sof = figure(1); set(sof, 'name', 'Double-Opponent Receptive Fields (Default)')
+    clf
     subplot(2,3,1),
         hold on
         surf( model.data.rf.center(1, config)),

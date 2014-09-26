@@ -9,6 +9,7 @@ function LDRGBY = transform(varargin)
 %   Output
 %       LDRGBY: the opponent color components
 
+    % Interpret function arguments..
     switch length(varargin)
         case 2
             rgb_center   = im2double(varargin{1});
@@ -22,6 +23,7 @@ function LDRGBY = transform(varargin)
             error('Expected 1 or 2 parameters, got %i', length(varargin));
     end
     
+    % Transform using the appropriate opponent color function..
     switch config.rf.method
         case 'rgb2opp'
             LDRGBY = model.data.color.rgb2opp(rgb_center, rgb_surround);

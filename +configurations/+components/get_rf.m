@@ -7,16 +7,16 @@ function rf = get_rf()
     rf.method             = 'rgb2opp';
     
     % Single and double opponent receptive field configurations
-    rf.so.size            = 100;
     rf.so.enabled         = true;
-    rf.so.center.weight   = 1;
+    rf.so.size            = 50;
+    rf.so.center.weight   = 1.0;
+    rf.so.surround.weight = 0.3;
     rf.so.center.width    = 0.5;
-    rf.so.surround.weight = 0.4;
-    rf.so.surround.width  = 0.75;
+    rf.so.surround.width  = 1.0;
     
     % Single and double opponent receptive field configurations
-    rf.do.size            = 100;
     rf.do.enabled         = true;
+    rf.do.size            = 100;
     rf.do.center.weight   = 1;
     rf.do.center.length   = 1;
     rf.do.center.width    = 0.5;

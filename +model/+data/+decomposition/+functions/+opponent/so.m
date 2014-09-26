@@ -1,7 +1,7 @@
 function LDRGBY = so(rgb, config)
 %SO Single Opponent Decomposition
-%   Decomposes the RGB image into it's RGBY opponent components. Unlike the
-%   double opponent decompositions, here there is no spatial opponency
+%   Decomposes the RGB image into it's LDRGBY opponent components. Unlike
+%   the double opponent decompositions, here there is no spatial opponency
 %   between the receptive fields.
 %
 %   Input
@@ -20,13 +20,10 @@ function LDRGBY = so(rgb, config)
     b = rgb(:,:,3);
     
     for scale=1:config.wave.n_scales
-        % TODO Starting with scale 2 better matches how DWT behaves
-        % scale = s+1;
         r_c = center(r, scale, config);
         g_c = center(g, scale, config);
         b_c = center(b, scale, config);
         rgb_c = cat(3, r_c, g_c, b_c);
-        % TODO use center & surround of different scales
         r_s = surround(r, scale, config);
         g_s = surround(g, scale, config);
         b_s = surround(b, scale, config);

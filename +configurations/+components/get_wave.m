@@ -2,7 +2,7 @@ function wave = get_wave()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% wavelets' parameters %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    wave.transform    = 'dwt';  % decomposition function
+    wave.transform    = '???';  % decomposition function
                                 %  (corresponds to function in model.wavelet.functions)
                                 
     wave.n_orients    = 4;      % number of orientations
