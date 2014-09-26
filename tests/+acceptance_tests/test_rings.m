@@ -272,7 +272,7 @@ function test_neon_rings_opp
     config.display.logging               = false;
     config.display.plot                  = true;
     config.wave.n_scales                 = 2;
-    config.zli.n_membr                   = 10;
+    config.zli.n_membr                   = 20;
     config.zli.n_iter                    = 10;
     config.zli.interaction.color.enabled = true;
     config.zli.normal_type               = 'dims';
@@ -286,18 +286,23 @@ function test_neon_rings_opp
 end
 
 function do_display(G_out, B_out, mask)
-    G_masked = G_out .* mask;
-    B_masked = B_out .* mask;
-    lims_max = max(max(G_masked(:)), max(B_masked(:)));
-    lims_min = min(min(G_masked(:)), min(B_masked(:)));
-    lims     = [lims_min lims_max];
     close all
+    % Display the raw output
+    lims_max = max(max(G_out(:)), max(B_out(:)));
+    lims_min = min(min(G_out(:)), min(B_out(:)));
+    lims     = [lims_min lims_max];
     do_plot( 1, 'Test Circle G L-D', lims, G_out(:,:,1))
     do_plot( 2, 'Test Circle G R-G', lims, G_out(:,:,2))
     do_plot( 3, 'Test Circle G B-Y', lims, G_out(:,:,3))
     do_plot( 4, 'Test Circle B L-D', lims, B_out(:,:,1))
     do_plot( 5, 'Test Circle B R-G', lims, B_out(:,:,2))
     do_plot( 6, 'Test Circle B B-Y', lims, B_out(:,:,3))
+    % Mask all but the test ring and enhance the output
+    G_masked = G_out .* mask;
+    B_masked = B_out .* mask;
+    lims_max = max(max(G_masked(:)), max(B_masked(:)));
+    lims_min = min(min(G_masked(:)), min(B_masked(:)));
+    lims     = [lims_min lims_max];
     do_plot( 7, 'Test Circle G L-D', lims, G_masked(:,:,1))
     do_plot( 8, 'Test Circle G R-G', lims, G_masked(:,:,2))
     do_plot( 9, 'Test Circle G B-Y', lims, G_masked(:,:,3))
